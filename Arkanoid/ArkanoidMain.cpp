@@ -1,8 +1,11 @@
 ﻿#include "pch.h"
 #include "ArkanoidMain.h"
 #include "Common\DirectXHelper.h"
+#include "GameEngine\Triangle.h"
+
 
 using namespace Arkanoid;
+using namespace GameEngine;
 using namespace Windows::Foundation;
 using namespace Windows::System::Threading;
 using namespace Concurrency;
@@ -15,9 +18,11 @@ ArkanoidMain::ArkanoidMain(const std::shared_ptr<DX::DeviceResources>& deviceRes
 	m_deviceResources->RegisterDeviceNotify(this);
 
 	// TODO: Replace this with your app's content initialization.
-	m_sceneRenderer = std::unique_ptr<Sample3DSceneRenderer>(new Sample3DSceneRenderer(m_deviceResources));
+	//m_sceneRenderer = std::unique_ptr<Sample3DSceneRenderer>(new Sample3DSceneRenderer(m_deviceResources));
 
 	m_fpsTextRenderer = std::unique_ptr<SampleFpsTextRenderer>(new SampleFpsTextRenderer(m_deviceResources));
+	//TEST
+	m_TestTriangleDraw = new Triangle();
 
 	// TODO: Change the timer settings if you want something other than the default variable timestep mode.
 	// e.g. for 60 FPS fixed timestep update logic, call:
@@ -37,7 +42,7 @@ ArkanoidMain::~ArkanoidMain()
 void ArkanoidMain::CreateWindowSizeDependentResources() 
 {
 	// TODO: Replace this with the size-dependent initialization of your app's content.
-	m_sceneRenderer->CreateWindowSizeDependentResources();
+	//m_sceneRenderer->CreateWindowSizeDependentResources();
 }
 
 // Updates the application state once per frame.
@@ -47,8 +52,9 @@ void ArkanoidMain::Update()
 	m_timer.Tick([&]()
 	{
 		// TODO: Replace this with your app's content update functions.
-		m_sceneRenderer->Update(m_timer);
+		//m_sceneRenderer->Update(m_timer);
 		m_fpsTextRenderer->Update(m_timer);
+		m_TestTriangleDraw->Update();
 	});
 }
 
@@ -78,8 +84,9 @@ bool ArkanoidMain::Render()
 
 	// Render the scene objects.
 	// TODO: Replace this with your app's content rendering functions.
-	m_sceneRenderer->Render();
+	//m_sceneRenderer->Render();
 	m_fpsTextRenderer->Render();
+	m_TestTriangleDraw->Render();
 
 	return true;
 }
@@ -87,14 +94,14 @@ bool ArkanoidMain::Render()
 // Notifies renderers that device resources need to be released.
 void ArkanoidMain::OnDeviceLost()
 {
-	m_sceneRenderer->ReleaseDeviceDependentResources();
+	//m_sceneRenderer->ReleaseDeviceDependentResources();
 	m_fpsTextRenderer->ReleaseDeviceDependentResources();
 }
 
 // Notifies renderers that device resources may now be recreated.
 void ArkanoidMain::OnDeviceRestored()
 {
-	m_sceneRenderer->CreateDeviceDependentResources();
+	//m_sceneRenderer->CreateDeviceDependentResources();
 	m_fpsTextRenderer->CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
 }
