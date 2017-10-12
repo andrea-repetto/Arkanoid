@@ -62,5 +62,48 @@
     <Image Include="Assets\Wide310x150Logo.scale-200.png">
       <Filter>Assets</Filter>
     </Image>
+    <Filter Include="Engine">
+      <UniqueIdentifier>{8c6ee6dd-725f-4f59-9bcc-68807c09c2fd}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="App.cpp" />
+    <ClCompile Include="ArkanoidMain.cpp" />
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Engine\Square.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Camera.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Content\SceneOne.cpp">
+      <Filter>Content</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\EngineRes.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="App.h" />
+    <ClInclude Include="ArkanoidMain.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="Engine\Square.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Camera.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\SceneOne.h">
+      <Filter>Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\EngineRes.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <AppxManifest Include="Package.appxmanifest" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Arkanoid_TemporaryKey.pfx" />
   </ItemGroup>
 </Project>

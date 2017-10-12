@@ -16,6 +16,8 @@ namespace Arkanoid
 		void CreateWindowSizeDependentResources();
 		void Update(DX::StepTimer const& timer);
 		bool Render();
+
+
 		void SaveState();
 
 		void StartTracking();

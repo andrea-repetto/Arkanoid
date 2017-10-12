@@ -1,11 +1,13 @@
 #include "pch.h"
 #include "ArkanoidMain.h"
 #include "Common\DirectXHelper.h"
+#include "Engine\EngineRes.h"
 
 using namespace Arkanoid;
 using namespace Windows::Foundation;
 using namespace Windows::System::Threading;
 using namespace Concurrency;
+using namespace Engine;
 
 // The DirectX 12 Application template is documented at https://go.microsoft.com/fwlink/?LinkID=613670&clcid=0x409
 
@@ -23,8 +25,10 @@ ArkanoidMain::ArkanoidMain()
 // Creates and initializes the renderers.
 void ArkanoidMain::CreateRenderers(const std::shared_ptr<DX::DeviceResources>& deviceResources)
 {
-	// TODO: Replace this with your app's content initialization.
-	m_sceneRenderer = std::unique_ptr<Sample3DSceneRenderer>(new Sample3DSceneRenderer(deviceResources));
+	// initialize my Engine
+	EngineRes::Initialize(deviceResources);
+	
+	m_sceneRenderer = std::unique_ptr<SceneOne>(new SceneOne());
 
 	OnWindowSizeChanged();
 }
@@ -70,7 +74,7 @@ void ArkanoidMain::OnSuspending()
 	// Process lifetime management may terminate suspended apps at any time, so it is
 	// good practice to save any state that will allow the app to restart where it left off.
 
-	m_sceneRenderer->SaveState();
+	//m_sceneRenderer->SaveState();
 
 	// If your application uses video memory allocations that are easy to re-create,
 	// consider releasing that memory to make it available to other applications.
@@ -87,6 +91,6 @@ void ArkanoidMain::OnDeviceRemoved()
 {
 	// TODO: Save any necessary application or renderer state and release the renderer
 	// and its resources which are no longer valid.
-	m_sceneRenderer->SaveState();
+	//m_sceneRenderer->SaveState();
 	m_sceneRenderer = nullptr;
 }
