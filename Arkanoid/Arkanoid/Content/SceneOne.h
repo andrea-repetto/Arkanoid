@@ -28,7 +28,7 @@ namespace Arkanoid
 		Engine::Square* m_Square;
 		Engine::Camera* m_Camera;
 
-		ModelViewProjectionConstantBuffer					m_constantBufferData;
+		//ModelViewProjectionConstantBuffer					m_constantBufferData;
 
 	};
 }

@@ -11,7 +11,7 @@ SceneOne::SceneOne()
 	, m_Square( new Engine::Square() )
 {
 
-	ZeroMemory(&m_constantBufferData, sizeof(m_constantBufferData));
+	//ZeroMemory(&m_constantBufferData, sizeof(m_constantBufferData));
 
 }
 
@@ -39,12 +39,12 @@ void SceneOne::Update(DX::StepTimer const& timer)
 
 bool SceneOne::Render()
 {
-	if (!m_loadingComplete)
+	//if (!m_loadingComplete)
 	{
-		return false;
+		//return false;
 	}
 
-	m_Square->Render();
+	return m_Square->Render();
 
-	return true;
+	//return true;
 }

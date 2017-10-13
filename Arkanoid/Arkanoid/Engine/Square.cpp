@@ -13,7 +13,14 @@ using namespace Windows::Storage;
 using namespace Arkanoid;
 
 Square::Square()
+	: m_loadingComplete(false),
+	m_radiansPerSecond(XM_PIDIV4),	// rotate 45 degrees per second
+	m_angle(0),
+	m_mappedConstantBuffer(nullptr)
+
 {
+	ZeroMemory(&m_constantBufferData, sizeof(m_constantBufferData));
+
 	auto d3dDevice = EngineRes::GetDeviceResource()->GetD3DDevice();
 
 	// Create a root signature with a single constant buffer slot.
@@ -268,13 +275,57 @@ Square::Square()
 		// Wait for the command list to finish executing; the vertex/index buffers need to be uploaded to the GPU before the upload resources go out of scope.
 		EngineRes::GetDeviceResource()->WaitForGpu();
 	});
-	/*
+	
 	createAssetsTask.then([this]() {
 		m_loadingComplete = true;
-	})
-	*/;
+	});
 
 
+	//view
+
+	Size outputSize = EngineRes::GetDeviceResource()->GetOutputSize();
+	float aspectRatio = outputSize.Width / outputSize.Height;
+	float fovAngleY = 70.0f * XM_PI / 180.0f;
+
+	D3D12_VIEWPORT viewport = EngineRes::GetDeviceResource()->GetScreenViewport();
+	m_scissorRect = { 0, 0, static_cast<LONG>(viewport.Width), static_cast<LONG>(viewport.Height) };
+
+	// This is a simple example of change that can be made when the app is in
+	// portrait or snapped view.
+	if (aspectRatio < 1.0f)
+	{
+		fovAngleY *= 2.0f;
+	}
+
+	// Note that the OrientationTransform3D matrix is post-multiplied here
+	// in order to correctly orient the scene to match the display orientation.
+	// This post-multiplication step is required for any draw calls that are
+	// made to the swap chain render target. For draw calls to other targets,
+	// this transform should not be applied.
+
+	// This sample makes use of a right-handed coordinate system using row-major matrices.
+	XMMATRIX perspectiveMatrix = XMMatrixPerspectiveFovRH(
+		fovAngleY,
+		aspectRatio,
+		0.01f,
+		100.0f
+	);
+
+	XMFLOAT4X4 orientation = EngineRes::GetDeviceResource()->GetOrientationTransform3D();
+	XMMATRIX orientationMatrix = XMLoadFloat4x4(&orientation);
+
+	XMStoreFloat4x4(
+		&m_constantBufferData.projection,
+		XMMatrixTranspose(perspectiveMatrix * orientationMatrix)
+	);
+
+	// Eye is at (0,0.7,1.5), looking at point (0,-0.1,0) with the up-vector along the y-axis.
+	static const XMVECTORF32 eye = { 0.0f, 0.7f, 1.5f, 0.0f };
+	static const XMVECTORF32 at = { 0.0f, -0.1f, 0.0f, 0.0f };
+	static const XMVECTORF32 up = { 0.0f, 1.0f, 0.0f, 0.0f };
+
+	XMStoreFloat4x4(&m_constantBufferData.view, XMMatrixTranspose(XMMatrixLookAtRH(eye, at, up)));
+	
 }
 
 
@@ -284,10 +335,81 @@ Square::~Square()
 
 void Square::Update(DX::StepTimer const& timer)
 {
+	if (m_loadingComplete)
+	{
+		//if (!m_tracking)
+		{
+			// Rotate the cube a small amount.
+			m_angle += static_cast<float>(timer.GetElapsedSeconds()) * m_radiansPerSecond;
 
+			XMStoreFloat4x4(&m_constantBufferData.model, XMMatrixTranspose(XMMatrixRotationY(m_angle)));
+		}
+
+		// Update the constant buffer resource.
+		UINT8* destination = m_mappedConstantBuffer + (EngineRes::GetDeviceResource()->GetCurrentFrameIndex() * c_alignedConstantBufferSize);
+		memcpy(destination, &m_constantBufferData, sizeof(m_constantBufferData));
+	}
 }
 
-void Square::Render()
+bool Square::Render()
 {
-	
+	// Loading is asynchronous. Only draw geometry after it's loaded.
+	if (!m_loadingComplete)
+	{
+		return false;
+	}
+
+	DX::ThrowIfFailed(EngineRes::GetDeviceResource()->GetCommandAllocator()->Reset());
+
+	// The command list can be reset anytime after ExecuteCommandList() is called.
+	DX::ThrowIfFailed(m_commandList->Reset(EngineRes::GetDeviceResource()->GetCommandAllocator(), m_pipelineState.Get()));
+
+	PIXBeginEvent(m_commandList.Get(), 0, L"Draw the cube");
+	{
+		// Set the graphics root signature and descriptor heaps to be used by this frame.
+		m_commandList->SetGraphicsRootSignature(m_rootSignature.Get());
+		ID3D12DescriptorHeap* ppHeaps[] = { m_cbvHeap.Get() };
+		m_commandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
+
+		// Bind the current frame's constant buffer to the pipeline.
+		CD3DX12_GPU_DESCRIPTOR_HANDLE gpuHandle(m_cbvHeap->GetGPUDescriptorHandleForHeapStart(), EngineRes::GetDeviceResource()->GetCurrentFrameIndex(), m_cbvDescriptorSize);
+		m_commandList->SetGraphicsRootDescriptorTable(0, gpuHandle);
+
+		// Set the viewport and scissor rectangle.
+		D3D12_VIEWPORT viewport = EngineRes::GetDeviceResource()->GetScreenViewport();
+		m_commandList->RSSetViewports(1, &viewport);
+		m_commandList->RSSetScissorRects(1, &m_scissorRect);
+
+		// Indicate this resource will be in use as a render target.
+		CD3DX12_RESOURCE_BARRIER renderTargetResourceBarrier =
+			CD3DX12_RESOURCE_BARRIER::Transition(EngineRes::GetDeviceResource()->GetRenderTarget(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+		m_commandList->ResourceBarrier(1, &renderTargetResourceBarrier);
+
+		// Record drawing commands.
+		D3D12_CPU_DESCRIPTOR_HANDLE renderTargetView = EngineRes::GetDeviceResource()->GetRenderTargetView();
+		D3D12_CPU_DESCRIPTOR_HANDLE depthStencilView = EngineRes::GetDeviceResource()->GetDepthStencilView();
+		m_commandList->ClearRenderTargetView(renderTargetView, DirectX::Colors::CornflowerBlue, 0, nullptr);
+		m_commandList->ClearDepthStencilView(depthStencilView, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+
+		m_commandList->OMSetRenderTargets(1, &renderTargetView, false, &depthStencilView);
+
+		m_commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		m_commandList->IASetVertexBuffers(0, 1, &m_vertexBufferView);
+		m_commandList->IASetIndexBuffer(&m_indexBufferView);
+		m_commandList->DrawIndexedInstanced(36, 1, 0, 0, 0);
+
+		// Indicate that the render target will now be used to present when the command list is done executing.
+		CD3DX12_RESOURCE_BARRIER presentResourceBarrier =
+			CD3DX12_RESOURCE_BARRIER::Transition(EngineRes::GetDeviceResource()->GetRenderTarget(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
+		m_commandList->ResourceBarrier(1, &presentResourceBarrier);
+	}
+	PIXEndEvent(m_commandList.Get());
+
+	DX::ThrowIfFailed(m_commandList->Close());
+
+	// Execute the command list.
+	ID3D12CommandList* ppCommandLists[] = { m_commandList.Get() };
+	EngineRes::GetDeviceResource()->GetCommandQueue()->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
+
+	return true;
 }
