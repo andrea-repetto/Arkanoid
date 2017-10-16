@@ -8,6 +8,7 @@ namespace Engine
 	class EngineRes
 	{
 	public:
+		static EngineRes* Instance();
 		static void Initialize( const std::shared_ptr<DX::DeviceResources>& );
 		static const std::shared_ptr<DX::DeviceResources>& GetDeviceResource();
 

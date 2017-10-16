@@ -93,7 +93,7 @@ Square::Square()
 		auto d3dDevice = EngineRes::GetDeviceResource()->GetD3DDevice();
 
 		// Create a command list.
-		DX::ThrowIfFailed(d3dDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, EngineRes::GetDeviceResource()->GetCommandAllocator(), m_pipelineState.Get(), IID_PPV_ARGS(&m_commandList)));
+		DX::ThrowIfFailed(d3dDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, EngineRes::GetDeviceResource()->GetCommandAllocator(), nullptr, IID_PPV_ARGS(&m_commandList)));
 		NAME_D3D12_OBJECT(m_commandList);
 
 		// Cube vertices. Each vertex has a position and a color.
@@ -362,9 +362,8 @@ bool Square::Render()
 	DX::ThrowIfFailed(EngineRes::GetDeviceResource()->GetCommandAllocator()->Reset());
 
 	// The command list can be reset anytime after ExecuteCommandList() is called.
-	DX::ThrowIfFailed(m_commandList->Reset(EngineRes::GetDeviceResource()->GetCommandAllocator(), m_pipelineState.Get()));
-
-	PIXBeginEvent(m_commandList.Get(), 0, L"Draw the cube");
+	DX::ThrowIfFailed(m_commandList->Reset(EngineRes::GetDeviceResource()->GetCommandAllocator(), nullptr));
+	PIXBeginEvent(m_commandList.Get(), 0, L"Clear space");
 	{
 		// Set the graphics root signature and descriptor heaps to be used by this frame.
 		m_commandList->SetGraphicsRootSignature(m_rootSignature.Get());
@@ -385,13 +384,22 @@ bool Square::Render()
 			CD3DX12_RESOURCE_BARRIER::Transition(EngineRes::GetDeviceResource()->GetRenderTarget(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
 		m_commandList->ResourceBarrier(1, &renderTargetResourceBarrier);
 
-		// Record drawing commands.
+				// Record drawing commands.
 		D3D12_CPU_DESCRIPTOR_HANDLE renderTargetView = EngineRes::GetDeviceResource()->GetRenderTargetView();
 		D3D12_CPU_DESCRIPTOR_HANDLE depthStencilView = EngineRes::GetDeviceResource()->GetDepthStencilView();
 		m_commandList->ClearRenderTargetView(renderTargetView, DirectX::Colors::CornflowerBlue, 0, nullptr);
 		m_commandList->ClearDepthStencilView(depthStencilView, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
 		m_commandList->OMSetRenderTargets(1, &renderTargetView, false, &depthStencilView);
+	}
+	PIXEndEvent(m_commandList.Get());
+	//DX::ThrowIfFailed(m_commandList->Reset(EngineRes::GetDeviceResource()->GetCommandAllocator(), m_pipelineState.Get()));
+
+	PIXBeginEvent(m_commandList.Get(), 0, L"Draw the cube");
+	{
+
+		m_commandList->SetPipelineState(m_pipelineState.Get());
+
 
 		m_commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		m_commandList->IASetVertexBuffers(0, 1, &m_vertexBufferView);

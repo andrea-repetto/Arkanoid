@@ -107,7 +107,7 @@ void App::Run()
 			{
 				if (m_main->Render())
 				{
-					GetDeviceResources()->Present();
+					GetDeviceResources()->Present(); // GPU Sync point
 				}
 			}
 			PIXEndEvent(commandQueue);

@@ -82,6 +82,12 @@
     <ClCompile Include="Engine\EngineRes.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\SceneController.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GameObject.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
@@ -97,6 +103,12 @@
       <Filter>Content</Filter>
     </ClInclude>
     <ClInclude Include="Engine\EngineRes.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\SceneController.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\GameObject.h">
       <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>
