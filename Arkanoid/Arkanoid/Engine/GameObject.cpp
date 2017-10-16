@@ -6,8 +6,12 @@
 using namespace Engine;
 
 GameObject::GameObject(
+	const std::string& name,
+	const std::shared_ptr<DX::DeviceResources>& deviceResources
 )
-	: m_parent(nullptr)
+	: m_name(name)
+	, m_deviceResources(deviceResources)
+	, m_parent(nullptr)
 {
 }
 
@@ -22,6 +26,17 @@ GameObject::~GameObject()
 /* PUBLIC                                                               */
 /************************************************************************/
 
+void GameObject::Start()
+{
+	doStart();
+
+	std::vector<GameObject*>::iterator it;
+	for (it = m_children.begin(); it != m_children.end(); ++it)
+	{
+		(*it)->Start();
+	}
+}
+
 void GameObject::Render()
 {
 	/* Update my render */
@@ -33,6 +48,8 @@ void GameObject::Render()
 	{
 		(*it)->Render();
 	}
+
+	doLateRender();
 }
 
 void GameObject::Update(DX::StepTimer const& timer)
