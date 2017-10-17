@@ -197,11 +197,13 @@
     <ClInclude Include="ArkanoidMain.h" />
     <ClInclude Include="Common\DirectXHelper.h" />
     <ClInclude Include="Common\StepTimer.h" />
+    <ClInclude Include="Content\LevelOne.h" />
     <ClInclude Include="Content\Sample3DSceneRenderer.h" />
     <ClInclude Include="Content\SceneOne.h" />
     <ClInclude Include="Content\ShaderStructures.h" />
     <ClInclude Include="Engine\Camera.h" />
     <ClInclude Include="Engine\EngineRes.h" />
+    <ClInclude Include="Engine\GameEngine.h" />
     <ClInclude Include="Engine\GameObject.h" />
     <ClInclude Include="Engine\SceneController.h" />
     <ClInclude Include="Engine\Square.h" />
@@ -211,10 +213,12 @@
     <ClCompile Include="App.cpp" />
     <ClCompile Include="Common\DeviceResources.cpp" />
     <ClCompile Include="ArkanoidMain.cpp" />
+    <ClCompile Include="Content\LevelOne.cpp" />
     <ClCompile Include="Content\Sample3DSceneRenderer.cpp" />
     <ClCompile Include="Content\SceneOne.cpp" />
     <ClCompile Include="Engine\Camera.cpp" />
     <ClCompile Include="Engine\EngineRes.cpp" />
+    <ClCompile Include="Engine\GameEngine.cpp" />
     <ClCompile Include="Engine\GameObject.cpp" />
     <ClCompile Include="Engine\SceneController.cpp" />
     <ClCompile Include="Engine\Square.cpp" />

@@ -15,10 +15,7 @@ namespace Engine
 	class GameObject
 	{
 	public:
-		GameObject( 
-			const std::string& name,
-			const std::shared_ptr<DX::DeviceResources>& deviceResources
-		);
+		explicit GameObject( );
 		virtual ~GameObject();
 
 		void Start();
@@ -26,10 +23,7 @@ namespace Engine
 		void Update(DX::StepTimer const& timer);
 		void SetParent(GameObject* i_newParent);
 		inline const GameObject* GetParent() const { return m_parent; }
-		inline const std::string& GetName() const { return m_name;  }
 
-	protected:
-		inline const std::shared_ptr<DX::DeviceResources>& deviceResources() const { return m_deviceResources; }
 
 	private:
 		virtual void doStart() = 0;
@@ -43,8 +37,6 @@ namespace Engine
 
 
 	private:
-		std::string											m_name;
-		std::shared_ptr<DX::DeviceResources>				m_deviceResources;
 		GameObject*											m_parent;
 		std::vector<GameObject*>							m_children;
 	};

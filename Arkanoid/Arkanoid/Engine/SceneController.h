@@ -3,13 +3,10 @@
 #include "GameObject.h"
 namespace Engine
 {
-	class SceneController : GameObject
+	class SceneController : public GameObject
 	{
 	public:
-		SceneController(
-			const std::string& name,
-			const std::shared_ptr<DX::DeviceResources>& deviceResources
-			);
+		explicit SceneController();
 		virtual ~SceneController();
 		
 		void OnWindowResizeEvent();

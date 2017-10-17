@@ -5,13 +5,8 @@
 
 using namespace Engine;
 
-GameObject::GameObject(
-	const std::string& name,
-	const std::shared_ptr<DX::DeviceResources>& deviceResources
-)
-	: m_name(name)
-	, m_deviceResources(deviceResources)
-	, m_parent(nullptr)
+GameObject::GameObject()
+	: m_parent(nullptr)
 {
 }
 

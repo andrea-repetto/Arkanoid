@@ -3,11 +3,8 @@
 
 using namespace Engine;
 
-SceneController::SceneController(
-	const std::string& name,
-	const std::shared_ptr<DX::DeviceResources>& deviceResources
-)
-	: GameObject( name, deviceResources )
+SceneController::SceneController()
+	: GameObject( )
 {
 }
 

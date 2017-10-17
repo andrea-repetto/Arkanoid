@@ -2,7 +2,7 @@
 
 #include "Common\StepTimer.h"
 #include "Common\DeviceResources.h"
-#include "Content\SceneOne.h"
+#include "Content\LevelOne.h"
 
 // Renders Direct3D content on the screen.
 namespace Arkanoid
@@ -22,7 +22,7 @@ namespace Arkanoid
 
 	private:
 		// TODO: Replace with your own content renderers.
-		std::unique_ptr<SceneOne> m_sceneRenderer;
+		std::unique_ptr<LevelOne> m_sceneRenderer;
 
 		// Rendering loop timer.
 		DX::StepTimer m_timer;

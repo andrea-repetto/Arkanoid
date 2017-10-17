@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "ArkanoidMain.h"
 #include "Common\DirectXHelper.h"
-#include "Engine\EngineRes.h"
+#include "Engine\GameEngine.h"
 
 using namespace Arkanoid;
 using namespace Windows::Foundation;
@@ -26,9 +26,11 @@ ArkanoidMain::ArkanoidMain()
 void ArkanoidMain::CreateRenderers(const std::shared_ptr<DX::DeviceResources>& deviceResources)
 {
 	// initialize my Engine
-	EngineRes::Initialize(deviceResources);
+	//EngineRes::Initialize(deviceResources);
+	GameEngine::Instance()->Initialize(deviceResources);
+
 	
-	m_sceneRenderer = std::unique_ptr<SceneOne>(new SceneOne());
+	m_sceneRenderer = std::unique_ptr<LevelOne>(new LevelOne());
 
 	OnWindowSizeChanged();
 }
@@ -56,14 +58,16 @@ bool ArkanoidMain::Render()
 
 	// Render the scene objects.
 	// TODO: Replace this with your app's content rendering functions.
-	return m_sceneRenderer->Render();
+	m_sceneRenderer->Render();
+
+	return true;
 }
 
 // Updates application state when the window's size changes (e.g. device orientation change)
 void ArkanoidMain::OnWindowSizeChanged()
 {
 	// TODO: Replace this with the size-dependent initialization of your app's content.
-	m_sceneRenderer->CreateWindowSizeDependentResources();
+	m_sceneRenderer->OnWindowResizeEvent();
 }
 
 // Notifies the app that it is being suspended.
