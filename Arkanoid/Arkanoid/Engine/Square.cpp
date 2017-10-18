@@ -2,6 +2,9 @@
 #include "Square.h"
 #include "GameEngine.h"
 
+#include "Common\d3dUtil.h"
+#include "Common\StepTimer.h"
+
 #include <ppltasks.h>
 #include <synchapi.h>
 
@@ -38,9 +41,12 @@ void Square::doStart()
 
 	// The command list can be reset anytime after ExecuteCommandList() is called.
 	DX::ThrowIfFailed(GameEngine::Instance()->CommandList()->Reset(GameEngine::Instance()->DeviceResources()->GetCommandAllocator(), nullptr));
-	
-	// Load shaders asynchronously.
 
+	//ID3DBlob* PS_Buffer;
+
+	D3DReadFileToBlob(L"SampleVertexShader.cso", &m_vertexShader);
+	D3DReadFileToBlob(L"SamplePixelShader.cso", &m_pixelShader);
+	
 
 	// Create the pipeline state once the shaders are loaded.
 	//auto createPipelineStateTask = (createPSTask && createVSTask).then([this]() {
@@ -54,8 +60,16 @@ void Square::doStart()
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC state = {};
 		state.InputLayout = { inputLayout, _countof(inputLayout) };
 		state.pRootSignature = GameEngine::Instance()->RootSignature().Get();
-		state.VS = CD3DX12_SHADER_BYTECODE(&m_vertexShader[0], m_vertexShader.size());
-		state.PS = CD3DX12_SHADER_BYTECODE(&m_pixelShader[0], m_pixelShader.size());
+		state.VS =
+		{
+			reinterpret_cast<BYTE*>(m_vertexShader->GetBufferPointer()),
+			m_vertexShader->GetBufferSize()
+		};
+		//CD3DX12_SHADER_BYTECODE(&m_vertexShader[0], m_vertexShader.size());
+		state.PS = {
+			reinterpret_cast<BYTE*>(m_pixelShader->GetBufferPointer()),
+			m_pixelShader->GetBufferSize()
+		};//CD3DX12_SHADER_BYTECODE(&m_pixelShader[0], m_pixelShader.size());
 		state.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
 		state.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
 		state.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
@@ -69,8 +83,8 @@ void Square::doStart()
 		DX::ThrowIfFailed(GameEngine::Instance()->DeviceResources()->GetD3DDevice()->CreateGraphicsPipelineState(&state, IID_PPV_ARGS(&m_pipelineState)));
 
 		// Shader data can be deleted once the pipeline state is created.
-		m_vertexShader.clear();
-		m_pixelShader.clear();
+	//	m_vertexShader.clear();
+	//	m_pixelShader.clear();
 	//});
 
 	// Create and upload cube geometry resources to the GPU.
@@ -261,6 +275,58 @@ void Square::doStart()
 		GameEngine::Instance()->DeviceResources()->WaitForGpu();
 	//});
 
+
+
+
+
+
+
+
+
+
+		Size outputSize = GameEngine::Instance()->DeviceResources()->GetOutputSize();
+		float aspectRatio = outputSize.Width / outputSize.Height;
+		float fovAngleY = 70.0f * XM_PI / 180.0f;
+
+		D3D12_VIEWPORT viewport = GameEngine::Instance()->DeviceResources()->GetScreenViewport();
+		m_scissorRect = { 0, 0, static_cast<LONG>(viewport.Width), static_cast<LONG>(viewport.Height) };
+
+		// This is a simple example of change that can be made when the app is in
+		// portrait or snapped view.
+		if (aspectRatio < 1.0f)
+		{
+			fovAngleY *= 2.0f;
+		}
+
+		// Note that the OrientationTransform3D matrix is post-multiplied here
+		// in order to correctly orient the scene to match the display orientation.
+		// This post-multiplication step is required for any draw calls that are
+		// made to the swap chain render target. For draw calls to other targets,
+		// this transform should not be applied.
+
+		// This sample makes use of a right-handed coordinate system using row-major matrices.
+		XMMATRIX perspectiveMatrix = XMMatrixPerspectiveFovRH(
+			fovAngleY,
+			aspectRatio,
+			0.01f,
+			100.0f
+		);
+
+		XMFLOAT4X4 orientation = GameEngine::Instance()->DeviceResources()->GetOrientationTransform3D();
+		XMMATRIX orientationMatrix = XMLoadFloat4x4(&orientation);
+
+		XMStoreFloat4x4(
+			&m_constantBufferData.projection,
+			XMMatrixTranspose(perspectiveMatrix * orientationMatrix)
+		);
+
+		// Eye is at (0,0.7,1.5), looking at point (0,-0.1,0) with the up-vector along the y-axis.
+		static const XMVECTORF32 eye = { 0.0f, 0.7f, 1.5f, 0.0f };
+		static const XMVECTORF32 at = { 0.0f, -0.1f, 0.0f, 0.0f };
+		static const XMVECTORF32 up = { 0.0f, 1.0f, 0.0f, 0.0f };
+
+		XMStoreFloat4x4(&m_constantBufferData.view, XMMatrixTranspose(XMMatrixLookAtRH(eye, at, up)));
+
 	//createAssetsTask.then([this]() {
 		m_loadingComplete = true;
 	//});
@@ -273,6 +339,19 @@ void Square::doUpdate(DX::StepTimer const& timer)
 	{
 		return;
 	}
+
+	if (!m_tracking)
+	{
+		// Rotate the cube a small amount.
+		m_angle += static_cast<float>(timer.GetElapsedSeconds()) * m_radiansPerSecond;
+
+		XMStoreFloat4x4(&m_constantBufferData.model, XMMatrixTranspose(XMMatrixRotationY(0)));
+		//Rotate(m_angle);
+	}
+
+	// Update the constant buffer resource.
+	UINT8* destination = m_mappedConstantBuffer + (GameEngine::Instance()->DeviceResources()->GetCurrentFrameIndex() * c_alignedConstantBufferSize);
+	memcpy(destination, &m_constantBufferData, sizeof(m_constantBufferData));
 }
 
 bool Square::doRender()
@@ -280,6 +359,28 @@ bool Square::doRender()
 	if (!m_loadingComplete)
 	{
 		return false;
+	}
+
+	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList = GameEngine::Instance()->CommandList();
+	std::shared_ptr<DX::DeviceResources> deviceResources = GameEngine::Instance()->DeviceResources();
+	Microsoft::WRL::ComPtr<ID3D12RootSignature>	rootSignature = GameEngine::Instance()->RootSignature();
+
+	//PIXBeginEvent(commandList.Get(), 0, L"Draw the cube");
+	{
+
+		commandList->SetPipelineState(m_pipelineState.Get());
+		// Bind the current frame's constant buffer to the pipeline.
+
+		ID3D12DescriptorHeap* ppHeaps[] = { m_cbvHeap.Get() };
+		commandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
+		CD3DX12_GPU_DESCRIPTOR_HANDLE gpuHandle(m_cbvHeap->GetGPUDescriptorHandleForHeapStart(), deviceResources->GetCurrentFrameIndex(), m_cbvDescriptorSize);
+		commandList->SetGraphicsRootDescriptorTable(0, gpuHandle);
+
+		commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		commandList->IASetVertexBuffers(0, 1, &m_vertexBufferView);
+		commandList->IASetIndexBuffer(&m_indexBufferView);
+		commandList->DrawIndexedInstanced(36, 1, 0, 0, 0);
+
 	}
 
 	return true;
