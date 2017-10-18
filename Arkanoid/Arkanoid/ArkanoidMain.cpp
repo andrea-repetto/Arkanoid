@@ -30,7 +30,6 @@ void ArkanoidMain::CreateRenderers(const std::shared_ptr<DX::DeviceResources>& d
 	GameEngine::Instance()->Initialize(deviceResources);
 
 
-	
 	m_sceneRenderer = std::unique_ptr<LevelOne>(new LevelOne());
 
 	m_sceneRenderer->Start();

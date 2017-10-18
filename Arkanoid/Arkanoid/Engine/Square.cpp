@@ -340,12 +340,12 @@ void Square::doUpdate(DX::StepTimer const& timer)
 		return;
 	}
 
-	if (!m_tracking)
+//	if (!m_tracking)
 	{
 		// Rotate the cube a small amount.
 		m_angle += static_cast<float>(timer.GetElapsedSeconds()) * m_radiansPerSecond;
 
-		XMStoreFloat4x4(&m_constantBufferData.model, XMMatrixTranspose(XMMatrixRotationY(0)));
+		XMStoreFloat4x4(&m_constantBufferData.model, XMMatrixTranspose(XMMatrixRotationY(m_angle)));
 		//Rotate(m_angle);
 	}
 
@@ -365,23 +365,33 @@ bool Square::doRender()
 	std::shared_ptr<DX::DeviceResources> deviceResources = GameEngine::Instance()->DeviceResources();
 	Microsoft::WRL::ComPtr<ID3D12RootSignature>	rootSignature = GameEngine::Instance()->RootSignature();
 
-	//PIXBeginEvent(commandList.Get(), 0, L"Draw the cube");
+
+	PIXBeginEvent(commandList.Get(), 0, L"Draw the cube");
 	{
 
-		commandList->SetPipelineState(m_pipelineState.Get());
-		// Bind the current frame's constant buffer to the pipeline.
+		// Set the viewport and scissor rectangle.
+		D3D12_VIEWPORT viewport = deviceResources->GetScreenViewport();
+		commandList->RSSetViewports(1, &viewport);
+		commandList->RSSetScissorRects(1, &m_scissorRect);
 
 		ID3D12DescriptorHeap* ppHeaps[] = { m_cbvHeap.Get() };
 		commandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
+
+		// Bind the current frame's constant buffer to the pipeline.
 		CD3DX12_GPU_DESCRIPTOR_HANDLE gpuHandle(m_cbvHeap->GetGPUDescriptorHandleForHeapStart(), deviceResources->GetCurrentFrameIndex(), m_cbvDescriptorSize);
 		commandList->SetGraphicsRootDescriptorTable(0, gpuHandle);
 
+
+		commandList->SetPipelineState(m_pipelineState.Get());
 		commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		commandList->IASetVertexBuffers(0, 1, &m_vertexBufferView);
 		commandList->IASetIndexBuffer(&m_indexBufferView);
 		commandList->DrawIndexedInstanced(36, 1, 0, 0, 0);
 
 	}
+	PIXEndEvent(commandList.Get());
+
+
 
 	return true;
 }
