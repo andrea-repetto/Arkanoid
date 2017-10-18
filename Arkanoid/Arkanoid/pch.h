@@ -13,6 +13,9 @@
 #include <agile.h>
 #include <concrt.h>
 
+#include "Common\DeviceResources.h"
+#include "Common\DirectXHelper.h"
+
 #if defined(_DEBUG)
 #include <dxgidebug.h>
 #endif

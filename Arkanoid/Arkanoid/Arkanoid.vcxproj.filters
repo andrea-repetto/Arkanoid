@@ -76,9 +76,6 @@
     <ClCompile Include="Engine\Camera.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Content\SceneOne.cpp">
-      <Filter>Content</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\EngineRes.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
@@ -104,9 +101,6 @@
     </ClInclude>
     <ClInclude Include="Engine\Camera.h">
       <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Content\SceneOne.h">
-      <Filter>Content</Filter>
     </ClInclude>
     <ClInclude Include="Engine\EngineRes.h">
       <Filter>Engine</Filter>

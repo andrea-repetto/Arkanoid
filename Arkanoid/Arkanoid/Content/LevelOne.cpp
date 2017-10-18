@@ -26,13 +26,3 @@ void LevelOne::doUpdate(DX::StepTimer const& timer)
 {
 
 }
-
-void LevelOne::doRender()
-{
-
-}
-
-void LevelOne::doLateRender()
-{
-
-}
