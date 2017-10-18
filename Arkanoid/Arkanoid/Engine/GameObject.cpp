@@ -30,21 +30,22 @@ void GameObject::Start()
 	{
 		(*it)->Start();
 	}
+
 }
 
-void GameObject::Render()
+bool GameObject::Render()
 {
 	/* Update my render */
-	doRender();
+	if (!doRender()) return false;
 
 	/* Update my children render*/
 	std::vector<GameObject*>::iterator it;
 	for (it = m_children.begin(); it != m_children.end(); ++it)
 	{
-		(*it)->Render();
+		if (!(*it)->Render()) return false;
 	}
 
-	doLateRender();
+	return doLateRender();
 }
 
 void GameObject::Update(DX::StepTimer const& timer)

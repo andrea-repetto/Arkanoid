@@ -33,6 +33,7 @@ namespace DX
 		});
 	}
 
+
 	// Converts a length in device-independent pixels (DIPs) to a length in physical pixels.
 	inline float ConvertDipsToPixels(float dips, float dpi)
 	{

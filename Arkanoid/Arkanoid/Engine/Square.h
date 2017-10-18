@@ -1,56 +1,65 @@
 #pragma once
 
-#include "Content/ShaderStructures.h"
-/** Forward Declarations */
-namespace DX
+#include "GameObject.h"
+
+// Constant buffer used to send MVP matrices to the vertex shader.
+struct ModelViewProjectionConstantBuffer
 {
-	class StepTimer;
-}
+	DirectX::XMFLOAT4X4 model;
+	DirectX::XMFLOAT4X4 view;
+	DirectX::XMFLOAT4X4 projection;
+};
+
+// Used to send per-vertex data to the vertex shader.
+struct VertexPositionColor
+{
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT3 color;
+};
 
 namespace Engine
 {
 
-	class Square
+	class Square: public GameObject
 	{
 	public:
 		Square();
 		~Square();
 
-		void Update(DX::StepTimer const& timer);
-		bool Render();
 
 	private:
-		static const UINT c_alignedConstantBufferSize = (sizeof(Arkanoid::ModelViewProjectionConstantBuffer) + 255) & ~255;
+		void doStart() override;
+		void doUpdate(DX::StepTimer const& timer) override;
+		bool doRender() override;
+		bool doLateRender() override;
 
-		Arkanoid::ModelViewProjectionConstantBuffer					m_constantBufferData;
+	private:
+		// Constant buffers must be 256-byte aligned.
+		static const UINT c_alignedConstantBufferSize = (sizeof(ModelViewProjectionConstantBuffer) + 255) & ~255;
 
+		ModelViewProjectionConstantBuffer					m_constantBufferData;
 
-		bool m_loadingComplete;
-
-		Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>	m_commandList;
-		Microsoft::WRL::ComPtr<ID3D12RootSignature>			m_rootSignature;
-		Microsoft::WRL::ComPtr<ID3D12PipelineState>			m_pipelineState;
-		Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>		m_cbvHeap;
 		Microsoft::WRL::ComPtr<ID3D12Resource>				m_vertexBuffer;
 		Microsoft::WRL::ComPtr<ID3D12Resource>				m_indexBuffer;
 		Microsoft::WRL::ComPtr<ID3D12Resource>				m_constantBuffer;
+		Microsoft::WRL::ComPtr<ID3D12PipelineState>			m_pipelineState;
+		Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>		m_cbvHeap;
 
+		UINT8*												m_mappedConstantBuffer;
+		UINT												m_cbvDescriptorSize;
+		D3D12_RECT											m_scissorRect;
 		std::vector<byte>									m_vertexShader;
 		std::vector<byte>									m_pixelShader;
-
-		UINT												m_cbvDescriptorSize;
-
 		D3D12_VERTEX_BUFFER_VIEW							m_vertexBufferView;
 		D3D12_INDEX_BUFFER_VIEW								m_indexBufferView;
 
-		UINT8*												m_mappedConstantBuffer;
-
-		D3D12_RECT											m_scissorRect;
 
 
-
+		// Variables used with the rendering loop.
+		bool	m_loadingComplete;
 		float	m_radiansPerSecond;
 		float	m_angle;
+		bool	m_tracking;
 	};
 
 }

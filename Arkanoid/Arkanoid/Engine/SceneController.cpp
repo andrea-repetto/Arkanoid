@@ -20,7 +20,7 @@ void SceneController::OnWindowResizeEvent()
 }
 
 
-void SceneController::doRender()
+bool SceneController::doRender()
 {
 	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList = GameEngine::Instance()->CommandList();
 	std::shared_ptr<DX::DeviceResources> deviceResources = GameEngine::Instance()->DeviceResources();
@@ -54,11 +54,11 @@ void SceneController::doRender()
 	}
 	PIXEndEvent(commandList.Get());
 
-		/// here you mast draw vertex
+	return true;
 	
 }
 
-void SceneController::doLateRender()
+bool SceneController::doLateRender()
 {
 	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList = GameEngine::Instance()->CommandList();
 	std::shared_ptr<DX::DeviceResources> deviceResources = GameEngine::Instance()->DeviceResources();
@@ -79,5 +79,7 @@ void SceneController::doLateRender()
 	// Execute the command list.
 	ID3D12CommandList* ppCommandLists[] = { commandList.Get() };
 	deviceResources->GetCommandQueue()->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
+
+	return true;
 
 }

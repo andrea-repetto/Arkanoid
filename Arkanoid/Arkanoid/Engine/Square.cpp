@@ -1,53 +1,39 @@
 #include "pch.h"
 #include "Square.h"
-#include "EngineRes.h"
-#include "../Common/StepTimer.h"
-#include "../Common/DirectXHelper.h"
-#include "../Content/ShaderStructures.h"
+#include "GameEngine.h"
+
+#include <ppltasks.h>
+#include <synchapi.h>
 
 using namespace Engine;
+
+using namespace Concurrency;
 using namespace DirectX;
 using namespace Microsoft::WRL;
 using namespace Windows::Foundation;
 using namespace Windows::Storage;
-using namespace Arkanoid;
 
 Square::Square()
-	: m_loadingComplete(false),
-	m_radiansPerSecond(XM_PIDIV4),	// rotate 45 degrees per second
-	m_angle(0),
-	m_mappedConstantBuffer(nullptr)
-
+	: GameObject()
+	, m_loadingComplete(false)
+	, m_radiansPerSecond(XM_PIDIV4)	// rotate 45 degrees per second
+	, m_angle(0)
+	, m_tracking(false)
+	, m_mappedConstantBuffer(nullptr)
 {
 	ZeroMemory(&m_constantBufferData, sizeof(m_constantBufferData));
+}
 
-	auto d3dDevice = EngineRes::GetDeviceResource()->GetD3DDevice();
+Square::~Square()
+{
 
-	// Create a root signature with a single constant buffer slot.
-	{
-		CD3DX12_DESCRIPTOR_RANGE range;
-		CD3DX12_ROOT_PARAMETER parameter;
+}
 
-		range.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);
-		parameter.InitAsDescriptorTable(1, &range, D3D12_SHADER_VISIBILITY_VERTEX);
 
-		D3D12_ROOT_SIGNATURE_FLAGS rootSignatureFlags =
-			D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT | // Only the input assembler stage needs access to the constant buffer.
-			D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
-			D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS |
-			D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
-			D3D12_ROOT_SIGNATURE_FLAG_DENY_PIXEL_SHADER_ROOT_ACCESS;
-
-		CD3DX12_ROOT_SIGNATURE_DESC descRootSignature;
-		descRootSignature.Init(1, &parameter, 0, nullptr, rootSignatureFlags);
-
-		ComPtr<ID3DBlob> pSignature;
-		ComPtr<ID3DBlob> pError;
-		DX::ThrowIfFailed(D3D12SerializeRootSignature(&descRootSignature, D3D_ROOT_SIGNATURE_VERSION_1, pSignature.GetAddressOf(), pError.GetAddressOf()));
-		DX::ThrowIfFailed(d3dDevice->CreateRootSignature(0, pSignature->GetBufferPointer(), pSignature->GetBufferSize(), IID_PPV_ARGS(&m_rootSignature)));
-		NAME_D3D12_OBJECT(m_rootSignature);
-	}
-
+void Square::doStart()
+{
+	auto d3dDevice = GameEngine::Instance()->DeviceResources()->GetD3DDevice();
+	
 	// Load shaders asynchronously.
 	auto createVSTask = DX::ReadDataAsync(L"SampleVertexShader.cso").then([this](std::vector<byte>& fileData) {
 		m_vertexShader = fileData;
@@ -68,7 +54,7 @@ Square::Square()
 
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC state = {};
 		state.InputLayout = { inputLayout, _countof(inputLayout) };
-		state.pRootSignature = m_rootSignature.Get();
+		state.pRootSignature = GameEngine::Instance()->RootSignature().Get();
 		state.VS = CD3DX12_SHADER_BYTECODE(&m_vertexShader[0], m_vertexShader.size());
 		state.PS = CD3DX12_SHADER_BYTECODE(&m_pixelShader[0], m_pixelShader.size());
 		state.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
@@ -77,11 +63,11 @@ Square::Square()
 		state.SampleMask = UINT_MAX;
 		state.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 		state.NumRenderTargets = 1;
-		state.RTVFormats[0] = EngineRes::GetDeviceResource()->GetBackBufferFormat();
-		state.DSVFormat = EngineRes::GetDeviceResource()->GetDepthBufferFormat();
+		state.RTVFormats[0] = GameEngine::Instance()->DeviceResources()->GetBackBufferFormat();
+		state.DSVFormat = GameEngine::Instance()->DeviceResources()->GetDepthBufferFormat();
 		state.SampleDesc.Count = 1;
 
-		DX::ThrowIfFailed(EngineRes::GetDeviceResource()->GetD3DDevice()->CreateGraphicsPipelineState(&state, IID_PPV_ARGS(&m_pipelineState)));
+		DX::ThrowIfFailed(GameEngine::Instance()->DeviceResources()->GetD3DDevice()->CreateGraphicsPipelineState(&state, IID_PPV_ARGS(&m_pipelineState)));
 
 		// Shader data can be deleted once the pipeline state is created.
 		m_vertexShader.clear();
@@ -90,11 +76,11 @@ Square::Square()
 
 	// Create and upload cube geometry resources to the GPU.
 	auto createAssetsTask = createPipelineStateTask.then([this]() {
-		auto d3dDevice = EngineRes::GetDeviceResource()->GetD3DDevice();
+		auto d3dDevice = GameEngine::Instance()->DeviceResources()->GetD3DDevice();
 
-		// Create a command list.
-		DX::ThrowIfFailed(d3dDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, EngineRes::GetDeviceResource()->GetCommandAllocator(), nullptr, IID_PPV_ARGS(&m_commandList)));
-		NAME_D3D12_OBJECT(m_commandList);
+
+		GameEngine::Instance()->CommandList()->SetPipelineState(m_pipelineState.Get());
+
 
 		// Cube vertices. Each vertex has a position and a color.
 		VertexPositionColor cubeVertices[] =
@@ -143,11 +129,11 @@ Square::Square()
 			vertexData.RowPitch = vertexBufferSize;
 			vertexData.SlicePitch = vertexData.RowPitch;
 
-			UpdateSubresources(m_commandList.Get(), m_vertexBuffer.Get(), vertexBufferUpload.Get(), 0, 0, 1, &vertexData);
+			UpdateSubresources(GameEngine::Instance()->CommandList().Get(), m_vertexBuffer.Get(), vertexBufferUpload.Get(), 0, 0, 1, &vertexData);
 
 			CD3DX12_RESOURCE_BARRIER vertexBufferResourceBarrier =
 				CD3DX12_RESOURCE_BARRIER::Transition(m_vertexBuffer.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
-			m_commandList->ResourceBarrier(1, &vertexBufferResourceBarrier);
+			GameEngine::Instance()->CommandList()->ResourceBarrier(1, &vertexBufferResourceBarrier);
 		}
 
 		// Load mesh indices. Each trio of indices represents a triangle to be rendered on the screen.
@@ -206,11 +192,11 @@ Square::Square()
 			indexData.RowPitch = indexBufferSize;
 			indexData.SlicePitch = indexData.RowPitch;
 
-			UpdateSubresources(m_commandList.Get(), m_indexBuffer.Get(), indexBufferUpload.Get(), 0, 0, 1, &indexData);
+			UpdateSubresources(GameEngine::Instance()->CommandList().Get(), m_indexBuffer.Get(), indexBufferUpload.Get(), 0, 0, 1, &indexData);
 
 			CD3DX12_RESOURCE_BARRIER indexBufferResourceBarrier =
 				CD3DX12_RESOURCE_BARRIER::Transition(m_indexBuffer.Get(), D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_INDEX_BUFFER);
-			m_commandList->ResourceBarrier(1, &indexBufferResourceBarrier);
+			GameEngine::Instance()->CommandList()->ResourceBarrier(1, &indexBufferResourceBarrier);
 		}
 
 		// Create a descriptor heap for the constant buffers.
@@ -259,9 +245,9 @@ Square::Square()
 		// We don't unmap this until the app closes. Keeping things mapped for the lifetime of the resource is okay.
 
 		// Close the command list and execute it to begin the vertex/index buffer copy into the GPU's default heap.
-		DX::ThrowIfFailed(m_commandList->Close());
-		ID3D12CommandList* ppCommandLists[] = { m_commandList.Get() };
-		EngineRes::GetDeviceResource()->GetCommandQueue()->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
+		DX::ThrowIfFailed(GameEngine::Instance()->CommandList()->Close());
+		ID3D12CommandList* ppCommandLists[] = { GameEngine::Instance()->CommandList().Get() };
+		GameEngine::Instance()->DeviceResources()->GetCommandQueue()->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
 
 		// Create vertex/index buffer views.
 		m_vertexBufferView.BufferLocation = m_vertexBuffer->GetGPUVirtualAddress();
@@ -273,151 +259,34 @@ Square::Square()
 		m_indexBufferView.Format = DXGI_FORMAT_R16_UINT;
 
 		// Wait for the command list to finish executing; the vertex/index buffers need to be uploaded to the GPU before the upload resources go out of scope.
-		EngineRes::GetDeviceResource()->WaitForGpu();
+		GameEngine::Instance()->DeviceResources()->WaitForGpu();
 	});
-	
+
 	createAssetsTask.then([this]() {
 		m_loadingComplete = true;
 	});
 
-
-	//view
-
-	Size outputSize = EngineRes::GetDeviceResource()->GetOutputSize();
-	float aspectRatio = outputSize.Width / outputSize.Height;
-	float fovAngleY = 70.0f * XM_PI / 180.0f;
-
-	D3D12_VIEWPORT viewport = EngineRes::GetDeviceResource()->GetScreenViewport();
-	m_scissorRect = { 0, 0, static_cast<LONG>(viewport.Width), static_cast<LONG>(viewport.Height) };
-
-	// This is a simple example of change that can be made when the app is in
-	// portrait or snapped view.
-	if (aspectRatio < 1.0f)
-	{
-		fovAngleY *= 2.0f;
-	}
-
-	// Note that the OrientationTransform3D matrix is post-multiplied here
-	// in order to correctly orient the scene to match the display orientation.
-	// This post-multiplication step is required for any draw calls that are
-	// made to the swap chain render target. For draw calls to other targets,
-	// this transform should not be applied.
-
-	// This sample makes use of a right-handed coordinate system using row-major matrices.
-	XMMATRIX perspectiveMatrix = XMMatrixPerspectiveFovRH(
-		fovAngleY,
-		aspectRatio,
-		0.01f,
-		100.0f
-	);
-
-	XMFLOAT4X4 orientation = EngineRes::GetDeviceResource()->GetOrientationTransform3D();
-	XMMATRIX orientationMatrix = XMLoadFloat4x4(&orientation);
-
-	XMStoreFloat4x4(
-		&m_constantBufferData.projection,
-		XMMatrixTranspose(perspectiveMatrix * orientationMatrix)
-	);
-
-	// Eye is at (0,0.7,1.5), looking at point (0,-0.1,0) with the up-vector along the y-axis.
-	static const XMVECTORF32 eye = { 0.0f, 0.7f, 1.5f, 0.0f };
-	static const XMVECTORF32 at = { 0.0f, -0.1f, 0.0f, 0.0f };
-	static const XMVECTORF32 up = { 0.0f, 1.0f, 0.0f, 0.0f };
-
-	XMStoreFloat4x4(&m_constantBufferData.view, XMMatrixTranspose(XMMatrixLookAtRH(eye, at, up)));
-	
 }
 
-
-Square::~Square()
+void Square::doUpdate(DX::StepTimer const& timer)
 {
-}
-
-void Square::Update(DX::StepTimer const& timer)
-{
-	if (m_loadingComplete)
+	if (!m_loadingComplete)
 	{
-		//if (!m_tracking)
-		{
-			// Rotate the cube a small amount.
-			m_angle += static_cast<float>(timer.GetElapsedSeconds()) * m_radiansPerSecond;
-
-			XMStoreFloat4x4(&m_constantBufferData.model, XMMatrixTranspose(XMMatrixRotationY(m_angle)));
-		}
-
-		// Update the constant buffer resource.
-		UINT8* destination = m_mappedConstantBuffer + (EngineRes::GetDeviceResource()->GetCurrentFrameIndex() * c_alignedConstantBufferSize);
-		memcpy(destination, &m_constantBufferData, sizeof(m_constantBufferData));
+		return;
 	}
 }
 
-bool Square::Render()
+bool Square::doRender()
 {
-	// Loading is asynchronous. Only draw geometry after it's loaded.
 	if (!m_loadingComplete)
 	{
 		return false;
 	}
 
-	DX::ThrowIfFailed(EngineRes::GetDeviceResource()->GetCommandAllocator()->Reset());
+	return true;
+}
 
-	// The command list can be reset anytime after ExecuteCommandList() is called.
-	DX::ThrowIfFailed(m_commandList->Reset(EngineRes::GetDeviceResource()->GetCommandAllocator(), nullptr));
-	PIXBeginEvent(m_commandList.Get(), 0, L"Clear space");
-	{
-		// Set the graphics root signature and descriptor heaps to be used by this frame.
-		m_commandList->SetGraphicsRootSignature(m_rootSignature.Get());
-		ID3D12DescriptorHeap* ppHeaps[] = { m_cbvHeap.Get() };
-		m_commandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
-
-		// Bind the current frame's constant buffer to the pipeline.
-		CD3DX12_GPU_DESCRIPTOR_HANDLE gpuHandle(m_cbvHeap->GetGPUDescriptorHandleForHeapStart(), EngineRes::GetDeviceResource()->GetCurrentFrameIndex(), m_cbvDescriptorSize);
-		m_commandList->SetGraphicsRootDescriptorTable(0, gpuHandle);
-
-		// Set the viewport and scissor rectangle.
-		D3D12_VIEWPORT viewport = EngineRes::GetDeviceResource()->GetScreenViewport();
-		m_commandList->RSSetViewports(1, &viewport);
-		m_commandList->RSSetScissorRects(1, &m_scissorRect);
-
-		// Indicate this resource will be in use as a render target.
-		CD3DX12_RESOURCE_BARRIER renderTargetResourceBarrier =
-			CD3DX12_RESOURCE_BARRIER::Transition(EngineRes::GetDeviceResource()->GetRenderTarget(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
-		m_commandList->ResourceBarrier(1, &renderTargetResourceBarrier);
-
-				// Record drawing commands.
-		D3D12_CPU_DESCRIPTOR_HANDLE renderTargetView = EngineRes::GetDeviceResource()->GetRenderTargetView();
-		D3D12_CPU_DESCRIPTOR_HANDLE depthStencilView = EngineRes::GetDeviceResource()->GetDepthStencilView();
-		m_commandList->ClearRenderTargetView(renderTargetView, DirectX::Colors::CornflowerBlue, 0, nullptr);
-		m_commandList->ClearDepthStencilView(depthStencilView, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-
-		m_commandList->OMSetRenderTargets(1, &renderTargetView, false, &depthStencilView);
-	}
-	PIXEndEvent(m_commandList.Get());
-	//DX::ThrowIfFailed(m_commandList->Reset(EngineRes::GetDeviceResource()->GetCommandAllocator(), m_pipelineState.Get()));
-
-	PIXBeginEvent(m_commandList.Get(), 0, L"Draw the cube");
-	{
-
-		m_commandList->SetPipelineState(m_pipelineState.Get());
-
-
-		m_commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		m_commandList->IASetVertexBuffers(0, 1, &m_vertexBufferView);
-		m_commandList->IASetIndexBuffer(&m_indexBufferView);
-		m_commandList->DrawIndexedInstanced(36, 1, 0, 0, 0);
-
-		// Indicate that the render target will now be used to present when the command list is done executing.
-		CD3DX12_RESOURCE_BARRIER presentResourceBarrier =
-			CD3DX12_RESOURCE_BARRIER::Transition(EngineRes::GetDeviceResource()->GetRenderTarget(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
-		m_commandList->ResourceBarrier(1, &presentResourceBarrier);
-	}
-	PIXEndEvent(m_commandList.Get());
-
-	DX::ThrowIfFailed(m_commandList->Close());
-
-	// Execute the command list.
-	ID3D12CommandList* ppCommandLists[] = { m_commandList.Get() };
-	EngineRes::GetDeviceResource()->GetCommandQueue()->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
-
+bool Square::doLateRender()
+{
 	return true;
 }

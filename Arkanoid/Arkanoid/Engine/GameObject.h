@@ -19,17 +19,19 @@ namespace Engine
 		virtual ~GameObject();
 
 		void Start();
-		void Render();
+		bool Render();
 		void Update(DX::StepTimer const& timer);
 		void SetParent(GameObject* i_newParent);
 		inline const GameObject* GetParent() const { return m_parent; }
-
+		
 
 	private:
 		virtual void doStart() = 0;
 		virtual void doUpdate(DX::StepTimer const& timer) = 0;
-		virtual void doRender() = 0;
-		virtual void doLateRender() = 0;
+		virtual bool doRender() = 0;
+		virtual bool doLateRender() = 0;
+
+	
 
 
 		void addChild(GameObject* i_gameObj);

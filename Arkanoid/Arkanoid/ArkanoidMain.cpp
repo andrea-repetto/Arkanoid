@@ -32,6 +32,8 @@ void ArkanoidMain::CreateRenderers(const std::shared_ptr<DX::DeviceResources>& d
 	
 	m_sceneRenderer = std::unique_ptr<LevelOne>(new LevelOne());
 
+	m_sceneRenderer->Start();
+
 	OnWindowSizeChanged();
 }
 
@@ -58,9 +60,7 @@ bool ArkanoidMain::Render()
 
 	// Render the scene objects.
 	// TODO: Replace this with your app's content rendering functions.
-	m_sceneRenderer->Render();
-
-	return true;
+	return m_sceneRenderer->Render();
 }
 
 // Updates application state when the window's size changes (e.g. device orientation change)
