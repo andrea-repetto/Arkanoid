@@ -27,6 +27,10 @@ namespace Engine
 		~Square();
 
 
+		inline void SetVertexShader(const std::vector<byte>& vertexShader) { m_vertexShader = vertexShader;  }
+		inline void SetPixelShader(const std::vector<byte>& pixelShader) { m_vertexShader = pixelShader; }
+
+
 	private:
 		void doStart() override;
 		void doUpdate(DX::StepTimer const& timer) override;
@@ -48,8 +52,7 @@ namespace Engine
 		UINT8*												m_mappedConstantBuffer;
 		UINT												m_cbvDescriptorSize;
 		D3D12_RECT											m_scissorRect;
-		std::vector<byte>									m_vertexShader;
-		std::vector<byte>									m_pixelShader;
+
 		D3D12_VERTEX_BUFFER_VIEW							m_vertexBufferView;
 		D3D12_INDEX_BUFFER_VIEW								m_indexBufferView;
 
@@ -60,6 +63,10 @@ namespace Engine
 		float	m_radiansPerSecond;
 		float	m_angle;
 		bool	m_tracking;
+
+
+		std::vector<byte>									m_vertexShader;
+		std::vector<byte>									m_pixelShader;
 	};
 
 }

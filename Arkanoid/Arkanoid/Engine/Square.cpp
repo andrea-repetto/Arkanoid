@@ -33,18 +33,17 @@ Square::~Square()
 void Square::doStart()
 {
 	auto d3dDevice = GameEngine::Instance()->DeviceResources()->GetD3DDevice();
+
+	DX::ThrowIfFailed(GameEngine::Instance()->DeviceResources()->GetCommandAllocator()->Reset());
+
+	// The command list can be reset anytime after ExecuteCommandList() is called.
+	DX::ThrowIfFailed(GameEngine::Instance()->CommandList()->Reset(GameEngine::Instance()->DeviceResources()->GetCommandAllocator(), nullptr));
 	
 	// Load shaders asynchronously.
-	auto createVSTask = DX::ReadDataAsync(L"SampleVertexShader.cso").then([this](std::vector<byte>& fileData) {
-		m_vertexShader = fileData;
-	});
 
-	auto createPSTask = DX::ReadDataAsync(L"SamplePixelShader.cso").then([this](std::vector<byte>& fileData) {
-		m_pixelShader = fileData;
-	});
 
 	// Create the pipeline state once the shaders are loaded.
-	auto createPipelineStateTask = (createPSTask && createVSTask).then([this]() {
+	//auto createPipelineStateTask = (createPSTask && createVSTask).then([this]() {
 
 		static const D3D12_INPUT_ELEMENT_DESC inputLayout[] =
 		{
@@ -72,11 +71,11 @@ void Square::doStart()
 		// Shader data can be deleted once the pipeline state is created.
 		m_vertexShader.clear();
 		m_pixelShader.clear();
-	});
+	//});
 
 	// Create and upload cube geometry resources to the GPU.
-	auto createAssetsTask = createPipelineStateTask.then([this]() {
-		auto d3dDevice = GameEngine::Instance()->DeviceResources()->GetD3DDevice();
+	//auto createAssetsTask = createPipelineStateTask.then([this]() {
+		//auto d3dDevice = GameEngine::Instance()->DeviceResources()->GetD3DDevice();
 
 
 		GameEngine::Instance()->CommandList()->SetPipelineState(m_pipelineState.Get());
@@ -260,11 +259,11 @@ void Square::doStart()
 
 		// Wait for the command list to finish executing; the vertex/index buffers need to be uploaded to the GPU before the upload resources go out of scope.
 		GameEngine::Instance()->DeviceResources()->WaitForGpu();
-	});
+	//});
 
-	createAssetsTask.then([this]() {
+	//createAssetsTask.then([this]() {
 		m_loadingComplete = true;
-	});
+	//});
 
 }
 
@@ -290,3 +289,4 @@ bool Square::doLateRender()
 {
 	return true;
 }
+

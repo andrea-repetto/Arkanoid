@@ -8,7 +8,7 @@ LevelOne::LevelOne()
 {
 
 	m_square = new Square();
-	m_square->SetParent(this);
+//	m_square->SetParent(this);
 }
 
 

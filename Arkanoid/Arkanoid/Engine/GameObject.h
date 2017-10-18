@@ -23,6 +23,9 @@ namespace Engine
 		void Update(DX::StepTimer const& timer);
 		void SetParent(GameObject* i_newParent);
 		inline const GameObject* GetParent() const { return m_parent; }
+
+
+		
 		
 
 	private:
@@ -41,6 +44,7 @@ namespace Engine
 	private:
 		GameObject*											m_parent;
 		std::vector<GameObject*>							m_children;
+
 	};
 }
 
