@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "SceneController.h"
 #include "GameEngine.h"
+#include "Camera.h"
 
 using namespace Engine;
 
@@ -16,6 +17,7 @@ SceneController::~SceneController()
 
 void SceneController::OnWindowResizeEvent()
 {
+	GameEngine::Instance()->GetActiveCamera()->CreateWindowSizeDependentResources();
 	doOnWindowsResizeEvent();
 }
 
@@ -25,6 +27,7 @@ bool SceneController::doRender()
 	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList = GameEngine::Instance()->CommandList();
 	std::shared_ptr<DX::DeviceResources> deviceResources = GameEngine::Instance()->DeviceResources();
 	Microsoft::WRL::ComPtr<ID3D12RootSignature>	rootSignature = GameEngine::Instance()->RootSignature();
+	std::shared_ptr<Camera> currentCamera = GameEngine::Instance()->GetActiveCamera();
 
 	DX::ThrowIfFailed(deviceResources->GetCommandAllocator()->Reset());
 
@@ -46,6 +49,11 @@ bool SceneController::doRender()
 	commandList->ClearDepthStencilView(depthStencilView, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
 	commandList->OMSetRenderTargets(1, &renderTargetView, false, &depthStencilView);
+
+	// Set the viewport and scissor rectangle.
+	D3D12_VIEWPORT viewport = deviceResources->GetScreenViewport();
+	commandList->RSSetViewports(1, &viewport);
+	commandList->RSSetScissorRects(1, &(currentCamera->GetScissorRect()));
 
 
 	return true;

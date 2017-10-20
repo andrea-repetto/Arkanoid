@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "GameEngine.h"
+#include "Camera.h"
 
 
 using namespace Engine;
@@ -35,6 +36,10 @@ void GameEngine::Initialize(const std::shared_ptr<DX::DeviceResources>& deviceRe
 {
 	m_deviceResources = deviceResources;
 
+	/* Init default camera */
+	m_activeCamera = std::make_shared<Camera>();
+
+	/* init GPU global data */
 	auto d3dDevice = m_deviceResources->GetD3DDevice();
 
 	// Create a root signature with a single constant buffer slot.
