@@ -18,7 +18,6 @@ SceneController::~SceneController()
 void SceneController::OnWindowResizeEvent()
 {
 	GameEngine::Instance()->GetActiveCamera()->CreateWindowSizeDependentResources();
-	doOnWindowsResizeEvent();
 }
 
 

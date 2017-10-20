@@ -9,19 +9,17 @@ LevelOne::LevelOne()
 
 	m_square = new Square();
 	m_square->SetParent(this);
+
+
 }
 
 
 LevelOne::~LevelOne()
 {
 	delete m_square;
-}
-
-
-void LevelOne::doOnWindowsResizeEvent()
-{
 
 }
+
 
 void LevelOne::doStart()
 {

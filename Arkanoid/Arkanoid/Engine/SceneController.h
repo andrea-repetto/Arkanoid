@@ -15,7 +15,6 @@ namespace Engine
 	private:
 		bool doRender() override;
 		bool doLateRender() override;
-		virtual void doOnWindowsResizeEvent() = 0;
 
 	private:
 		
