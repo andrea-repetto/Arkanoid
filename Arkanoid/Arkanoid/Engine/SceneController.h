@@ -13,8 +13,7 @@ namespace Engine
 
 
 	private:
-		bool doRender() override;
-		bool doLateRender() override;
+		virtual bool doRender() = 0;
 
 	private:
 		

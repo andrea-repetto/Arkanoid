@@ -30,7 +30,6 @@ namespace Engine
 		void doStart() override;
 		void doUpdate(DX::StepTimer const& timer) override;
 		bool doRender() override;
-		bool doLateRender() override;
 
 	private:
 		// Constant buffers must be 256-byte aligned.

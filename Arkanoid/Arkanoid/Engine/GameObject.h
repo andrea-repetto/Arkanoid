@@ -32,18 +32,9 @@ namespace Engine
 		virtual void doStart() = 0;
 		virtual void doUpdate(DX::StepTimer const& timer) = 0;
 		virtual bool doRender() = 0;
-		virtual bool doLateRender() = 0;
-
-	
-
-
-		void addChild(GameObject* i_gameObj);
-		void removeChild(GameObject* i_gameObj);
-
 
 	private:
 		GameObject*											m_parent;
-		std::vector<GameObject*>							m_children;
 
 	};
 }

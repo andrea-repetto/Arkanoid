@@ -60,7 +60,9 @@ bool ArkanoidMain::Render()
 
 	// Render the scene objects.
 	// TODO: Replace this with your app's content rendering functions.
-	return m_sceneRenderer->Render();
+	GameEngine::Instance()->BeginScene();
+	m_sceneRenderer->Render();
+	GameEngine::Instance()->EndScene();
 }
 
 // Updates application state when the window's size changes (e.g. device orientation change)

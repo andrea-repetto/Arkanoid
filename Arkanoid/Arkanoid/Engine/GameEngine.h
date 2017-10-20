@@ -27,6 +27,9 @@ namespace Engine
 		inline std::shared_ptr<Camera> GetActiveCamera() const{ return m_activeCamera; }
 		inline void SetActiveCamera(std::shared_ptr<Camera>& camera) { m_activeCamera.reset(); m_activeCamera = camera; }
 
+		void BeginScene();
+		void EndScene();
+
 
 	private:
 		GameEngine();

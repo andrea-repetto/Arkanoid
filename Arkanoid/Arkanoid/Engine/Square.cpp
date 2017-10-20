@@ -347,9 +347,3 @@ bool Square::doRender()
 
 	return true;
 }
-
-bool Square::doLateRender()
-{
-	return true;
-}
-

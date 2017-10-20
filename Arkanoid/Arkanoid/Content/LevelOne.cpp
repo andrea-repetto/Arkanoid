@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "LevelOne.h"
 #include "Engine\Square.h"
+#include "Engine\GameEngine.h"
 
 using namespace Engine;
 
@@ -23,10 +24,17 @@ LevelOne::~LevelOne()
 
 void LevelOne::doStart()
 {
-
+	m_square->Start();
 }
 
 void LevelOne::doUpdate(DX::StepTimer const& timer)
 {
+	m_square->Update(timer);
+}
 
+bool LevelOne::doRender()
+{
+	m_square->Render();
+
+	return true;
 }
