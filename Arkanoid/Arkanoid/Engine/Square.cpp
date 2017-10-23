@@ -24,7 +24,6 @@ Square::Square()
 	, m_radiansPerSecond(XM_PIDIV4)	// rotate 45 degrees per second
 	, m_angle(0)
 	, m_tracking(false)
-	, m_mappedConstantBuffer(nullptr)
 {
 	ZeroMemory(&m_constantBufferData, sizeof(m_constantBufferData));
 }
@@ -290,23 +289,26 @@ void Square::doUpdate(DX::StepTimer const& timer)
 		return;
 	}
 
-	/* update vire project matrix */
-	std::shared_ptr<Camera> currentActiveCamera = GameEngine::Instance()->GetActiveCamera();
-	m_constantBufferData.projection = currentActiveCamera->GetProjMatrix();
-	m_constantBufferData.view = currentActiveCamera->GetViewMatrix();
-
-//	if (!m_tracking)
-	{
-		// Rotate the cube a small amount.
-		m_angle += static_cast<float>(timer.GetElapsedSeconds()) * m_radiansPerSecond;
-
-		XMStoreFloat4x4(&m_constantBufferData.model, XMMatrixTranspose(XMMatrixRotationY(m_angle)));
-		//Rotate(m_angle);
-	}
-
+	XMFLOAT3 rot = this->GetLocalRotationYawPitchRoll();
+	XMFLOAT3 pos = this->GetLocalTransform();
+	pos.z += timer.GetElapsedSeconds()*0.1;
+	//pos.y += timer.GetElapsedSeconds()*0.1;
+	//pos.z += timer.GetElapsedSeconds()*0.1;
+	XMFLOAT3 scale = this->GetLocalScale();
+	scale.x = 0.25f;
+	scale.y = 0.25f;
+	scale.z = 0.25f;
+	this->SetLocalScale(scale);
+	//pos.x += timer.GetElapsedSeconds();
+	rot.z+= timer.GetElapsedSeconds()*2;
+//	pos.y += timer.GetElapsedSeconds();
+	this->SetLocalRotationYawPitchRoll(rot);
+	this->SetLocalTransform(pos);
+	//TODO remove
 	// Update the constant buffer resource.
 	UINT8* destination = m_mappedConstantBuffer + (GameEngine::Instance()->DeviceResources()->GetCurrentFrameIndex() * c_alignedConstantBufferSize);
 	memcpy(destination, &m_constantBufferData, sizeof(m_constantBufferData));
+
 }
 
 bool Square::doRender()

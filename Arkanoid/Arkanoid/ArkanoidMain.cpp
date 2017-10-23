@@ -63,6 +63,8 @@ bool ArkanoidMain::Render()
 	GameEngine::Instance()->BeginScene();
 	m_sceneRenderer->Render();
 	GameEngine::Instance()->EndScene();
+
+	return true;
 }
 
 // Updates application state when the window's size changes (e.g. device orientation change)

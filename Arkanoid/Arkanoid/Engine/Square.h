@@ -2,13 +2,7 @@
 
 #include "GameObject.h"
 
-// Constant buffer used to send MVP matrices to the vertex shader.
-struct ModelViewProjectionConstantBuffer
-{
-	DirectX::XMFLOAT4X4 model;
-	DirectX::XMFLOAT4X4 view;
-	DirectX::XMFLOAT4X4 projection;
-};
+
 
 // Used to send per-vertex data to the vertex shader.
 struct VertexPositionColor
@@ -32,10 +26,6 @@ namespace Engine
 		bool doRender() override;
 
 	private:
-		// Constant buffers must be 256-byte aligned.
-		static const UINT c_alignedConstantBufferSize = (sizeof(ModelViewProjectionConstantBuffer) + 255) & ~255;
-
-		ModelViewProjectionConstantBuffer					m_constantBufferData;
 
 		Microsoft::WRL::ComPtr<ID3D12Resource>				m_vertexBuffer;
 		Microsoft::WRL::ComPtr<ID3D12Resource>				m_indexBuffer;
@@ -43,7 +33,7 @@ namespace Engine
 		Microsoft::WRL::ComPtr<ID3D12PipelineState>			m_pipelineState;
 		Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>		m_cbvHeap;
 
-		UINT8*												m_mappedConstantBuffer;
+
 		UINT												m_cbvDescriptorSize;
 
 		D3D12_VERTEX_BUFFER_VIEW							m_vertexBufferView;

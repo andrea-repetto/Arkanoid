@@ -44,7 +44,7 @@ void Camera::CreateWindowSizeDependentResources()
 		fovAngleY,
 		aspectRatio,
 		0.01f,
-		100.0f
+		1000.0f
 	);
 
 	XMFLOAT4X4 orientation = GameEngine::Instance()->DeviceResources()->GetOrientationTransform3D();

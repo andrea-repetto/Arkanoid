@@ -13,6 +13,14 @@ namespace DX
 
 namespace Engine
 {
+	// Constant buffer used to send MVP matrices to the vertex shader.
+	struct ModelViewProjectionConstantBuffer
+	{
+		DirectX::XMFLOAT4X4 model;
+		DirectX::XMFLOAT4X4 view;
+		DirectX::XMFLOAT4X4 projection;
+	};
+
 	class GameObject
 	{
 	public:
@@ -43,6 +51,12 @@ namespace Engine
 		virtual void doUpdate(DX::StepTimer const& timer) = 0;
 		virtual bool doRender() = 0;
 
+	protected:
+		UINT8*												m_mappedConstantBuffer; //TO FIX
+		static const UINT c_alignedConstantBufferSize = (sizeof(ModelViewProjectionConstantBuffer) + 255) & ~255;
+
+		ModelViewProjectionConstantBuffer					m_constantBufferData;
+
 	private:
 		GameObject*				m_parent;
 		DirectX::XMFLOAT3		m_localTransform;
@@ -52,8 +66,9 @@ namespace Engine
 		DirectX::XMFLOAT3		m_localScale;
 		DirectX::XMFLOAT3		m_globalScale;
 
-		
 
+
+	
 	};
 }
 

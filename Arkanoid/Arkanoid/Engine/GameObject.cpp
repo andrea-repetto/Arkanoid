@@ -2,11 +2,15 @@
 #include "GameObject.h"
 #include "Common/StepTimer.h"
 #include "Common/DeviceResources.h"
+#include "Camera.h"
+#include "GameEngine.h"
 
 using namespace Engine;
+using namespace DirectX;
 
 GameObject::GameObject()
-	: m_parent(nullptr)
+	: m_mappedConstantBuffer(nullptr)
+	, m_parent(nullptr)
 	, m_localTransform(0, 0, 0)
 	, m_globalTransform(0, 0, 0)
 	, m_localRotationYawPitchRoll(0, 0, 0)
@@ -47,6 +51,18 @@ void GameObject::Update(DX::StepTimer const& timer)
 	doUpdate(timer);
 
 	/* Update matrix transformation */
+	/* update vire project matrix */
+	std::shared_ptr<Camera> currentActiveCamera = GameEngine::Instance()->GetActiveCamera();
+	m_constantBufferData.projection = currentActiveCamera->GetProjMatrix();
+	m_constantBufferData.view = currentActiveCamera->GetViewMatrix();
+	XMMATRIX scaling = XMMatrixScaling(m_globalScale.x, m_globalScale.y, m_globalScale.z);
+	XMMATRIX rotation = XMMatrixRotationRollPitchYaw(m_globalRotationYawPitchRoll.y, m_globalRotationYawPitchRoll.z, m_globalRotationYawPitchRoll.x);
+	XMMATRIX transform = XMMatrixTranslation(m_globalTransform.x, m_globalTransform.y, m_globalTransform.z);
+
+	XMMATRIX scalRot = XMMatrixMultiply(scaling, rotation);
+	XMMATRIX transf = XMMatrixMultiply(scalRot, transform);
+
+	XMStoreFloat4x4(&m_constantBufferData.model, XMMatrixTranspose(transf));
 
 }
 
