@@ -19,7 +19,7 @@ private:
 	void doStart() override;
 	void doUpdate(DX::StepTimer const& timer) override;
 
-	bool doRender() override;
+	void doRender() override;
 
 
 private:

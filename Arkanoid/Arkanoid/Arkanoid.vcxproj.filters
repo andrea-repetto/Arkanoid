@@ -97,6 +97,9 @@
     <ClCompile Include="Common\MathHelper.cpp">
       <Filter>Common</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\RenderObject.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
@@ -128,6 +131,9 @@
     </ClInclude>
     <ClInclude Include="Common\MathHelper.h">
       <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\RenderObject.h">
+      <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -32,9 +32,8 @@ void LevelOne::doUpdate(DX::StepTimer const& timer)
 	m_square->Update(timer);
 }
 
-bool LevelOne::doRender()
+void LevelOne::doRender()
 {
 	m_square->Render();
 
-	return true;
 }

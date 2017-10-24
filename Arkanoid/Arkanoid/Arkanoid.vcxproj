@@ -206,6 +206,7 @@
     <ClInclude Include="Engine\Camera.h" />
     <ClInclude Include="Engine\GameEngine.h" />
     <ClInclude Include="Engine\GameObject.h" />
+    <ClInclude Include="Engine\RenderObject.h" />
     <ClInclude Include="Engine\SceneController.h" />
     <ClInclude Include="Engine\Square.h" />
     <ClInclude Include="pch.h" />
@@ -222,6 +223,7 @@
     <ClCompile Include="Engine\Camera.cpp" />
     <ClCompile Include="Engine\GameEngine.cpp" />
     <ClCompile Include="Engine\GameObject.cpp" />
+    <ClCompile Include="Engine\RenderObject.cpp" />
     <ClCompile Include="Engine\SceneController.cpp" />
     <ClCompile Include="Engine\Square.cpp" />
     <ClCompile Include="pch.cpp">

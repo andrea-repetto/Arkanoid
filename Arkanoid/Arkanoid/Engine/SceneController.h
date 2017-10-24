@@ -13,7 +13,7 @@ namespace Engine
 
 
 	private:
-		virtual bool doRender() = 0;
+		virtual void doRender() = 0;
 
 	private:
 		
