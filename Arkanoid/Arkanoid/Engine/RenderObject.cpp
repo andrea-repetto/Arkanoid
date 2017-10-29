@@ -396,15 +396,15 @@ void RenderObject::computeVertexNormals()
 
 		/* Sum all normal vector from faces*/
 		m_vertexList[i0].normal.x += faceNormalFloat3.x;
-		m_vertexList[i1].normal.y += faceNormalFloat3.y;
-		m_vertexList[i2].normal.z += faceNormalFloat3.z;
+		m_vertexList[i0].normal.y += faceNormalFloat3.y;
+		m_vertexList[i0].normal.z += faceNormalFloat3.z;
 
-		m_vertexList[i0].normal.x += faceNormalFloat3.x;
+		m_vertexList[i1].normal.x += faceNormalFloat3.x;
 		m_vertexList[i1].normal.y += faceNormalFloat3.y;
-		m_vertexList[i2].normal.z += faceNormalFloat3.z;
+		m_vertexList[i1].normal.z += faceNormalFloat3.z;
 
-		m_vertexList[i0].normal.x += faceNormalFloat3.x;
-		m_vertexList[i1].normal.y += faceNormalFloat3.y;
+		m_vertexList[i2].normal.x += faceNormalFloat3.x;
+		m_vertexList[i2].normal.y += faceNormalFloat3.y;
 		m_vertexList[i2].normal.z += faceNormalFloat3.z;
 	
 	}

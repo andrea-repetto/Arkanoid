@@ -2,12 +2,12 @@
 struct DirectionalLight
 {
 	float3 Direction;
-	float3 Strenght;
+	float3 Strength;
 };
 
 struct AmbientLight
 {
-	float3 Strenght;
+	float3 Strength;
 };
 
 cbuffer ModelViewProjectionConstantBuffer : register(b0)
@@ -32,7 +32,7 @@ struct PixelShaderInput
 {
 	float4 pos : SV_POSITION;
 	float3 color : COLOR0;
-	float3 normal : TEXCOORD0;
+	float4 normal : TEXCOORD0;
 };
 
 // Simple shader to do vertex processing on the GPU.
@@ -40,6 +40,7 @@ PixelShaderInput main(VertexShaderInput input)
 {
 	PixelShaderInput output;
 	float4 pos = float4(input.pos, 1.0f);
+	float4 norm = float4(input.normal, 0.0f);
 
 	// Transform the vertex position into projected space.
 	pos = mul(pos, model);
@@ -49,7 +50,8 @@ PixelShaderInput main(VertexShaderInput input)
 
 	// Pass the color through without modification.
 	output.color = input.color;
-	output.normal = input.normal;
+	norm = mul(norm, model);
+	output.normal = normalize(norm);
 
 	return output;
 }
