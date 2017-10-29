@@ -29,6 +29,8 @@ namespace Engine
 		inline Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> CommandList() const { return m_commandList;  }
 		inline Microsoft::WRL::ComPtr<ID3D12RootSignature> RootSignature() const { return m_rootSignature;  }
 		inline std::shared_ptr<Camera> GetActiveCamera() const{ return m_activeCamera; }
+		inline std::shared_ptr<DirectionalLight> GetDirectionalLight() const { return m_directionalLight; }
+		inline std::shared_ptr<AmbientLight> GetAmbientLight() const { return m_ambientLight; }
 		inline void SetActiveCamera(std::shared_ptr<Camera>& camera) { m_activeCamera.reset(); m_activeCamera = camera; }
 
 		void BeginScene();

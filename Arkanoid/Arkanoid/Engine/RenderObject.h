@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.h"
+#include "Light.h"
 namespace Engine
 {
 	// Constant buffer used to send MVP matrices to the vertex shader.
@@ -8,6 +9,8 @@ namespace Engine
 		DirectX::XMFLOAT4X4 model;
 		DirectX::XMFLOAT4X4 view;
 		DirectX::XMFLOAT4X4 projection;
+		DirectionalLight	dirLight;
+		AmbientLight		ambientLight;
 	};
 
 	// Used to send per-vertex data to the vertex shader.

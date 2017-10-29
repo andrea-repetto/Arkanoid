@@ -288,8 +288,12 @@ void RenderObject::doUpdate(DX::StepTimer const& timer)
 {
 	/* Update matrix transformation */
 	std::shared_ptr<Camera> currentActiveCamera = GameEngine::Instance()->GetActiveCamera();
+	std::shared_ptr<DirectionalLight> dirLight = GameEngine::Instance()->GetDirectionalLight();
+	std::shared_ptr<AmbientLight> ambientLight = GameEngine::Instance()->GetAmbientLight();
 	m_constantBufferData.projection = currentActiveCamera->GetProjMatrix();
 	m_constantBufferData.view = currentActiveCamera->GetViewMatrix();
+	m_constantBufferData.ambientLight = *ambientLight;
+	m_constantBufferData.dirLight = *dirLight;
 	XMFLOAT3 globalScale = this->GetGlobalScale();
 	XMFLOAT3 globalRotation = this->GetGlobalRotationYawPitchRoll();
 	XMFLOAT3 globalTransform = this->GetGlobalTransform();

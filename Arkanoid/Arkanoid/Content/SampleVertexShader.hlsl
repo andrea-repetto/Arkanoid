@@ -1,9 +1,22 @@
 // A constant buffer that stores the three basic column-major matrices for composing geometry.
+struct DirectionalLight
+{
+	float3 Direction;
+	float3 Strenght;
+};
+
+struct AmbientLight
+{
+	float3 Strenght;
+};
+
 cbuffer ModelViewProjectionConstantBuffer : register(b0)
 {
 	matrix model;
 	matrix view;
 	matrix projection;
+	DirectionalLight dirLight;
+	AmbientLight ambientLight;
 };
 
 // Per-vertex data used as input to the vertex shader.
