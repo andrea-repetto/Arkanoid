@@ -23,17 +23,17 @@ RenderObject::RenderObject()
 	/* Set default vertex and index */
 	VertexPositionColor cubeVertices[] =
 	{
-		{ XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
-		{ XMFLOAT3(-0.5f, -0.5f,  0.5f), XMFLOAT3(0.0f, 0.0f, 1.0f) },
-		{ XMFLOAT3(-0.5f,  0.5f, -0.5f), XMFLOAT3(0.0f, 1.0f, 0.0f) },
-		{ XMFLOAT3(-0.5f,  0.5f,  0.5f), XMFLOAT3(0.0f, 1.0f, 1.0f) },
-		{ XMFLOAT3(0.5f, -0.5f, -0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f) },
-		{ XMFLOAT3(0.5f, -0.5f,  0.5f), XMFLOAT3(1.0f, 0.0f, 1.0f) },
-		{ XMFLOAT3(0.5f,  0.5f, -0.5f), XMFLOAT3(1.0f, 1.0f, 0.0f) },
-		{ XMFLOAT3(0.5f,  0.5f,  0.5f), XMFLOAT3(1.0f, 1.0f, 1.0f) },
+		{ XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
+		{ XMFLOAT3(-0.5f, -0.5f,  0.5f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
+		{ XMFLOAT3(-0.5f,  0.5f, -0.5f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
+		{ XMFLOAT3(-0.5f,  0.5f,  0.5f), XMFLOAT3(0.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
+		{ XMFLOAT3(0.5f, -0.5f, -0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
+		{ XMFLOAT3(0.5f, -0.5f,  0.5f), XMFLOAT3(1.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
+		{ XMFLOAT3(0.5f,  0.5f, -0.5f), XMFLOAT3(1.0f, 1.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
+		{ XMFLOAT3(0.5f,  0.5f,  0.5f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
 	};
 
-	const UINT vertexBufferSize = sizeof(cubeVertices);
+	const UINT vertexBufferSize = sizeof(cubeVertices) / sizeof(VertexPositionColor);
 
 	unsigned short cubeIndices[] =
 	{
@@ -56,7 +56,7 @@ RenderObject::RenderObject()
 		1, 7, 5,
 	};
 
-	const UINT indexBufferSize = sizeof(cubeIndices);
+	const UINT indexBufferSize = sizeof(cubeIndices) / sizeof(unsigned short);
 
 	this->SetObjectByVertex(cubeVertices, vertexBufferSize, cubeIndices, indexBufferSize);
 }
@@ -89,6 +89,7 @@ void RenderObject::doStart()
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 		{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
 	};
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC state = {};
@@ -347,4 +348,59 @@ void RenderObject::SetObjectByVertex
 	m_indexListSize = indexListSize;
 	m_indexList = new unsigned short[indexListSize];
 	memcpy(m_indexList, indexList, indexListSize * sizeof(unsigned short));
+
+	/* Compute vertex normals based on triangle list and index list */
+	computeVertexNormals();
+}
+
+
+void RenderObject::computeVertexNormals()
+{
+	UINT triangleNumber = m_indexListSize / 3;
+	for (UINT idx = 0; idx < triangleNumber; ++idx)
+	{
+		UINT i0 = m_indexList[idx * 3 + 0];
+		UINT i1 = m_indexList[idx * 3 + 1];
+		UINT i2 = m_indexList[idx * 3 + 2];
+
+		VertexPositionColor v0 = m_vertexList[i0];
+		VertexPositionColor v1 = m_vertexList[i1];
+		VertexPositionColor v2 = m_vertexList[i2];
+
+		XMVECTOR v0Pos = XMLoadFloat3(&v0.pos);
+		XMVECTOR v1Pos = XMLoadFloat3(&v1.pos);
+		XMVECTOR v2Pos = XMLoadFloat3(&v2.pos);
+
+		XMVECTOR e0 = v1Pos - v0Pos;
+		XMVECTOR e1 = v2Pos - v0Pos;
+
+		XMVECTOR faceNormal = XMVector3Cross(e0, e1);
+		XMFLOAT3 faceNormalFloat3;
+
+		XMStoreFloat3(&faceNormalFloat3, faceNormal);
+
+		/* Sum all normal vector from faces*/
+		m_vertexList[i0].normal.x += faceNormalFloat3.x;
+		m_vertexList[i1].normal.y += faceNormalFloat3.y;
+		m_vertexList[i2].normal.z += faceNormalFloat3.z;
+
+		m_vertexList[i0].normal.x += faceNormalFloat3.x;
+		m_vertexList[i1].normal.y += faceNormalFloat3.y;
+		m_vertexList[i2].normal.z += faceNormalFloat3.z;
+
+		m_vertexList[i0].normal.x += faceNormalFloat3.x;
+		m_vertexList[i1].normal.y += faceNormalFloat3.y;
+		m_vertexList[i2].normal.z += faceNormalFloat3.z;
+	
+	}
+
+	/* For each vertex normalize normal vector */
+	for (UINT idx = 0; idx < m_vertexListSize; ++idx)
+	{
+		XMVECTOR normal = XMLoadFloat3(&(m_vertexList[idx].normal));
+		normal = XMVector3Normalize(normal);
+
+		XMStoreFloat3(&(m_vertexList[idx].normal), normal);
+
+	}
 }

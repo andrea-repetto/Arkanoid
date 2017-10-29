@@ -22,6 +22,7 @@ Square::Square()
 	: GameObject()
 {
 	m_square.SetParent(this);
+	m_square2.SetParent(this);
 }
 
 Square::~Square()
@@ -33,12 +34,17 @@ Square::~Square()
 void Square::doStart()
 {
 	m_square.Start();
+	m_square2.Start();
+	XMFLOAT3 pos = m_square2.GetLocalTransform();
+	pos.x -= 1;
+
+	m_square2.SetLocalTransform(pos);
 
 }
 
 void Square::doUpdate(DX::StepTimer const& timer)
 {
-/**	
+	
 	XMFLOAT3 rot = this->GetLocalRotationYawPitchRoll();
 	XMFLOAT3 pos = this->GetLocalTransform();
 	pos.z += timer.GetElapsedSeconds()*0.1;
@@ -56,15 +62,16 @@ void Square::doUpdate(DX::StepTimer const& timer)
 	this->SetLocalTransform(pos);
 	//TODO remove
 	// Update the constant buffer resource.
-	*/
+	
 
 	m_square.Update(timer);
+	m_square2.Update(timer);
 
 }
 
 void Square::doRender()
 {
 	m_square.Render();
-
+	m_square2.Render();
 
 }

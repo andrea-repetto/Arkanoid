@@ -15,13 +15,14 @@ namespace Engine
 	{
 		DirectX::XMFLOAT3 pos;
 		DirectX::XMFLOAT3 color;
+		DirectX::XMFLOAT3 normal;
 	};
 
 	class RenderObject: public GameObject
 	{
 	public:
 		explicit RenderObject();
-		~RenderObject();
+		virtual ~RenderObject();
 
 		inline LPCWSTR GetVertexShaderFileName() const { return m_vertexShaderFileName; }
 		inline LPCWSTR GetPixelShaderFileName() const { return m_pixelShaderFileName; }
@@ -39,6 +40,8 @@ namespace Engine
 		void doStart() override;
 		void doUpdate(DX::StepTimer const& timer) override;
 		void doRender() override;
+
+		void computeVertexNormals();
 
 	private:
 		LPCWSTR												m_vertexShaderFileName;

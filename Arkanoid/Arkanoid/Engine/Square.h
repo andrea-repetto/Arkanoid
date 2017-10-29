@@ -22,6 +22,7 @@ namespace Engine
 
 	private:
 		RenderObject m_square;
+		RenderObject m_square2;
 
 
 	};
