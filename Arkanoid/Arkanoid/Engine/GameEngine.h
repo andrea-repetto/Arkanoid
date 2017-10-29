@@ -13,6 +13,9 @@ namespace DX
 namespace Engine
 {
 	class Camera;
+	struct DirectionalLight;
+	struct AmbientLight;
+	
 
 	class GameEngine
 	{
@@ -45,6 +48,8 @@ namespace Engine
 
 		std::shared_ptr<DX::DeviceResources>				m_deviceResources;
 		std::shared_ptr<Camera>								m_activeCamera;
+		std::shared_ptr<DirectionalLight>					m_directionalLight;
+		std::shared_ptr<AmbientLight>						m_ambientLight;
 		Microsoft::WRL::ComPtr<ID3D12RootSignature>			m_rootSignature;
 		Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>	m_commandList;
 	};

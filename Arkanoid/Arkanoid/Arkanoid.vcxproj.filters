@@ -135,6 +135,9 @@
     <ClInclude Include="Engine\RenderObject.h">
       <Filter>Engine</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Light.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest" />

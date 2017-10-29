@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "GameEngine.h"
 #include "Camera.h"
+#include "Light.h"
 
 
 using namespace Engine;
@@ -32,12 +33,22 @@ GameEngine* GameEngine::Instance()
 	return s_Instance;
 }
 
+
 void GameEngine::Initialize(const std::shared_ptr<DX::DeviceResources>& deviceResources)
 {
 	m_deviceResources = deviceResources;
 
 	/* Init default camera */
 	m_activeCamera = std::make_shared<Camera>();
+
+	/* Init default lights  (Only one directional light and one ambient light */
+	m_directionalLight = std::make_shared<DirectionalLight>();
+	m_ambientLight = std::make_shared<AmbientLight>();
+
+	m_directionalLight->Strenght = { 0.6f, 0.6f, 0.6f };
+	m_directionalLight->Direction = { 0.57735f, -0.57735f, 0.57735f };
+
+	m_ambientLight->Strenght = { 0.25f, 0.25f, 0.35f };
 
 	/* init GPU global data */
 	auto d3dDevice = m_deviceResources->GetD3DDevice();
