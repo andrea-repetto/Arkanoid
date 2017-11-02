@@ -198,6 +198,7 @@
     <ClInclude Include="Common\DeviceResources.h" />
     <ClInclude Include="ArkanoidMain.h" />
     <ClInclude Include="Common\DirectXHelper.h" />
+    <ClInclude Include="Common\GeometryGenerator.h" />
     <ClInclude Include="Common\MathHelper.h" />
     <ClInclude Include="Common\StepTimer.h" />
     <ClInclude Include="Content\LevelOne.h" />
@@ -218,6 +219,7 @@
     <ClCompile Include="Common\DDSTextureLoader.cpp" />
     <ClCompile Include="Common\DeviceResources.cpp" />
     <ClCompile Include="ArkanoidMain.cpp" />
+    <ClCompile Include="Common\GeometryGenerator.cpp" />
     <ClCompile Include="Common\MathHelper.cpp" />
     <ClCompile Include="Content\LevelOne.cpp" />
     <ClCompile Include="Content\Sample3DSceneRenderer.cpp" />

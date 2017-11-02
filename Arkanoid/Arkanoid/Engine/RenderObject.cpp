@@ -6,21 +6,13 @@
 #include "Common\d3dUtil.h"
 #include "Common\StepTimer.h"
 
+
+#include "Common\GeometryGenerator.h"
+
 #include "Camera.h"
 
 using namespace Engine;
 using namespace DirectX;
-
-/**
-{ XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
-{ XMFLOAT3(-0.5f, -0.5f,  0.5f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
-{ XMFLOAT3(-0.5f,  0.5f, -0.5f), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
-{ XMFLOAT3(-0.5f,  0.5f,  0.5f), XMFLOAT3(0.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
-{ XMFLOAT3(0.5f, -0.5f, -0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
-{ XMFLOAT3(0.5f, -0.5f,  0.5f), XMFLOAT3(1.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
-{ XMFLOAT3(0.5f,  0.5f, -0.5f), XMFLOAT3(1.0f, 1.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
-{ XMFLOAT3(0.5f,  0.5f,  0.5f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
-*/
 
 RenderObject::RenderObject()
 	: GameObject()
@@ -31,7 +23,40 @@ RenderObject::RenderObject()
 {
 	ZeroMemory(&m_constantBufferData, sizeof(m_constantBufferData));
 
+	//Set matirial to red color by default
+	m_constantBufferData.material.color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+
+	GeometryGenerator geoGen;
+	GeometryGenerator::MeshData meshData = geoGen.CreateSphere(1, 32, 16);
+	
+	UINT vertexBufferSize = meshData.Vertices.size();
+
+	Vertex *cubeVertices = new Vertex[vertexBufferSize];
+
+	for (UINT idx = 0; idx < vertexBufferSize; ++idx)
+	{
+		GeometryGenerator::Vertex v = meshData.Vertices[idx];
+		
+		cubeVertices[idx] = { v.Position, v.Normal };
+	}
+
+	UINT indexBufferSize = meshData.Indices32.size();
+
+	unsigned short *cubeIndices = new unsigned short[indexBufferSize];
+
+	for (UINT idx = 0; idx < indexBufferSize; ++idx)
+	{
+		cubeIndices[idx] = meshData.Indices32[idx];
+	}
+
+	this->SetObjectByVertex(cubeVertices, vertexBufferSize, cubeIndices, indexBufferSize);
+
+	delete cubeIndices;
+	delete cubeVertices;
+	
+
 	/* Set default vertex and index */
+	/**
 	VertexPositionColor cubeVertices[] =
 	{
 		{ XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
@@ -70,6 +95,7 @@ RenderObject::RenderObject()
 	const UINT indexBufferSize = sizeof(cubeIndices) / sizeof(unsigned short);
 
 	this->SetObjectByVertex(cubeVertices, vertexBufferSize, cubeIndices, indexBufferSize);
+	*/
 }
 
 
@@ -99,8 +125,8 @@ void RenderObject::doStart()
 	static const D3D12_INPUT_ELEMENT_DESC inputLayout[] =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
+	//	{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
 	};
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC state = {};
@@ -131,7 +157,7 @@ void RenderObject::doStart()
 
 	GameEngine::Instance()->CommandList()->SetPipelineState(m_pipelineState.Get());
 
-	const UINT vertexBufferSize = sizeof(VertexPositionColor)*m_vertexListSize;
+	const UINT vertexBufferSize = sizeof(Vertex)*m_vertexListSize;
 
 	// Create the vertex buffer resource in the GPU's default heap and copy vertex data into it using the upload heap.
 	// The upload resource must not be released until after the GPU has finished using it.
@@ -257,7 +283,6 @@ void RenderObject::doStart()
 	// Map the constant buffers.
 	CD3DX12_RANGE readRange(0, 0);		// We do not intend to read from this resource on the CPU.
 	DX::ThrowIfFailed(m_constantBuffer->Map(0, &readRange, reinterpret_cast<void**>(&m_mappedConstantBuffer)));
-	ZeroMemory(m_mappedConstantBuffer, DX::c_frameCount * c_alignedConstantBufferSize);
 	// We don't unmap this until the app closes. Keeping things mapped for the lifetime of the resource is okay.
 
 	// Close the command list and execute it to begin the vertex/index buffer copy into the GPU's default heap.
@@ -267,7 +292,7 @@ void RenderObject::doStart()
 
 	// Create vertex/index buffer views.
 	m_vertexBufferView.BufferLocation = m_vertexBuffer->GetGPUVirtualAddress();
-	m_vertexBufferView.StrideInBytes = sizeof(VertexPositionColor);
+	m_vertexBufferView.StrideInBytes = sizeof(Vertex);
 	m_vertexBufferView.SizeInBytes = vertexBufferSize;
 
 	m_indexBufferView.BufferLocation = m_indexBuffer->GetGPUVirtualAddress();
@@ -294,9 +319,11 @@ void RenderObject::doUpdate(DX::StepTimer const& timer)
 	m_constantBufferData.view = currentActiveCamera->GetViewMatrix();
 	m_constantBufferData.ambientLight = *ambientLight;
 	m_constantBufferData.dirLight = *dirLight;
+	
 	XMFLOAT3 globalScale = this->GetGlobalScale();
 	XMFLOAT3 globalRotation = this->GetGlobalRotationYawPitchRoll();
 	XMFLOAT3 globalTransform = this->GetGlobalTransform();
+	
 
 	XMMATRIX scaling = XMMatrixScaling(globalScale.x, globalScale.y, globalScale.z);
 	XMMATRIX rotation = XMMatrixRotationRollPitchYaw(globalRotation.y, globalRotation.z, globalRotation.x);
@@ -345,7 +372,7 @@ void RenderObject::doRender()
 
 void RenderObject::SetObjectByVertex
 (
-	const VertexPositionColor*	vertexList,
+	const Vertex*	vertexList,
 	const UINT					vertexListSize,
 	const unsigned short*		indexList,
 	const UINT					indexListSize
@@ -356,8 +383,8 @@ void RenderObject::SetObjectByVertex
 
 	/* Set vertex list */
 	m_vertexListSize = vertexListSize;
-	m_vertexList = new VertexPositionColor[vertexListSize];
-	memcpy(m_vertexList, vertexList, vertexListSize * sizeof(VertexPositionColor));
+	m_vertexList = new Vertex[vertexListSize];
+	memcpy(m_vertexList, vertexList, vertexListSize * sizeof(Vertex));
 
 	/* Set index list */
 	m_indexListSize = indexListSize;
@@ -365,7 +392,7 @@ void RenderObject::SetObjectByVertex
 	memcpy(m_indexList, indexList, indexListSize * sizeof(unsigned short));
 
 	/* Compute vertex normals based on triangle list and index list */
-	computeVertexNormals();
+	//computeVertexNormals();
 }
 
 
@@ -378,9 +405,9 @@ void RenderObject::computeVertexNormals()
 		UINT i1 = m_indexList[idx * 3 + 1];
 		UINT i2 = m_indexList[idx * 3 + 2];
 
-		VertexPositionColor v0 = m_vertexList[i0];
-		VertexPositionColor v1 = m_vertexList[i1];
-		VertexPositionColor v2 = m_vertexList[i2];
+		Vertex v0 = m_vertexList[i0];
+		Vertex v1 = m_vertexList[i1];
+		Vertex v2 = m_vertexList[i2];
 
 		XMVECTOR v0Pos = XMLoadFloat3(&v0.pos);
 		XMVECTOR v1Pos = XMLoadFloat3(&v1.pos);
@@ -418,4 +445,6 @@ void RenderObject::computeVertexNormals()
 		XMStoreFloat3(&(m_vertexList[idx].normal), normal);
 
 	}
+
+
 }

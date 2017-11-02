@@ -4,12 +4,12 @@ namespace Engine
 {
 	struct DirectionalLight
 	{
-		DirectX::XMFLOAT3 Direction;
-		DirectX::XMFLOAT3 Strenght;
+		DirectX::XMFLOAT4 Direction;
+		DirectX::XMFLOAT4 Strenght;
 	};
 
 	struct AmbientLight
 	{
-		DirectX::XMFLOAT3 Strenght;
+		DirectX::XMFLOAT4 Strenght;
 	};
 }

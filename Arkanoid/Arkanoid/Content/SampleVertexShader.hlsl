@@ -1,29 +1,36 @@
 // A constant buffer that stores the three basic column-major matrices for composing geometry.
 struct DirectionalLight
 {
-	float3 Direction;
-	float3 Strength;
+	float4 Direction;
+	float4 Strength;
 };
 
 struct AmbientLight
 {
-	float3 Strength;
+	float4 Strength;
+};
+
+struct Material
+{
+	float4 albedoColor;
 };
 
 cbuffer ModelViewProjectionConstantBuffer : register(b0)
 {
-	matrix model;
-	matrix view;
-	matrix projection;
-	DirectionalLight dirLight;
-	AmbientLight ambientLight;
+	matrix				model;
+	matrix				view;
+	matrix				projection;
+	DirectionalLight	dirLight;
+	AmbientLight		ambientLight;
+	Material			material;
+
 };
 
 // Per-vertex data used as input to the vertex shader.
 struct VertexShaderInput
 {
 	float3 pos : POSITION;
-	float3 color : COLOR0;
+//	float3 color : COLOR0;
 	float3 normal : TEXCOORD0;
 };
 
@@ -31,7 +38,7 @@ struct VertexShaderInput
 struct PixelShaderInput
 {
 	float4 pos : SV_POSITION;
-	float3 color : COLOR0;
+//	float3 color : COLOR0;
 	float4 normal : TEXCOORD0;
 };
 
@@ -49,7 +56,7 @@ PixelShaderInput main(VertexShaderInput input)
 	output.pos = pos;
 
 	// Pass the color through without modification.
-	output.color = input.color;
+	//output.color = input.color;
 	norm = mul(norm, model);
 	output.normal = normalize(norm);
 

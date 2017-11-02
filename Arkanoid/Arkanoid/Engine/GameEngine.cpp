@@ -45,10 +45,10 @@ void GameEngine::Initialize(const std::shared_ptr<DX::DeviceResources>& deviceRe
 	m_directionalLight = std::make_shared<DirectionalLight>();
 	m_ambientLight = std::make_shared<AmbientLight>();
 
-	m_directionalLight->Strenght = { 0.6f, 0.6f, 0.6f };
-	m_directionalLight->Direction = { 0.57735f, -0.57735f, 0.57735f };
+	m_directionalLight->Strenght = { 0.6f, 0.6f, 0.6f, 1.0f };
+	m_directionalLight->Direction = { 0.57735f, -0.57735f, 0.57735f, 0.0f };
 
-	m_ambientLight->Strenght = { 0.25f, 0.25f, 0.35f };
+	m_ambientLight->Strenght = { 0.25f, 0.25f, 0.35f, 1.0f };
 
 	/* init GPU global data */
 	auto d3dDevice = m_deviceResources->GetD3DDevice();

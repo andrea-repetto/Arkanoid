@@ -100,6 +100,9 @@
     <ClCompile Include="Engine\RenderObject.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Common\GeometryGenerator.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
@@ -137,6 +140,9 @@
     </ClInclude>
     <ClInclude Include="Engine\Light.h">
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\GeometryGenerator.h">
+      <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

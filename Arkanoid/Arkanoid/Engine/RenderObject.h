@@ -3,6 +3,10 @@
 #include "Light.h"
 namespace Engine
 {
+	struct Material
+	{
+		DirectX::XMFLOAT4 color;
+	};
 	// Constant buffer used to send MVP matrices to the vertex shader.
 	struct ModelViewProjectionConstantBuffer
 	{
@@ -11,13 +15,15 @@ namespace Engine
 		DirectX::XMFLOAT4X4 projection;
 		DirectionalLight	dirLight;
 		AmbientLight		ambientLight;
+		Material			material;
+
 	};
 
 	// Used to send per-vertex data to the vertex shader.
-	struct VertexPositionColor
+	struct Vertex
 	{
 		DirectX::XMFLOAT3 pos;
-		DirectX::XMFLOAT3 color;
+	//	DirectX::XMFLOAT3 color;
 		DirectX::XMFLOAT3 normal;
 	};
 
@@ -32,8 +38,11 @@ namespace Engine
 		inline void SetVertexShaderFileName(const LPCWSTR& vertexShaderFileName) { m_vertexShaderFileName = vertexShaderFileName; }
 		inline void SetPixelShaderFileName(const LPCWSTR& pixelShaderFileName) { m_pixelShaderFileName = pixelShaderFileName; }
 
+		inline Material GetMaterial() const { return m_constantBufferData.material; }
+		inline void SetMaterial(const Material& material) { m_constantBufferData.material = material; }
+
 		void SetObjectByVertex(
-			const VertexPositionColor*	vertexList, 
+			const Vertex*				vertexList, 
 			const UINT					vertexListSize,
 			const unsigned short*		indexList,
 			const UINT					indexListSize
@@ -49,7 +58,8 @@ namespace Engine
 	private:
 		LPCWSTR												m_vertexShaderFileName;
 		LPCWSTR												m_pixelShaderFileName;
-		VertexPositionColor*								m_vertexList;
+		Vertex*												m_vertexList;
+		//Material											m_material;
 		UINT												m_vertexListSize;
 		unsigned short*										m_indexList;
 		UINT												m_indexListSize;
