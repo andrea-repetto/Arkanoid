@@ -40,7 +40,7 @@ void Square::doStart()
 	XMFLOAT3 pos = m_square2.GetLocalTransform();
 	pos.x -= 1;
 
-	m_square2.SetLocalTransform(pos);
+//	m_square2.SetLocalTransform(pos);
 
 }
 
@@ -53,15 +53,15 @@ void Square::doUpdate(DX::StepTimer const& timer)
 	//pos.y += timer.GetElapsedSeconds()*0.1;
 	//pos.z += timer.GetElapsedSeconds()*0.1;
 	XMFLOAT3 scale = this->GetLocalScale();
-	scale.x = 0.25f;
-	scale.y = 0.25f;
-	scale.z = 0.25f;
-	this->SetLocalScale(scale);
+	//scale.x = 0.25f;
+	//scale.y = 0.25f;
+	//scale.z = 0.25f;
+	//this->SetLocalScale(scale);
 	//pos.x += timer.GetElapsedSeconds();
-	rot.z+= timer.GetElapsedSeconds()*2;
+	rot.x+= timer.GetElapsedSeconds()*2;
 //	pos.y += timer.GetElapsedSeconds();
 	this->SetLocalRotationYawPitchRoll(rot);
-	this->SetLocalTransform(pos);
+	//this->SetLocalTransform(pos);
 	//TODO remove
 	// Update the constant buffer resource.
 	
@@ -74,6 +74,6 @@ void Square::doUpdate(DX::StepTimer const& timer)
 void Square::doRender()
 {
 	m_square.Render();
-	m_square2.Render();
+//	m_square2.Render();
 
 }

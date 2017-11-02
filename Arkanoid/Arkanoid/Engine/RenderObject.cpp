@@ -6,9 +6,6 @@
 #include "Common\d3dUtil.h"
 #include "Common\StepTimer.h"
 
-
-#include "Common\GeometryGenerator.h"
-
 #include "Camera.h"
 
 using namespace Engine;
@@ -27,33 +24,30 @@ RenderObject::RenderObject()
 	m_constantBufferData.material.color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
 
 	GeometryGenerator geoGen;
-	GeometryGenerator::MeshData meshData = geoGen.CreateSphere(1, 32, 16);
+	m_meshData = geoGen.CreateSphere(1, 8, 4);
+	//m_meshData = geoGen.CreateCylinder(1, 1, 1, 32, 16);
+	//m_meshData = geoGen.CreateBox(1, 1, 1, 0);
 	
-	UINT vertexBufferSize = meshData.Vertices.size();
+	UINT vertexBufferSize = m_meshData.Vertices.size();
 
 	Vertex *cubeVertices = new Vertex[vertexBufferSize];
 
 	for (UINT idx = 0; idx < vertexBufferSize; ++idx)
 	{
-		GeometryGenerator::Vertex v = meshData.Vertices[idx];
+		GeometryGenerator::Vertex v = m_meshData.Vertices[idx];
 		
-		cubeVertices[idx] = { v.Position, v.Normal };
+		cubeVertices[idx] = { v.Position, XMFLOAT3(v.Normal.x, v.Normal.y, v.Normal.z) };
 	}
 
-	UINT indexBufferSize = meshData.Indices32.size();
+	UINT indexBufferSize = m_meshData.Indices32.size();
 
 	unsigned short *cubeIndices = new unsigned short[indexBufferSize];
 
 	for (UINT idx = 0; idx < indexBufferSize; ++idx)
 	{
-		cubeIndices[idx] = meshData.Indices32[idx];
+		cubeIndices[idx] = m_meshData.Indices32[idx];
 	}
 
-	this->SetObjectByVertex(cubeVertices, vertexBufferSize, cubeIndices, indexBufferSize);
-
-	delete cubeIndices;
-	delete cubeVertices;
-	
 
 	/* Set default vertex and index */
 	/**
@@ -96,6 +90,11 @@ RenderObject::RenderObject()
 
 	this->SetObjectByVertex(cubeVertices, vertexBufferSize, cubeIndices, indexBufferSize);
 	*/
+
+	this->SetObjectByVertex(cubeVertices, vertexBufferSize, cubeIndices, indexBufferSize);
+
+	delete cubeIndices;
+	delete cubeVertices;
 }
 
 

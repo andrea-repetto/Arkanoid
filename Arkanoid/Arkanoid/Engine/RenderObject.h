@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
 #include "Light.h"
+#include "Common\GeometryGenerator.h"
 namespace Engine
 {
 	struct Material
@@ -23,7 +24,6 @@ namespace Engine
 	struct Vertex
 	{
 		DirectX::XMFLOAT3 pos;
-	//	DirectX::XMFLOAT3 color;
 		DirectX::XMFLOAT3 normal;
 	};
 
@@ -59,7 +59,6 @@ namespace Engine
 		LPCWSTR												m_vertexShaderFileName;
 		LPCWSTR												m_pixelShaderFileName;
 		Vertex*												m_vertexList;
-		//Material											m_material;
 		UINT												m_vertexListSize;
 		unsigned short*										m_indexList;
 		UINT												m_indexListSize;
@@ -84,6 +83,8 @@ namespace Engine
 
 		Microsoft::WRL::ComPtr<ID3DBlob>					m_vertexShader;
 		Microsoft::WRL::ComPtr<ID3DBlob>					m_pixelShader;
+
+		GeometryGenerator::MeshData							m_meshData;
 
 	};
 }

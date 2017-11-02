@@ -66,28 +66,28 @@ GeometryGenerator::MeshData GeometryGenerator::CreateBox(float width, float heig
 	uint32 i[36];
 
 	// Fill in the front face index data
-	i[0] = 0; i[1] = 1; i[2] = 2;
-	i[3] = 0; i[4] = 2; i[5] = 3;
+	i[0] = 2; i[1] = 1; i[2] = 0;
+	i[3] = 3; i[4] = 2; i[5] = 0;
 
 	// Fill in the back face index data
-	i[6] = 4; i[7]  = 5; i[8]  = 6;
-	i[9] = 4; i[10] = 6; i[11] = 7;
+	i[6] = 6; i[7]  = 5; i[8]  = 4;
+	i[9] = 7; i[10] = 6; i[11] = 4;
 
 	// Fill in the top face index data
-	i[12] = 8; i[13] =  9; i[14] = 10;
-	i[15] = 8; i[16] = 10; i[17] = 11;
+	i[12] = 10; i[13] =  9; i[14] = 8;
+	i[15] = 11; i[16] = 10; i[17] = 8;
 
 	// Fill in the bottom face index data
-	i[18] = 12; i[19] = 13; i[20] = 14;
-	i[21] = 12; i[22] = 14; i[23] = 15;
+	i[18] = 14; i[19] = 13; i[20] = 12;
+	i[21] = 15; i[22] = 14; i[23] = 12;
 
 	// Fill in the left face index data
-	i[24] = 16; i[25] = 17; i[26] = 18;
-	i[27] = 16; i[28] = 18; i[29] = 19;
+	i[24] = 18; i[25] = 17; i[26] = 16;
+	i[27] = 19; i[28] = 18; i[29] = 16;
 
 	// Fill in the right face index data
-	i[30] = 20; i[31] = 21; i[32] = 22;
-	i[33] = 20; i[34] = 22; i[35] = 23;
+	i[30] = 22; i[31] = 21; i[32] = 20;
+	i[33] = 23; i[34] = 22; i[35] = 20;
 
 	meshData.Indices32.assign(&i[0], &i[36]);
 
@@ -163,9 +163,10 @@ GeometryGenerator::MeshData GeometryGenerator::CreateSphere(float radius, uint32
 
     for(uint32 i = 1; i <= sliceCount; ++i)
 	{
-		meshData.Indices32.push_back(0);
-		meshData.Indices32.push_back(i+1);
 		meshData.Indices32.push_back(i);
+		meshData.Indices32.push_back(i+1);
+		meshData.Indices32.push_back(0);
+		
 	}
 	
 	//
@@ -180,13 +181,15 @@ GeometryGenerator::MeshData GeometryGenerator::CreateSphere(float radius, uint32
 	{
 		for(uint32 j = 0; j < sliceCount; ++j)
 		{
+			meshData.Indices32.push_back(baseIndex + (i + 1)*ringVertexCount + j);
+			meshData.Indices32.push_back(baseIndex + i*ringVertexCount + j+1);
 			meshData.Indices32.push_back(baseIndex + i*ringVertexCount + j);
-			meshData.Indices32.push_back(baseIndex + i*ringVertexCount + j+1);
-			meshData.Indices32.push_back(baseIndex + (i+1)*ringVertexCount + j);
+			
 
-			meshData.Indices32.push_back(baseIndex + (i+1)*ringVertexCount + j);
+			meshData.Indices32.push_back(baseIndex + (i + 1)*ringVertexCount + j + 1);
 			meshData.Indices32.push_back(baseIndex + i*ringVertexCount + j+1);
-			meshData.Indices32.push_back(baseIndex + (i+1)*ringVertexCount + j+1);
+			meshData.Indices32.push_back(baseIndex + (i + 1)*ringVertexCount + j);
+			
 		}
 	}
 
@@ -203,9 +206,10 @@ GeometryGenerator::MeshData GeometryGenerator::CreateSphere(float radius, uint32
 	
 	for(uint32 i = 0; i < sliceCount; ++i)
 	{
-		meshData.Indices32.push_back(southPoleIndex);
+		meshData.Indices32.push_back(baseIndex + i + 1);
 		meshData.Indices32.push_back(baseIndex+i);
-		meshData.Indices32.push_back(baseIndex+i+1);
+		meshData.Indices32.push_back(southPoleIndex);
+		
 	}
 
     return meshData;
@@ -457,6 +461,7 @@ GeometryGenerator::MeshData GeometryGenerator::CreateCylinder(float bottomRadius
 	{
 		for(uint32 j = 0; j < sliceCount; ++j)
 		{
+			/*
 			meshData.Indices32.push_back(i*ringVertexCount + j);
 			meshData.Indices32.push_back((i+1)*ringVertexCount + j);
 			meshData.Indices32.push_back((i+1)*ringVertexCount + j+1);
@@ -464,6 +469,15 @@ GeometryGenerator::MeshData GeometryGenerator::CreateCylinder(float bottomRadius
 			meshData.Indices32.push_back(i*ringVertexCount + j);
 			meshData.Indices32.push_back((i+1)*ringVertexCount + j+1);
 			meshData.Indices32.push_back(i*ringVertexCount + j+1);
+			*/
+			meshData.Indices32.push_back((i + 1)*ringVertexCount + j + 1);
+			meshData.Indices32.push_back((i + 1)*ringVertexCount + j);
+			meshData.Indices32.push_back(i*ringVertexCount + j);
+			
+			meshData.Indices32.push_back(i*ringVertexCount + j + 1);
+			meshData.Indices32.push_back((i + 1)*ringVertexCount + j + 1);
+			meshData.Indices32.push_back(i*ringVertexCount + j);
+			
 		}
 	}
 
@@ -503,9 +517,17 @@ void GeometryGenerator::BuildCylinderTopCap(float bottomRadius, float topRadius,
 
 	for(uint32 i = 0; i < sliceCount; ++i)
 	{
+		/*
 		meshData.Indices32.push_back(centerIndex);
 		meshData.Indices32.push_back(baseIndex + i+1);
 		meshData.Indices32.push_back(baseIndex + i);
+		*/
+
+		meshData.Indices32.push_back(baseIndex + i);
+		meshData.Indices32.push_back(baseIndex + i + 1);
+		meshData.Indices32.push_back(centerIndex);
+		
+
 	}
 }
 
@@ -542,9 +564,16 @@ void GeometryGenerator::BuildCylinderBottomCap(float bottomRadius, float topRadi
 
 	for(uint32 i = 0; i < sliceCount; ++i)
 	{
+		/*
 		meshData.Indices32.push_back(centerIndex);
 		meshData.Indices32.push_back(baseIndex + i);
 		meshData.Indices32.push_back(baseIndex + i+1);
+		*/
+
+		meshData.Indices32.push_back(baseIndex + i + 1);
+		meshData.Indices32.push_back(baseIndex + i);
+		meshData.Indices32.push_back(centerIndex);
+		
 	}
 }
 
