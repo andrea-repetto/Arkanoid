@@ -2,6 +2,7 @@
 
 #include "pch.h"
 #include "Common\DeviceResources.h"
+#include "Common\Keyboard.h"
 #include "ArkanoidMain.h"
 
 namespace Arkanoid
@@ -38,8 +39,11 @@ namespace Arkanoid
 	private:
 		// Private accessor for m_deviceResources, protects against device removed errors.
 		std::shared_ptr<DX::DeviceResources> GetDeviceResources();
+		
 
 		std::shared_ptr<DX::DeviceResources> m_deviceResources;
+		std::unique_ptr<DirectX::Keyboard> m_keyboard;
+
 		std::unique_ptr<ArkanoidMain> m_main;
 		bool m_windowClosed;
 		bool m_windowVisible;

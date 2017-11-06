@@ -37,6 +37,7 @@ App::App() :
 	m_windowClosed(false),
 	m_windowVisible(true)
 {
+	m_keyboard = std::make_unique<DirectX::Keyboard>();
 }
 
 // The first method called when the IFrameworkView is being created.
@@ -76,6 +77,9 @@ void App::SetWindow(CoreWindow^ window)
 
 	DisplayInformation::DisplayContentsInvalidated +=
 		ref new TypedEventHandler<DisplayInformation^, Object^>(this, &App::OnDisplayContentsInvalidated);
+
+	m_keyboard->SetWindow(window);
+
 }
 
 // Initializes scene resources, or loads a previously saved app state.

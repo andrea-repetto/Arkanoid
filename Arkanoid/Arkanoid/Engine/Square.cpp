@@ -11,6 +11,8 @@
 #include <synchapi.h>
 
 #include "Common\GeometryGenerator.h"
+#include "Common\Keyboard.h"
+#include <iostream>
 
 
 
@@ -77,6 +79,16 @@ void Square::doStart()
 
 void Square::doUpdate(DX::StepTimer const& timer)
 {
+
+
+	auto kb = DirectX::Keyboard::Get().GetState();
+
+	if (kb.W)
+	{
+		std::cout << "Premuto W" << std::endl;
+	}
+		// W key is down
+
 	
 	XMFLOAT3 rot = this->GetLocalRotationYawPitchRoll();
 	XMFLOAT3 pos = this->GetLocalTransform();
