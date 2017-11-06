@@ -10,6 +10,8 @@
 #include <ppltasks.h>
 #include <synchapi.h>
 
+#include "Common\GeometryGenerator.h"
+
 
 
 using namespace Engine;
@@ -23,22 +25,51 @@ using namespace Windows::Storage;
 Square::Square()
 	: GameObject()
 {
-	m_square.SetParent(this);
-	m_square2.SetParent(this);
+	//TODO FIX memoery leak
+	GeometryGenerator geoGen;
+	GeometryGenerator::MeshData m_meshData = geoGen.CreateSphere(1, 8, 4);
+	//m_meshData = geoGen.CreateCylinder(1, 1, 1, 32, 16);
+	//m_meshData = geoGen.CreateBox(1, 1, 1, 0);
+
+	UINT vertexBufferSize = m_meshData.Vertices.size();
+
+	Vertex* cubeVertices = new Vertex[vertexBufferSize];
+
+	for (UINT idx = 0; idx < vertexBufferSize; ++idx)
+	{
+		GeometryGenerator::Vertex v = m_meshData.Vertices[idx];
+
+
+		cubeVertices[idx] = { v.Position, XMFLOAT3(v.Normal.x, v.Normal.y, v.Normal.z) };
+	}
+
+	UINT indexBufferSize = m_meshData.Indices32.size();
+
+	unsigned short* cubeIndices = new unsigned short[indexBufferSize];
+
+	for (UINT idx = 0; idx < indexBufferSize; ++idx)
+	{
+		cubeIndices[idx] = m_meshData.Indices32[idx];
+	}
+
+	m_square = new RenderObject(cubeVertices, vertexBufferSize, cubeIndices, indexBufferSize);
+
+	m_square->SetParent(this);
+
 }
 
 Square::~Square()
 {
-
+	delete m_square;
 }
 
 
 void Square::doStart()
 {
-	m_square.Start();
-	m_square2.Start();
-	XMFLOAT3 pos = m_square2.GetLocalTransform();
-	pos.x -= 1;
+	m_square->Start();
+	//m_square2.Start();
+	//XMFLOAT3 pos = m_square2->GetLocalTransform();
+//	pos.x -= 1;
 
 //	m_square2.SetLocalTransform(pos);
 
@@ -53,10 +84,10 @@ void Square::doUpdate(DX::StepTimer const& timer)
 	//pos.y += timer.GetElapsedSeconds()*0.1;
 	//pos.z += timer.GetElapsedSeconds()*0.1;
 	XMFLOAT3 scale = this->GetLocalScale();
-	//scale.x = 0.25f;
-	//scale.y = 0.25f;
-	//scale.z = 0.25f;
-	//this->SetLocalScale(scale);
+	scale.x = 0.25f;
+	scale.y = 0.25f;
+	scale.z = 0.25f;
+	this->SetLocalScale(scale);
 	//pos.x += timer.GetElapsedSeconds();
 	rot.x+= timer.GetElapsedSeconds()*2;
 //	pos.y += timer.GetElapsedSeconds();
@@ -66,14 +97,14 @@ void Square::doUpdate(DX::StepTimer const& timer)
 	// Update the constant buffer resource.
 	
 
-	m_square.Update(timer);
-	m_square2.Update(timer);
+	m_square->Update(timer);
+	//m_square2.Update(timer);
 
 }
 
 void Square::doRender()
 {
-	m_square.Render();
+	m_square->Render();
 //	m_square2.Render();
 
 }

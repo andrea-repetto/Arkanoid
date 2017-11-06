@@ -1,7 +1,7 @@
 #pragma once
 #include "GameObject.h"
 #include "Light.h"
-#include "Common\GeometryGenerator.h"
+
 namespace Engine
 {
 	struct Material
@@ -27,10 +27,15 @@ namespace Engine
 		DirectX::XMFLOAT3 normal;
 	};
 
+
 	class RenderObject: public GameObject
 	{
 	public:
-		explicit RenderObject();
+		explicit RenderObject(
+			const Vertex* 										vertexList,
+			UINT												vertexListSize,
+			const unsigned short* 								indexList,
+			UINT												indexListSize);
 		virtual ~RenderObject();
 
 		inline LPCWSTR GetVertexShaderFileName() const { return m_vertexShaderFileName; }
@@ -41,26 +46,27 @@ namespace Engine
 		inline Material GetMaterial() const { return m_constantBufferData.material; }
 		inline void SetMaterial(const Material& material) { m_constantBufferData.material = material; }
 
-		void SetObjectByVertex(
-			const Vertex*				vertexList, 
-			const UINT					vertexListSize,
-			const unsigned short*		indexList,
-			const UINT					indexListSize
-			);
+
+		void SetMeshData(
+			const Vertex* vertexList,
+			UINT						vertexListSize,
+			const unsigned short*				indexList,
+			UINT						    indexListSize			
+		);
 
 	private:
 		void doStart() override;
 		void doUpdate(DX::StepTimer const& timer) override;
 		void doRender() override;
 
-		void computeVertexNormals();
+		//void computeVertexNormals();
 
 	private:
 		LPCWSTR												m_vertexShaderFileName;
 		LPCWSTR												m_pixelShaderFileName;
-		Vertex*												m_vertexList;
+		const Vertex* 										m_vertexList;
 		UINT												m_vertexListSize;
-		unsigned short*										m_indexList;
+		const unsigned short* 								m_indexList;
 		UINT												m_indexListSize;
 
 		UINT8*												m_mappedConstantBuffer;
@@ -83,8 +89,6 @@ namespace Engine
 
 		Microsoft::WRL::ComPtr<ID3DBlob>					m_vertexShader;
 		Microsoft::WRL::ComPtr<ID3DBlob>					m_pixelShader;
-
-		GeometryGenerator::MeshData							m_meshData;
 
 	};
 }

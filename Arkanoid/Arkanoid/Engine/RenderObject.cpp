@@ -11,90 +11,25 @@
 using namespace Engine;
 using namespace DirectX;
 
-RenderObject::RenderObject()
+RenderObject::RenderObject(
+	const Vertex* 										vertexList,
+	UINT												vertexListSize,
+	const unsigned short* 								indexList,
+	UINT												indexListSize)
 	: GameObject()
 	, m_vertexShaderFileName(L"SampleVertexShader.cso")
 	, m_pixelShaderFileName(L"SamplePixelShader.cso")
-	, m_vertexList(nullptr)
-	, m_indexList(nullptr)
+	, m_vertexList(vertexList)
+	, m_vertexListSize(vertexListSize)
+	, m_indexList(indexList)
+	, m_indexListSize(indexListSize)
 {
+	assert(m_vertexList != nullptr && m_indexList != nullptr && "Vertex List and Index List cannot be Null in Render Object!");
 	ZeroMemory(&m_constantBufferData, sizeof(m_constantBufferData));
 
 	//Set matirial to red color by default
 	m_constantBufferData.material.color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
-
-	GeometryGenerator geoGen;
-	m_meshData = geoGen.CreateSphere(1, 8, 4);
-	//m_meshData = geoGen.CreateCylinder(1, 1, 1, 32, 16);
-	//m_meshData = geoGen.CreateBox(1, 1, 1, 0);
 	
-	UINT vertexBufferSize = m_meshData.Vertices.size();
-
-	Vertex *cubeVertices = new Vertex[vertexBufferSize];
-
-	for (UINT idx = 0; idx < vertexBufferSize; ++idx)
-	{
-		GeometryGenerator::Vertex v = m_meshData.Vertices[idx];
-		
-		cubeVertices[idx] = { v.Position, XMFLOAT3(v.Normal.x, v.Normal.y, v.Normal.z) };
-	}
-
-	UINT indexBufferSize = m_meshData.Indices32.size();
-
-	unsigned short *cubeIndices = new unsigned short[indexBufferSize];
-
-	for (UINT idx = 0; idx < indexBufferSize; ++idx)
-	{
-		cubeIndices[idx] = m_meshData.Indices32[idx];
-	}
-
-
-	/* Set default vertex and index */
-	/**
-	VertexPositionColor cubeVertices[] =
-	{
-		{ XMFLOAT3(-0.5f, -0.5f, -0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
-		{ XMFLOAT3(-0.5f, -0.5f,  0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
-		{ XMFLOAT3(-0.5f,  0.5f, -0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
-		{ XMFLOAT3(-0.5f,  0.5f,  0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
-		{ XMFLOAT3(0.5f, -0.5f, -0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
-		{ XMFLOAT3(0.5f, -0.5f,  0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
-		{ XMFLOAT3(0.5f,  0.5f, -0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
-		{ XMFLOAT3(0.5f,  0.5f,  0.5f), XMFLOAT3(1.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f) },
-	};
-
-	const UINT vertexBufferSize = sizeof(cubeVertices) / sizeof(VertexPositionColor);
-
-	unsigned short cubeIndices[] =
-	{
-		0, 2, 1, // -x
-		1, 2, 3,
-
-		4, 5, 6, // +x
-		5, 7, 6,
-
-		0, 1, 5, // -y
-		0, 5, 4,
-
-		2, 6, 7, // +y
-		2, 7, 3,
-
-		0, 4, 6, // -z
-		0, 6, 2,
-
-		1, 3, 7, // +z
-		1, 7, 5,
-	};
-
-	const UINT indexBufferSize = sizeof(cubeIndices) / sizeof(unsigned short);
-
-	this->SetObjectByVertex(cubeVertices, vertexBufferSize, cubeIndices, indexBufferSize);
-	*/
-
-	this->SetObjectByVertex(cubeVertices, vertexBufferSize, cubeIndices, indexBufferSize);
-
-	delete cubeIndices;
-	delete cubeVertices;
 }
 
 
@@ -186,7 +121,7 @@ void RenderObject::doStart()
 	// Upload the vertex buffer to the GPU.
 	{
 		D3D12_SUBRESOURCE_DATA vertexData = {};
-		vertexData.pData = reinterpret_cast<BYTE*>(m_vertexList);
+		vertexData.pData = reinterpret_cast<const BYTE*>(m_vertexList);
 		vertexData.RowPitch = vertexBufferSize;
 		vertexData.SlicePitch = vertexData.RowPitch;
 
@@ -229,7 +164,7 @@ void RenderObject::doStart()
 	// Upload the index buffer to the GPU.
 	{
 		D3D12_SUBRESOURCE_DATA indexData = {};
-		indexData.pData = reinterpret_cast<BYTE*>(m_indexList);
+		indexData.pData = reinterpret_cast<const BYTE*>(m_indexList);
 		indexData.RowPitch = indexBufferSize;
 		indexData.SlicePitch = indexData.RowPitch;
 
@@ -301,9 +236,6 @@ void RenderObject::doStart()
 	// Wait for the command list to finish executing; the vertex/index buffers need to be uploaded to the GPU before the upload resources go out of scope.
 	GameEngine::Instance()->DeviceResources()->WaitForGpu();
 
-	delete[] m_vertexList;
-	delete[] m_indexList;
-
 	m_vertexList = nullptr;
 	m_indexList = nullptr;
 }
@@ -367,34 +299,23 @@ void RenderObject::doRender()
 	PIXEndEvent(commandList.Get());
 }
 
-
-
-void RenderObject::SetObjectByVertex
-(
-	const Vertex*	vertexList,
-	const UINT					vertexListSize,
+void RenderObject::SetMeshData(
+	const Vertex*				vertexList,
+	UINT						vertexListSize,
 	const unsigned short*		indexList,
-	const UINT					indexListSize
+	UINT						indexListSize
 )
 {
-	delete[] m_vertexList;
-	delete[] m_indexList;
-
-	/* Set vertex list */
+	m_vertexList = vertexList;
+	m_indexList = indexList;
 	m_vertexListSize = vertexListSize;
-	m_vertexList = new Vertex[vertexListSize];
-	memcpy(m_vertexList, vertexList, vertexListSize * sizeof(Vertex));
-
-	/* Set index list */
 	m_indexListSize = indexListSize;
-	m_indexList = new unsigned short[indexListSize];
-	memcpy(m_indexList, indexList, indexListSize * sizeof(unsigned short));
 
-	/* Compute vertex normals based on triangle list and index list */
-	//computeVertexNormals();
+	assert(m_vertexList != nullptr && m_indexList != nullptr && "Vertex List and Index List cannot be Null in Render Object!");
 }
 
 
+/**
 void RenderObject::computeVertexNormals()
 {
 	UINT triangleNumber = m_indexListSize / 3;
@@ -420,7 +341,7 @@ void RenderObject::computeVertexNormals()
 
 		XMStoreFloat3(&faceNormalFloat3, faceNormal);
 
-		/* Sum all normal vector from faces*/
+		
 		m_vertexList[i0].normal.x += faceNormalFloat3.x;
 		m_vertexList[i0].normal.y += faceNormalFloat3.y;
 		m_vertexList[i0].normal.z += faceNormalFloat3.z;
@@ -435,7 +356,7 @@ void RenderObject::computeVertexNormals()
 	
 	}
 
-	/* For each vertex normalize normal vector */
+	
 	for (UINT idx = 0; idx < m_vertexListSize; ++idx)
 	{
 		XMVECTOR normal = XMLoadFloat3(&(m_vertexList[idx].normal));
@@ -447,3 +368,4 @@ void RenderObject::computeVertexNormals()
 
 
 }
+*/
