@@ -22,6 +22,7 @@ namespace Engine
 
 	private:
 		RenderObject* m_square;
+		GeometryGenerator::MeshData m_meshData;
 		//RenderObject m_square2;
 
 

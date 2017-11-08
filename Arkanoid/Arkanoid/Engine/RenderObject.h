@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
 #include "Light.h"
+#include "Common\GeometryGenerator.h"
 
 namespace Engine
 {
@@ -21,12 +22,7 @@ namespace Engine
 	};
 
 	// Used to send per-vertex data to the vertex shader.
-	struct Vertex
-	{
-		DirectX::XMFLOAT3 pos;
-		DirectX::XMFLOAT3 normal;
-	};
-
+	using Vertex = GeometryGenerator::Vertex;
 
 	class RenderObject: public GameObject
 	{
@@ -34,7 +30,7 @@ namespace Engine
 		explicit RenderObject(
 			const Vertex* 										vertexList,
 			UINT												vertexListSize,
-			const unsigned short* 								indexList,
+			const std::uint32_t* 									indexList,
 			UINT												indexListSize);
 		virtual ~RenderObject();
 
@@ -50,7 +46,7 @@ namespace Engine
 		void SetMeshData(
 			const Vertex* vertexList,
 			UINT						vertexListSize,
-			const unsigned short*				indexList,
+			const std::uint32_t*				indexList,
 			UINT						    indexListSize			
 		);
 
@@ -66,7 +62,7 @@ namespace Engine
 		LPCWSTR												m_pixelShaderFileName;
 		const Vertex* 										m_vertexList;
 		UINT												m_vertexListSize;
-		const unsigned short* 								m_indexList;
+		const std::uint32_t* 								m_indexList;
 		UINT												m_indexListSize;
 
 		UINT8*												m_mappedConstantBuffer;

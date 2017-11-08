@@ -32,6 +32,8 @@ struct VertexShaderInput
 	float3 pos : POSITION;
 //	float3 color : COLOR0;
 	float3 normal : TEXCOORD0;
+	float3 tangU : TEXCOORD1;
+	float2 texC : TEXCOORD2;
 };
 
 // Per-pixel color data passed through the pixel shader.

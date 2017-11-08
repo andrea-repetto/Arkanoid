@@ -14,7 +14,7 @@ using namespace DirectX;
 RenderObject::RenderObject(
 	const Vertex* 										vertexList,
 	UINT												vertexListSize,
-	const unsigned short* 								indexList,
+	const std::uint32_t* 								indexList,
 	UINT												indexListSize)
 	: GameObject()
 	, m_vertexShaderFileName(L"SampleVertexShader.cso")
@@ -60,7 +60,9 @@ void RenderObject::doStart()
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 	//	{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 1, DXGI_FORMAT_R32G32B32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 2, DXGI_FORMAT_R32G32_FLOAT, 0, 36, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
 	};
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC state = {};
@@ -136,7 +138,7 @@ void RenderObject::doStart()
 	// For example: 0,2,1 means that the vertices with indexes 0, 2 and 1 from the vertex buffer compose the
 	// first triangle of this mesh.
 
-	const UINT indexBufferSize = m_indexListSize * sizeof(unsigned short); //sizeof(cubeIndices);
+	const UINT indexBufferSize = m_indexListSize * sizeof(std::uint32_t); //sizeof(cubeIndices);
 
 	// Create the index buffer resource in the GPU's default heap and copy index data into it using the upload heap.
 	// The upload resource must not be released until after the GPU has finished using it.
@@ -302,7 +304,7 @@ void RenderObject::doRender()
 void RenderObject::SetMeshData(
 	const Vertex*				vertexList,
 	UINT						vertexListSize,
-	const unsigned short*		indexList,
+	const std::uint32_t*		indexList,
 	UINT						indexListSize
 )
 {
