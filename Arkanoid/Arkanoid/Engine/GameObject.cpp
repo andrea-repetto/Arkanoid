@@ -8,7 +8,7 @@ using namespace Engine;
 
 GameObject::GameObject()
 	: m_parent(nullptr)
-	, m_localTransform(0, 0, 0)
+	, m_localPosition(0, 0, 0)
 	, m_localRotationYawPitchRoll(0, 0, 0)
 	, m_localScale(1, 1, 1)
 
@@ -52,19 +52,19 @@ void GameObject::SetParent(GameObject* i_newParent)
 }
 
 
-DirectX::XMFLOAT3 GameObject::GetGlobalTransform() const
+DirectX::XMFLOAT3 GameObject::GetGlobalPosition() const
 {
-	DirectX::XMFLOAT3 globalTransform(0, 0, 0);
+	DirectX::XMFLOAT3 globalPosition(0, 0, 0);
 	if (m_parent)
 	{
-		globalTransform = m_parent->GetGlobalTransform();
+		globalPosition = m_parent->GetGlobalPosition();
 	}
 
-	globalTransform.x = globalTransform.x + m_localTransform.x;
-	globalTransform.y = globalTransform.y + m_localTransform.y;
-	globalTransform.z = globalTransform.z + m_localTransform.z;
+	globalPosition.x = globalPosition.x + m_localPosition.x;
+	globalPosition.y = globalPosition.y + m_localPosition.y;
+	globalPosition.z = globalPosition.z + m_localPosition.z;
 
-	return globalTransform;
+	return globalPosition;
 }
 
 DirectX::XMFLOAT3 GameObject::GetGlobalScale() const

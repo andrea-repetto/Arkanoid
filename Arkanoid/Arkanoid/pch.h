@@ -127,6 +127,9 @@
 #include <malloc.h>
 #include <stdint.h>
 
+#include "Common\d3dUtil.h"
+#include "Common\StepTimer.h"
+
 #pragma warning(push)
 #pragma warning(disable : 4467)
 #include <wrl.h>

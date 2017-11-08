@@ -3,9 +3,6 @@
 #include "Camera.h"
 #include "GameEngine.h"
 
-#include "Common\d3dUtil.h"
-#include "Common\StepTimer.h"
-
 #include "Camera.h"
 
 using namespace Engine;
@@ -255,12 +252,12 @@ void RenderObject::doUpdate(DX::StepTimer const& timer)
 	
 	XMFLOAT3 globalScale = this->GetGlobalScale();
 	XMFLOAT3 globalRotation = this->GetGlobalRotationYawPitchRoll();
-	XMFLOAT3 globalTransform = this->GetGlobalTransform();
+	XMFLOAT3 globalPosition = this->GetGlobalPosition();
 	
 
 	XMMATRIX scaling = XMMatrixScaling(globalScale.x, globalScale.y, globalScale.z);
 	XMMATRIX rotation = XMMatrixRotationRollPitchYaw(globalRotation.y, globalRotation.z, globalRotation.x);
-	XMMATRIX transform = XMMatrixTranslation(globalTransform.x, globalTransform.y, globalTransform.z);
+	XMMATRIX transform = XMMatrixTranslation(globalPosition.x, globalPosition.y, globalPosition.z);
 
 	XMMATRIX scalRot = XMMatrixMultiply(scaling, rotation);
 	XMMATRIX transf = XMMatrixMultiply(scalRot, transform);

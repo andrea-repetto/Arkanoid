@@ -3,6 +3,7 @@
 #include "GameObject.h"
 
 #include "RenderObject.h"
+#include "PhysicsObject.h"
 
 
 
@@ -23,7 +24,7 @@ namespace Engine
 	private:
 		RenderObject* m_square;
 		GeometryGenerator::MeshData m_meshData;
-		//RenderObject m_square2;
+		PhysicsObject* m_phyObj;
 
 
 	};

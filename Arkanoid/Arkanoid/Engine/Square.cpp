@@ -47,13 +47,19 @@ Square::Square()
 
 	m_square = new RenderObject( &m_meshData.Vertices[0], vertexBufferSize, (std::uint32_t*)cubeIndices, indexBufferSize);
 
-	m_square->SetParent(this);
+	m_phyObj = new PhysicsObject();
+	m_phyObj->SetVelocity(DirectX::XMFLOAT3(1, 0, 0));
+
+	m_phyObj->SetParent(this);
+
+	m_square->SetParent(m_phyObj);
 
 }
 
 Square::~Square()
 {
 	delete m_square;
+	delete m_phyObj;
 }
 
 
@@ -82,8 +88,8 @@ void Square::doUpdate(DX::StepTimer const& timer)
 
 	
 	XMFLOAT3 rot = this->GetLocalRotationYawPitchRoll();
-	XMFLOAT3 pos = this->GetLocalTransform();
-	pos.z += timer.GetElapsedSeconds()*0.1;
+	//XMFLOAT3 pos = this->GetLocalTransform();
+	//pos.z += timer.GetElapsedSeconds()*0.1;
 	//pos.y += timer.GetElapsedSeconds()*0.1;
 	//pos.z += timer.GetElapsedSeconds()*0.1;
 	XMFLOAT3 scale = this->GetLocalScale();
@@ -99,7 +105,7 @@ void Square::doUpdate(DX::StepTimer const& timer)
 	//TODO remove
 	// Update the constant buffer resource.
 	
-
+	m_phyObj->Update(timer);
 	m_square->Update(timer);
 	//m_square2.Update(timer);
 
