@@ -14,6 +14,10 @@ GameEngine::GameEngine()
 	, m_rootSignature(nullptr)
 	, m_commandList(nullptr)
 {
+	GeometryGenerator geoGen;
+	m_Sphere = geoGen.CreateSphere(1, 8, 4);
+	//m_meshData = geoGen.CreateCylinder(1, 1, 1, 32, 16);
+	m_Square = geoGen.CreateBox(1, 1, 1, 0);
 }
 
 

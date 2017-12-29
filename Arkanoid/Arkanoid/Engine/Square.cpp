@@ -10,7 +10,6 @@
 #include <ppltasks.h>
 #include <synchapi.h>
 
-#include "Common\GeometryGenerator.h"
 #include "Common\Keyboard.h"
 #include <iostream>
 
@@ -27,28 +26,11 @@ using namespace Windows::Storage;
 Square::Square()
 	: GameObject()
 {
-	//TODO FIX memoery leak TO FIIIIX
-	GeometryGenerator geoGen;
-	m_meshData = geoGen.CreateSphere(1, 8, 4);
-	//m_meshData = geoGen.CreateCylinder(1, 1, 1, 32, 16);
-	//m_meshData = geoGen.CreateBox(1, 1, 1, 0);
 
-	UINT vertexBufferSize = m_meshData.Vertices.size();
-
-
-	UINT indexBufferSize = m_meshData.Indices32.size();
-
-	unsigned short* cubeIndices = new unsigned short[indexBufferSize];
-
-	for (UINT idx = 0; idx < indexBufferSize; ++idx)
-	{
-		cubeIndices[idx] = m_meshData.Indices32[idx];
-	}
-
-	m_square = new RenderObject( &m_meshData.Vertices[0], vertexBufferSize, (std::uint32_t*)cubeIndices, indexBufferSize);
+	m_square = new RenderObject( GameEngine::Instance()->GetSquareMeshData());
 
 	m_phyObj = new PhysicsObject();
-	m_phyObj->SetVelocity(DirectX::XMFLOAT3(1, 0, 0));
+	//m_phyObj->SetVelocity(DirectX::XMFLOAT3(1, 0, 0));
 
 	m_phyObj->SetParent(this);
 

@@ -8,20 +8,12 @@
 using namespace Engine;
 using namespace DirectX;
 
-RenderObject::RenderObject(
-	const Vertex* 										vertexList,
-	UINT												vertexListSize,
-	const std::uint32_t* 								indexList,
-	UINT												indexListSize)
+RenderObject::RenderObject(const MeshData &mesh)
 	: GameObject()
 	, m_vertexShaderFileName(L"SampleVertexShader.cso")
 	, m_pixelShaderFileName(L"SamplePixelShader.cso")
-	, m_vertexList(vertexList)
-	, m_vertexListSize(vertexListSize)
-	, m_indexList(indexList)
-	, m_indexListSize(indexListSize)
+	, m_Mesh(mesh)
 {
-	assert(m_vertexList != nullptr && m_indexList != nullptr && "Vertex List and Index List cannot be Null in Render Object!");
 	ZeroMemory(&m_constantBufferData, sizeof(m_constantBufferData));
 
 	//Set matirial to red color by default
@@ -90,7 +82,7 @@ void RenderObject::doStart()
 
 	GameEngine::Instance()->CommandList()->SetPipelineState(m_pipelineState.Get());
 
-	const UINT vertexBufferSize = sizeof(Vertex)*m_vertexListSize;
+	const UINT vertexBufferSize = sizeof(Vertex)*m_Mesh.Vertices.size();
 
 	// Create the vertex buffer resource in the GPU's default heap and copy vertex data into it using the upload heap.
 	// The upload resource must not be released until after the GPU has finished using it.
@@ -119,8 +111,8 @@ void RenderObject::doStart()
 
 	// Upload the vertex buffer to the GPU.
 	{
-		D3D12_SUBRESOURCE_DATA vertexData = {};
-		vertexData.pData = reinterpret_cast<const BYTE*>(m_vertexList);
+		D3D12_SUBRESOURCE_DATA vertexData = {}; 
+		vertexData.pData = reinterpret_cast<const BYTE*>(&m_Mesh.Vertices[0]);
 		vertexData.RowPitch = vertexBufferSize;
 		vertexData.SlicePitch = vertexData.RowPitch;
 
@@ -134,8 +126,8 @@ void RenderObject::doStart()
 	// Load mesh indices. Each trio of indices represents a triangle to be rendered on the screen.
 	// For example: 0,2,1 means that the vertices with indexes 0, 2 and 1 from the vertex buffer compose the
 	// first triangle of this mesh.
-
-	const UINT indexBufferSize = m_indexListSize * sizeof(std::uint32_t); //sizeof(cubeIndices);
+	
+	const UINT indexBufferSize = static_cast<UINT>(m_Mesh.GetIndices16().size()) * sizeof(std::uint32_t); //sizeof(cubeIndices);
 
 	// Create the index buffer resource in the GPU's default heap and copy index data into it using the upload heap.
 	// The upload resource must not be released until after the GPU has finished using it.
@@ -163,7 +155,7 @@ void RenderObject::doStart()
 	// Upload the index buffer to the GPU.
 	{
 		D3D12_SUBRESOURCE_DATA indexData = {};
-		indexData.pData = reinterpret_cast<const BYTE*>(m_indexList);
+		indexData.pData = reinterpret_cast<const BYTE*>(&m_Mesh.GetIndices16()[0]);
 		indexData.RowPitch = indexBufferSize;
 		indexData.SlicePitch = indexData.RowPitch;
 
@@ -235,8 +227,6 @@ void RenderObject::doStart()
 	// Wait for the command list to finish executing; the vertex/index buffers need to be uploaded to the GPU before the upload resources go out of scope.
 	GameEngine::Instance()->DeviceResources()->WaitForGpu();
 
-	m_vertexList = nullptr;
-	m_indexList = nullptr;
 }
 
 void RenderObject::doUpdate(DX::StepTimer const& timer)
@@ -290,7 +280,7 @@ void RenderObject::doRender()
 		commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		commandList->IASetVertexBuffers(0, 1, &m_vertexBufferView);
 		commandList->IASetIndexBuffer(&m_indexBufferView);
-		commandList->DrawIndexedInstanced(m_indexListSize, 1, 0, 0, 0);
+		commandList->DrawIndexedInstanced(m_Mesh.GetIndices16().size(), 1, 0, 0, 0);
 
 
 
@@ -298,20 +288,6 @@ void RenderObject::doRender()
 	PIXEndEvent(commandList.Get());
 }
 
-void RenderObject::SetMeshData(
-	const Vertex*				vertexList,
-	UINT						vertexListSize,
-	const std::uint32_t*		indexList,
-	UINT						indexListSize
-)
-{
-	m_vertexList = vertexList;
-	m_indexList = indexList;
-	m_vertexListSize = vertexListSize;
-	m_indexListSize = indexListSize;
-
-	assert(m_vertexList != nullptr && m_indexList != nullptr && "Vertex List and Index List cannot be Null in Render Object!");
-}
 
 
 /**

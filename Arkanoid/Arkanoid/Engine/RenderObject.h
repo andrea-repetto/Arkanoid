@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "Light.h"
 #include "Common\GeometryGenerator.h"
+#include "GameEngine.h"
 
 namespace Engine
 {
@@ -21,17 +22,11 @@ namespace Engine
 
 	};
 
-	// Used to send per-vertex data to the vertex shader.
-	using Vertex = GeometryGenerator::Vertex;
 
 	class RenderObject: public GameObject
 	{
 	public:
-		explicit RenderObject(
-			const Vertex* 										vertexList,
-			UINT												vertexListSize,
-			const std::uint32_t* 									indexList,
-			UINT												indexListSize);
+		explicit RenderObject(const MeshData &mesh);
 		virtual ~RenderObject();
 
 		inline LPCWSTR GetVertexShaderFileName() const { return m_vertexShaderFileName; }
@@ -41,14 +36,6 @@ namespace Engine
 
 		inline Material GetMaterial() const { return m_constantBufferData.material; }
 		inline void SetMaterial(const Material& material) { m_constantBufferData.material = material; }
-
-
-		void SetMeshData(
-			const Vertex* vertexList,
-			UINT						vertexListSize,
-			const std::uint32_t*				indexList,
-			UINT						    indexListSize			
-		);
 
 	private:
 		void doStart() override;
@@ -60,10 +47,8 @@ namespace Engine
 	private:
 		LPCWSTR												m_vertexShaderFileName;
 		LPCWSTR												m_pixelShaderFileName;
-		const Vertex* 										m_vertexList;
-		UINT												m_vertexListSize;
-		const std::uint32_t* 								m_indexList;
-		UINT												m_indexListSize;
+
+		const MeshData									  &m_Mesh;
 
 		UINT8*												m_mappedConstantBuffer;
 		static const UINT c_alignedConstantBufferSize = (sizeof(ModelViewProjectionConstantBuffer) + 255) & ~255;
