@@ -4,36 +4,36 @@
 #include "Engine\GameEngine.h"
 
 using namespace Engine;
+using namespace DirectX;
 
 LevelOne::LevelOne()
+	: SceneController()
 {
-
-	m_square = new Square();
-	m_square->SetParent(this);
-
+	m_Wall.SetParent(this);
+	m_Wall.SetLocalPosition(XMFLOAT3(0.0f, 5.0f, 0.0f));
 
 }
 
 
 LevelOne::~LevelOne()
 {
-	delete m_square;
+
 
 }
 
 
 void LevelOne::doStart()
 {
-	m_square->Start();
+	m_Wall.Start();
 }
 
 void LevelOne::doUpdate(DX::StepTimer const& timer)
 {
-	m_square->Update(timer);
+	m_Wall.Update(timer);
 }
 
 void LevelOne::doRender()
 {
-	m_square->Render();
+	m_Wall.Render();
 
 }

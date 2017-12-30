@@ -1,10 +1,6 @@
 #pragma once
 #include "Engine/SceneController.h"
-
-namespace Engine
-{
-	class Square;
-}
+#include "Wall.h"
 
 class LevelOne : public Engine::SceneController
 {
@@ -23,6 +19,7 @@ private:
 
 
 private:
-	class Engine::Square* m_square;
+	Wall		m_Wall;
+
 };
 

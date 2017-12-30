@@ -109,6 +109,12 @@
     <ClCompile Include="Engine\PhysicsObject.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Content\Brick.cpp">
+      <Filter>Content</Filter>
+    </ClCompile>
+    <ClCompile Include="Content\Wall.cpp">
+      <Filter>Content</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
@@ -158,6 +164,12 @@
     </ClInclude>
     <ClInclude Include="Engine\PhysicsObject.h">
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Brick.h">
+      <Filter>Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Wall.h">
+      <Filter>Content</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

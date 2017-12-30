@@ -9,6 +9,17 @@ namespace Engine
 	struct Material
 	{
 		DirectX::XMFLOAT4 color;
+
+		Material(float x, float y, float z, float w)
+		{
+			color.x = x;
+			color.y = y;
+			color.z = z;
+			color.w = w;
+		}
+		Material(float x, float y, float z) : Material(x, y, z, 1.0f) {}
+		Material() : Material(1.0f, 0.0f, 0.0f) {}
+
 	};
 	// Constant buffer used to send MVP matrices to the vertex shader.
 	struct ModelViewProjectionConstantBuffer

@@ -69,20 +69,20 @@ void Square::doUpdate(DX::StepTimer const& timer)
 		// W key is down
 
 	
-	XMFLOAT3 rot = this->GetLocalRotationYawPitchRoll();
+//	XMFLOAT3 rot = this->GetLocalRotationYawPitchRoll();
 	//XMFLOAT3 pos = this->GetLocalTransform();
 	//pos.z += timer.GetElapsedSeconds()*0.1;
 	//pos.y += timer.GetElapsedSeconds()*0.1;
 	//pos.z += timer.GetElapsedSeconds()*0.1;
-	XMFLOAT3 scale = this->GetLocalScale();
+	/*XMFLOAT3 scale = this->GetLocalScale();
 	scale.x = 0.25f;
 	scale.y = 0.25f;
-	scale.z = 0.25f;
-	this->SetLocalScale(scale);
+	scale.z = 0.25f;*/
+	//this->SetLocalScale(scale);
 	//pos.x += timer.GetElapsedSeconds();
-	rot.x+= timer.GetElapsedSeconds()*2;
+	//rot.x+= timer.GetElapsedSeconds()*2;
 //	pos.y += timer.GetElapsedSeconds();
-	this->SetLocalRotationYawPitchRoll(rot);
+	//this->SetLocalRotationYawPitchRoll(rot);
 	//this->SetLocalTransform(pos);
 	//TODO remove
 	// Update the constant buffer resource.
