@@ -1,7 +1,8 @@
 #pragma once
 #include "Engine/SceneController.h"
 #include "Wall.h"
-
+#include "Side.h"
+#include "PlayerController.h"
 class LevelOne : public Engine::SceneController
 {
 public:
@@ -20,6 +21,12 @@ private:
 
 private:
 	Wall		m_Wall;
+	Side		m_UpSide;
+	Side		m_DownSide;
+	Side		m_LeftSide;
+	Side		m_RightSide;
+	PlayerController m_Player;
+
 
 };
 

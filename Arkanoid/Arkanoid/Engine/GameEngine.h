@@ -38,6 +38,7 @@ namespace Engine
 
 		inline const MeshData& GetSphereMeshData() const { return m_Sphere; }
 		inline const MeshData& GetSquareMeshData() const { return m_Square; }
+		inline const MeshData& GetCilinderMeshData() const { return m_Cilinder; }
 
 		void BeginScene();
 		void EndScene();
@@ -63,6 +64,7 @@ namespace Engine
 
 		MeshData											m_Square;
 		MeshData											m_Sphere;
+		MeshData											m_Cilinder;
 
 	
 	};
