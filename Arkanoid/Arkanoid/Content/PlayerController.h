@@ -20,6 +20,6 @@ private:
 	Engine::RenderObject	m_Body;
 	Engine::RenderObject	m_LeftHead;
 	Engine::RenderObject	m_RightHead;
-	Engine::PhysicsObject   m_Physics;
+	Engine::Physics::PhysicsObject   m_Physics;
 };
 

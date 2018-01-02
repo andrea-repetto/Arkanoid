@@ -65,6 +65,9 @@
     <Filter Include="Engine">
       <UniqueIdentifier>{8c6ee6dd-725f-4f59-9bcc-68807c09c2fd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Physics">
+      <UniqueIdentifier>{b9c9795a-41ba-4ca4-ae63-00a448b5cc22}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
@@ -106,9 +109,6 @@
     <ClCompile Include="Common\Keyboard.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\PhysicsObject.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
     <ClCompile Include="Content\Brick.cpp">
       <Filter>Content</Filter>
     </ClCompile>
@@ -123,6 +123,15 @@
     </ClCompile>
     <ClCompile Include="Content\Ball.cpp">
       <Filter>Content</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Physics\QuadTree.cpp">
+      <Filter>Engine\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Physics\Collider.cpp">
+      <Filter>Engine\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\PhysicsObject.cpp">
+      <Filter>Engine\Physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -171,9 +180,6 @@
     <ClInclude Include="Common\PlatformHelpers.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\PhysicsObject.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Content\Brick.h">
       <Filter>Content</Filter>
     </ClInclude>
@@ -188,6 +194,15 @@
     </ClInclude>
     <ClInclude Include="Content\Ball.h">
       <Filter>Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Physics\QuadTree.h">
+      <Filter>Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Physics\Collider.h">
+      <Filter>Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\PhysicsObject.h">
+      <Filter>Engine\Physics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

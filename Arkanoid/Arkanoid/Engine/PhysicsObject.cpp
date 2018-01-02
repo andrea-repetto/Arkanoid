@@ -1,16 +1,33 @@
 #include "pch.h"
 #include "PhysicsObject.h"
 
-using namespace Engine;
+using namespace Engine::Physics;
+
+//std::vector<PhysicsObject*> PhysicsObject::PhysicsObjectsList;
 
 PhysicsObject::PhysicsObject()
-	: m_velocity(0,0,0)
+	: GameObject()
+	, m_velocity(0,0,0)
+	, m_Collider(this)
+	, m_CollisionDetection(false)
 {
+	//PhysicsObjectsList.push_back(this);
 }
 
 
 PhysicsObject::~PhysicsObject()
 {
+	/* Remove element from physcs object list */
+	/**
+	for (int idx = 0; idx < PhysicsObjectsList.size(); ++idx)
+	{
+		if (PhysicsObjectsList[idx] == this)
+		{
+			PhysicsObjectsList.erase(PhysicsObjectsList.begin() + idx);
+			return;
+		}
+	}
+	*/
 }
 
 
@@ -24,14 +41,32 @@ void PhysicsObject::doUpdate(DX::StepTimer const& timer)
 {
 	DirectX::XMFLOAT3 pos = GetLocalPosition();
 
+	if (m_CollisionDetection)
+	{
+		CollisionDetection();
+	}
+
 	pos.x += m_velocity.x * timer.GetElapsedSeconds();
 	pos.y += m_velocity.y * timer.GetElapsedSeconds();
 	pos.z += m_velocity.z * timer.GetElapsedSeconds();
 
 	SetLocalPosition(pos);
+
+
 }
 
 void PhysicsObject::doRender()
+{
+
+}
+
+void PhysicsObject::SetColliderBounds(float x, float y, float width, float height)
+{
+	m_Collider.SetBounds(x, y, width, height);
+}
+
+
+void PhysicsObject::CollisionDetection()
 {
 
 }

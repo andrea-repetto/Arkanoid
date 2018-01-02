@@ -16,6 +16,7 @@
 
 
 using namespace Engine;
+using namespace Engine::Physics;
 
 using namespace Concurrency;
 using namespace DirectX;

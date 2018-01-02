@@ -216,6 +216,8 @@
     <ClInclude Include="Engine\GameEngine.h" />
     <ClInclude Include="Engine\GameObject.h" />
     <ClInclude Include="Engine\PhysicsObject.h" />
+    <ClInclude Include="Engine\Physics\Collider.h" />
+    <ClInclude Include="Engine\Physics\QuadTree.h" />
     <ClInclude Include="Engine\RenderObject.h" />
     <ClInclude Include="Engine\SceneController.h" />
     <ClInclude Include="Engine\Square.h" />
@@ -241,6 +243,8 @@
     <ClCompile Include="Engine\GameEngine.cpp" />
     <ClCompile Include="Engine\GameObject.cpp" />
     <ClCompile Include="Engine\PhysicsObject.cpp" />
+    <ClCompile Include="Engine\Physics\Collider.cpp" />
+    <ClCompile Include="Engine\Physics\QuadTree.cpp" />
     <ClCompile Include="Engine\RenderObject.cpp" />
     <ClCompile Include="Engine\SceneController.cpp" />
     <ClCompile Include="Engine\Square.cpp" />

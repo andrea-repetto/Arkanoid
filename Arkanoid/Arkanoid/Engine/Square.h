@@ -24,7 +24,7 @@ namespace Engine
 	private:
 		RenderObject* m_square;
 		GeometryGenerator::MeshData m_meshData;
-		PhysicsObject* m_phyObj;
+		Physics::PhysicsObject* m_phyObj;
 
 
 	};
