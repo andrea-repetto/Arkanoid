@@ -27,6 +27,9 @@ LevelOne::LevelOne()
 
 	m_Player.SetParent(this);
 	m_Player.SetLocalPosition(XMFLOAT3(0.0f, -6.0f, 0.0f));
+
+	m_Ball.SetParent(this);
+	m_Ball.SetLocalScale(XMFLOAT3(0.2f, 0.2f, 0.2f));
 }
 
 
@@ -46,6 +49,8 @@ void LevelOne::doStart()
 	m_LeftSide.Start();
 	m_RightSide.Start();
 	m_Player.Start();
+
+	m_Ball.Start();
 }
 
 void LevelOne::doUpdate(DX::StepTimer const& timer)
@@ -57,6 +62,7 @@ void LevelOne::doUpdate(DX::StepTimer const& timer)
 	m_LeftSide.Update(timer);
 	m_RightSide.Update(timer);
 	m_Player.Update(timer);
+	m_Ball.Update(timer);
 }
 
 void LevelOne::doRender()
@@ -68,5 +74,6 @@ void LevelOne::doRender()
 	m_LeftSide.Render();
 	m_RightSide.Render();
 	m_Player.Render();
+	m_Ball.Render();
 
 }

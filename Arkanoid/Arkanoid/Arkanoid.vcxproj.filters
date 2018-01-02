@@ -121,6 +121,9 @@
     <ClCompile Include="Content\PlayerController.cpp">
       <Filter>Content</Filter>
     </ClCompile>
+    <ClCompile Include="Content\Ball.cpp">
+      <Filter>Content</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
@@ -181,6 +184,9 @@
       <Filter>Content</Filter>
     </ClInclude>
     <ClInclude Include="Content\PlayerController.h">
+      <Filter>Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\Ball.h">
       <Filter>Content</Filter>
     </ClInclude>
   </ItemGroup>

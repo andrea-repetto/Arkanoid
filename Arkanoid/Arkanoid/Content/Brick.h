@@ -5,7 +5,7 @@
 class Brick : public Engine::GameObject 
 {
 public:
-	explicit Brick();
+	Brick();
 	virtual ~Brick();
 
 	Engine::Material GetMaterial() const;

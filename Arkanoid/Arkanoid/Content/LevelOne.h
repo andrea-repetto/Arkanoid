@@ -3,6 +3,7 @@
 #include "Wall.h"
 #include "Side.h"
 #include "PlayerController.h"
+#include "Ball.h"
 class LevelOne : public Engine::SceneController
 {
 public:
@@ -26,6 +27,7 @@ private:
 	Side		m_LeftSide;
 	Side		m_RightSide;
 	PlayerController m_Player;
+	Ball		m_Ball;
 
 
 };

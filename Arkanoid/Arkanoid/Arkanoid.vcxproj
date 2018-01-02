@@ -203,6 +203,7 @@
     <ClInclude Include="Common\MathHelper.h" />
     <ClInclude Include="Common\PlatformHelpers.h" />
     <ClInclude Include="Common\StepTimer.h" />
+    <ClInclude Include="Content\Ball.h" />
     <ClInclude Include="Content\Brick.h" />
     <ClInclude Include="Content\LevelOne.h" />
     <ClInclude Include="Content\PlayerController.h" />
@@ -229,6 +230,7 @@
     <ClCompile Include="Common\GeometryGenerator.cpp" />
     <ClCompile Include="Common\Keyboard.cpp" />
     <ClCompile Include="Common\MathHelper.cpp" />
+    <ClCompile Include="Content\Ball.cpp" />
     <ClCompile Include="Content\Brick.cpp" />
     <ClCompile Include="Content\LevelOne.cpp" />
     <ClCompile Include="Content\PlayerController.cpp" />
