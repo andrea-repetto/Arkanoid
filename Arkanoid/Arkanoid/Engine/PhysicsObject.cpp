@@ -8,7 +8,6 @@ using namespace Engine::Physics;
 PhysicsObject::PhysicsObject()
 	: GameObject()
 	, m_velocity(0,0,0)
-	, m_Collider(this)
 	, m_CollisionDetection(false)
 {
 	//PhysicsObjectsList.push_back(this);
@@ -58,11 +57,6 @@ void PhysicsObject::doUpdate(DX::StepTimer const& timer)
 void PhysicsObject::doRender()
 {
 
-}
-
-void PhysicsObject::SetColliderBounds(float x, float y, float width, float height)
-{
-	m_Collider.SetBounds(x, y, width, height);
 }
 
 

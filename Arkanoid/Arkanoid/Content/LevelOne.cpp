@@ -2,12 +2,13 @@
 #include "LevelOne.h"
 #include "Engine\Square.h"
 #include "Engine\GameEngine.h"
+#include "Engine\PhysicsObject.h"
 
 using namespace Engine;
 using namespace DirectX;
 
 LevelOne::LevelOne()
-	: SceneController()
+	: SceneController(Physics::BoundingBox(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(30.0f,30.0f,30.0f)))
 {
 	/* Brick wall */
 	m_Wall.SetParent(this);
@@ -28,8 +29,8 @@ LevelOne::LevelOne()
 	m_Player.SetParent(this);
 	m_Player.SetLocalPosition(XMFLOAT3(0.0f, -6.0f, 0.0f));
 	m_Player.SetLocalPlayerBounds(
-		m_LeftSide.GetLocalPosition().x + m_LeftSide.GetLocalScale().x,
-		m_RightSide.GetLocalPosition().x - m_RightSide.GetLocalScale().x);
+	m_LeftSide.GetLocalPosition().x + m_LeftSide.GetLocalScale().x,
+	m_RightSide.GetLocalPosition().x - m_RightSide.GetLocalScale().x);
 
 	m_Ball.SetParent(this);
 	m_Ball.SetLocalScale(XMFLOAT3(0.2f, 0.2f, 0.2f));
@@ -39,7 +40,7 @@ LevelOne::LevelOne()
 LevelOne::~LevelOne()
 {
 
-
+	
 }
 
 

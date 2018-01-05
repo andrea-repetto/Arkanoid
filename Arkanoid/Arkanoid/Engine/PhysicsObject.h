@@ -1,11 +1,28 @@
 #pragma once
 #include "GameObject.h"
-#include "Physics\Collider.h"
 #include <vector>
 namespace Engine
 {
 	namespace Physics
 	{
+		/* Box used for collision detecton and resolution */
+		/* 1.0f is default bounding box dimension, you can adjust it by changing the scale parameter */
+		struct BoundingBox
+		{
+			DirectX::XMFLOAT3 center;
+			DirectX::XMFLOAT3 scale;
+
+			BoundingBox()
+				: center(0.0f,0.0f,0.0f)
+				, scale(1.0f, 1.0f, 1.0f)
+			{}
+
+			BoundingBox(DirectX::XMFLOAT3 i_center, DirectX::XMFLOAT3 i_scale)
+				: center(i_center)
+				, scale(i_scale)
+			{}
+		};
+
 		class PhysicsObject : public GameObject
 		{
 		public:
@@ -20,9 +37,6 @@ namespace Engine
 			void doUpdate(DX::StepTimer const& timer) override;
 			void doRender() override;
 
-
-			void SetColliderBounds(float x, float y, float width, float height);
-
 			inline void EnableCollisionDetection(bool value) { m_CollisionDetection = value; }
 			inline bool IsCollisionDetectionEnabled() const { return m_CollisionDetection; }
 			
@@ -31,8 +45,8 @@ namespace Engine
 
 		private:
 			DirectX::XMFLOAT3	m_velocity;
-			Collider			m_Collider;
 			bool				m_CollisionDetection;
+			BoundingBox			m_BoundingBox;
 
 			
 			//static std::vector<PhysicsObject*> PhysicsObjectsList;

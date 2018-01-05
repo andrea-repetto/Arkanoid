@@ -124,10 +124,10 @@
     <ClCompile Include="Content\Ball.cpp">
       <Filter>Content</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Physics\Collider.cpp">
+    <ClCompile Include="Engine\PhysicsObject.cpp">
       <Filter>Engine\Physics</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\PhysicsObject.cpp">
+    <ClCompile Include="Engine\Physics\Octree.cpp">
       <Filter>Engine\Physics</Filter>
     </ClCompile>
   </ItemGroup>
@@ -192,10 +192,10 @@
     <ClInclude Include="Content\Ball.h">
       <Filter>Content</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Physics\Collider.h">
+    <ClInclude Include="Engine\PhysicsObject.h">
       <Filter>Engine\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\PhysicsObject.h">
+    <ClInclude Include="Engine\Physics\Octree.h">
       <Filter>Engine\Physics</Filter>
     </ClInclude>
   </ItemGroup>

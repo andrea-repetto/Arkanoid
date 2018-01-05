@@ -6,13 +6,22 @@
 using namespace Engine;
 
 SceneController::SceneController()
-	: GameObject( )
+	: SceneController(Physics::BoundingBox())
 {
+	
+}
+
+SceneController::SceneController(Physics::BoundingBox levelSize)
+	: GameObject()
+	, m_Octree(Physics::Octree::BuildOctree(levelSize, Physics::BoundingBox()))
+{
+
 }
 
 
 SceneController::~SceneController()
 {
+	delete m_Octree;
 }
 
 void SceneController::OnWindowResizeEvent()
