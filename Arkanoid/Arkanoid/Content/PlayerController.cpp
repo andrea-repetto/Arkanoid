@@ -10,6 +10,8 @@ PlayerController::PlayerController()
 	, m_Body(GameEngine::Instance()->GetCilinderMeshData())
 	, m_LeftHead(GameEngine::Instance()->GetSphereMeshData())
 	, m_RightHead(GameEngine::Instance()->GetSphereMeshData())
+	, m_LeftBound(-1.0f)
+	, m_RightBound(1.0f)
 {
 	m_Physics.SetParent(this);
 	m_Body.SetParent(&m_Physics);
@@ -44,9 +46,9 @@ void PlayerController::doStart()
 void PlayerController::doUpdate(DX::StepTimer const& timer)
 {
 	float moveDir = GetMovementDirectionFromInput();
-	float moveSpeed = 15.0f;
-	m_Physics.SetVelocity(XMFLOAT3(moveDir*moveSpeed, 0.0f, 0.0f));
+	float moveSpeed = CheckIfPlayerCanMove(moveDir) ? 15.0f : 0.0f;
 
+	m_Physics.SetVelocity(XMFLOAT3(moveDir*moveSpeed, 0.0f, 0.0f));
 
 	m_Physics.Update(timer);
 	m_Body.Update(timer);
@@ -75,4 +77,28 @@ float PlayerController::GetMovementDirectionFromInput()
 	}
 	
 	return 0.0f;
+}
+
+void PlayerController::SetLocalPlayerBounds(float leftBound, float rightBound)
+{
+	m_LeftBound = leftBound;
+	m_RightBound = rightBound;
+}
+
+
+bool PlayerController::CheckIfPlayerCanMove(float moveInputDirection)
+{
+	float currentXPosition = m_Body.GetGlobalPosition().x;
+	float halfBodyOffset = m_RightHead.GetLocalPosition().x + m_RightHead.GetLocalScale().x;
+
+	if ((currentXPosition - halfBodyOffset) < m_LeftBound && moveInputDirection < 1.0f)
+	{
+		return false;
+	}
+	else if ((currentXPosition + halfBodyOffset) > m_RightBound && moveInputDirection > -1.0f)
+	{
+		return false;
+	}
+
+	return true;
 }

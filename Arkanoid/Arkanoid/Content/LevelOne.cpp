@@ -27,6 +27,9 @@ LevelOne::LevelOne()
 
 	m_Player.SetParent(this);
 	m_Player.SetLocalPosition(XMFLOAT3(0.0f, -6.0f, 0.0f));
+	m_Player.SetLocalPlayerBounds(
+		m_LeftSide.GetLocalPosition().x + m_LeftSide.GetLocalScale().x,
+		m_RightSide.GetLocalPosition().x - m_RightSide.GetLocalScale().x);
 
 	m_Ball.SetParent(this);
 	m_Ball.SetLocalScale(XMFLOAT3(0.2f, 0.2f, 0.2f));

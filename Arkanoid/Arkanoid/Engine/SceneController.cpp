@@ -21,3 +21,9 @@ void SceneController::OnWindowResizeEvent()
 }
 
 
+void SceneController::RunCollisionDetection()
+{
+
+}
+
+

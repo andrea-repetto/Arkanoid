@@ -124,9 +124,6 @@
     <ClCompile Include="Content\Ball.cpp">
       <Filter>Content</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Physics\QuadTree.cpp">
-      <Filter>Engine\Physics</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Physics\Collider.cpp">
       <Filter>Engine\Physics</Filter>
     </ClCompile>
@@ -194,9 +191,6 @@
     </ClInclude>
     <ClInclude Include="Content\Ball.h">
       <Filter>Content</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Physics\QuadTree.h">
-      <Filter>Engine\Physics</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Physics\Collider.h">
       <Filter>Engine\Physics</Filter>

@@ -9,6 +9,8 @@ public:
 	PlayerController();
 	~PlayerController();
 
+	void SetLocalPlayerBounds(float leftBound, float rightBound);
+
 private:
 	void doStart() override;
 	void doUpdate(DX::StepTimer const& timer) override;
@@ -16,10 +18,14 @@ private:
 
 	float GetMovementDirectionFromInput();
 
+	bool CheckIfPlayerCanMove(float moveInputDirection);
+
 private:
 	Engine::RenderObject	m_Body;
 	Engine::RenderObject	m_LeftHead;
 	Engine::RenderObject	m_RightHead;
 	Engine::Physics::PhysicsObject   m_Physics;
+	float m_LeftBound;
+	float m_RightBound;
 };
 

@@ -1,6 +1,8 @@
 #pragma once
 
 #include "GameObject.h"
+
+#include <vector>
 namespace Engine
 {
 	class SceneController : public GameObject
@@ -10,12 +12,14 @@ namespace Engine
 		virtual ~SceneController();
 		
 		void OnWindowResizeEvent();
+		void RunCollisionDetection();
 
 
 	private:
 		virtual void doRender() = 0;
 
 	private:
+		
 		
 	};
 }

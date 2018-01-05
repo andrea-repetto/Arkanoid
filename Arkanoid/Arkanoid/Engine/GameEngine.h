@@ -52,6 +52,7 @@ namespace Engine
 		GameEngine& operator=(const GameEngine&) = default;
 
 
+
 	private:
 		static GameEngine* s_Instance;
 
@@ -65,8 +66,7 @@ namespace Engine
 		MeshData											m_Square;
 		MeshData											m_Sphere;
 		MeshData											m_Cilinder;
-
-	
+		
 	};
 }
 
