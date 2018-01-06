@@ -37,15 +37,15 @@ namespace Engine
 			inline BoundingBox GetBoundingBox() const { return m_BoundingBox; }
 			inline void SetBoundingBox(const BoundingBox& bb) { m_BoundingBox = bb; }
 
+			inline void EnableCollisionDetection(bool value) { m_CollisionDetection = value; }
+			inline bool IsCollisionDetectionEnabled() const { return m_CollisionDetection; }
+
+
 
 		private:
 			void doStart() override;
 			void doUpdate(DX::StepTimer const& timer) override;
 			void doRender() override;
-
-			inline void EnableCollisionDetection(bool value) { m_CollisionDetection = value; }
-			inline bool IsCollisionDetectionEnabled() const { return m_CollisionDetection; }
-			
 
 			void CollisionDetection();
 

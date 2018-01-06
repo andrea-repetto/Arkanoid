@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine\GameObject.h"
 #include "Engine\RenderObject.h"
+#include "Engine\PhysicsObject.h"
 
 class Side : public Engine::GameObject
 {
@@ -15,5 +16,6 @@ private:
 
 private:
 	Engine::RenderObject	m_rectSide;
+	Engine::Physics::PhysicsObject   m_Physics;
 };
 

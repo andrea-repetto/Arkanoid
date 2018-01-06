@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine\GameObject.h"
 #include "Engine\RenderObject.h"
+#include "Engine\PhysicsObject.h"
 
 class Brick : public Engine::GameObject 
 {
@@ -21,5 +22,6 @@ private:
 
 private:
 	Engine::RenderObject	m_rectBrick;
+	Engine::Physics::PhysicsObject   m_Physics;
 };
 

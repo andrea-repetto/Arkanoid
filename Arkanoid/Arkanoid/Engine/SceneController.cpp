@@ -33,6 +33,7 @@ void SceneController::OnWindowResizeEvent()
 void SceneController::RunCollisionDetection()
 {
 	Physics::Octree::UpdateOctree(*m_Octree);
+	Physics::Octree::RunCollisionDetection(*m_Octree);
 }
 
 

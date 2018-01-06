@@ -89,7 +89,7 @@ void PlayerController::SetLocalPlayerBounds(float leftBound, float rightBound)
 bool PlayerController::CheckIfPlayerCanMove(float moveInputDirection)
 {
 	float currentXPosition = m_Body.GetGlobalPosition().x;
-	float halfBodyOffset = m_RightHead.GetLocalPosition().x + m_RightHead.GetLocalScale().x;
+	float halfBodyOffset = m_RightHead.GetLocalPosition().x + m_RightHead.GetLocalScale().x/2.0f;
 
 	if ((currentXPosition - halfBodyOffset) < m_LeftBound && moveInputDirection < 1.0f)
 	{

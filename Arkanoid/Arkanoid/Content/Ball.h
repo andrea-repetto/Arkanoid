@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine\GameObject.h"
 #include "Engine\RenderObject.h"
+#include "Engine\PhysicsObject.h"
 
 class Ball: public Engine::GameObject
 {
@@ -15,5 +16,6 @@ private:
 
 private:
 	Engine::RenderObject	m_sphere;
+	Engine::Physics::PhysicsObject   m_Physics;
 };
 

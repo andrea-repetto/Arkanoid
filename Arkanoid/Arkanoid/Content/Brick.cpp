@@ -8,6 +8,7 @@ Brick::Brick()
 	: GameObject()
 	, m_rectBrick(GameEngine::Instance()->GetSquareMeshData())
 {
+	m_Physics.SetParent(this);
 	m_rectBrick.SetParent(this);
 	m_rectBrick.SetLocalScale(XMFLOAT3(1.0f, 0.5f, 0.25f));
 }

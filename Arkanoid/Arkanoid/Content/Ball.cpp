@@ -9,6 +9,8 @@ Ball::Ball()
 	, m_sphere(GameEngine::Instance()->GetSphereMeshData())
 {
 	m_sphere.SetParent(this);
+	m_Physics.SetParent(this);
+	m_Physics.EnableCollisionDetection(true);
 }
 
 

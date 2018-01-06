@@ -109,6 +109,24 @@ void Octree::RecursiveCreateChildren(Octree& parent, BoundingBox min)
 	
 }
 
+void Octree::RunCollisionDetection(Octree& root)
+{
+	std::vector<PhysicsObject*> result;
+	for (int idx = 0; idx < AllPhysicsObjList.size(); ++idx)
+	{
+		result.clear();
+		if (AllPhysicsObjList[idx]->IsCollisionDetectionEnabled())
+		{
+			root.RetrievePossibleCollisionObject(result, *AllPhysicsObjList[idx]);
+
+			for (int jdx = 0; jdx < result.size(); ++jdx)
+			{
+				//Run collision detection
+			}
+		}
+	}
+}
+
 void Octree::Insert(PhysicsObject& phyObj)
 {
 	if (m_Children[0] != nullptr)
@@ -177,5 +195,21 @@ int Octree::GetIndex(PhysicsObject& phyObj)
 	if (isDown && isBack && isRight) return BACK_DOWN_RIGHT;
 
 	return PARENT_NODE;
+}
+
+void Octree::RetrievePossibleCollisionObject(
+	std::vector<PhysicsObject*>& result, 
+	PhysicsObject& obj)
+{
+	int index = GetIndex(obj);
+	if (index != -1 && m_Children[0] != nullptr)
+	{
+		m_Children[index]->RetrievePossibleCollisionObject(result, obj);
+	}
+
+	for (int idx = 0; idx < m_PhysicsObjectList.size(); ++idx)
+	{
+		result.push_back(m_PhysicsObjectList[idx]);
+	}
 }
 
