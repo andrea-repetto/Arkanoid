@@ -23,6 +23,8 @@ namespace Engine
 			{}
 		};
 
+		class Octree;
+
 		class PhysicsObject : public GameObject
 		{
 		public:
@@ -34,6 +36,7 @@ namespace Engine
 
 			inline BoundingBox GetBoundingBox() const { return m_BoundingBox; }
 			inline void SetBoundingBox(const BoundingBox& bb) { m_BoundingBox = bb; }
+
 
 		private:
 			void doStart() override;

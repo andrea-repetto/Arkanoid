@@ -3,6 +3,8 @@
 
 using namespace Engine::Physics;
 
+std::vector<PhysicsObject*>	Octree::AllPhysicsObjList;
+
 Octree::Octree(BoundingBox boundingBox)
 	: m_BoundingBox(boundingBox)
 {
@@ -28,7 +30,8 @@ void Octree::Clear()
 
 	for (int idx = 0; idx < 8; ++idx)
 	{
-		m_Children[idx]->Clear();
+		if(m_Children[idx] != nullptr)
+			m_Children[idx]->Clear();
 	}
 }
 
@@ -43,6 +46,32 @@ Octree* Octree::BuildOctree(BoundingBox max, BoundingBox min)
 	RecursiveCreateChildren(*root, min);
 
 	return root;
+}
+
+void Octree::RegisterPhysicsObj(PhysicsObject& phyObj)
+{
+	AllPhysicsObjList.push_back(&phyObj);
+}
+
+void Octree::DeregisterPhysicsObj(PhysicsObject& phyObj)
+{
+	for (int idx = 0; idx < AllPhysicsObjList.size(); ++idx)
+	{
+		if (AllPhysicsObjList[idx] == &phyObj)
+		{
+			AllPhysicsObjList.erase(AllPhysicsObjList.begin() + idx);
+			return;
+		}
+	}
+}
+
+void Octree::UpdateOctree(Octree& root)
+{
+	root.Clear();
+	for (int idx = 0; idx < AllPhysicsObjList.size(); ++idx)
+	{
+		root.Insert(*AllPhysicsObjList[idx]);
+	}
 }
 
 void Octree::RecursiveCreateChildren(Octree& parent, BoundingBox min)

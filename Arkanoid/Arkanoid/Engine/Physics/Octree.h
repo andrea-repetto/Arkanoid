@@ -18,6 +18,9 @@ namespace Engine
 
 
 			static Octree* BuildOctree(BoundingBox max, BoundingBox min);
+			static void UpdateOctree(Octree& root);
+			static void RegisterPhysicsObj(PhysicsObject& phyObj);
+			static void DeregisterPhysicsObj(PhysicsObject& phyObj);
 
 		private:
 			static void RecursiveCreateChildren(Octree& parent, BoundingBox min);
@@ -37,6 +40,9 @@ namespace Engine
 				BACK_DOWN_LEFT,
 				BACK_DOWN_RIGHT
 			};
+
+		private:
+			static std::vector<PhysicsObject*>	AllPhysicsObjList;
 
 		private:
 			BoundingBox							m_BoundingBox;

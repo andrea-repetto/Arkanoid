@@ -29,7 +29,6 @@ void ArkanoidMain::CreateRenderers(const std::shared_ptr<DX::DeviceResources>& d
 	//EngineRes::Initialize(deviceResources);
 	GameEngine::Instance()->Initialize(deviceResources);
 
-
 	m_sceneRenderer = std::unique_ptr<LevelOne>(new LevelOne());
 
 	m_sceneRenderer->Start();
@@ -43,7 +42,7 @@ void ArkanoidMain::Update()
 	// Update scene objects.
 	m_timer.Tick([&]()
 	{
-		// TODO: Replace this with your app's content update functions.
+		m_sceneRenderer->RunCollisionDetection();
 		m_sceneRenderer->Update(m_timer);
 	});
 }
@@ -59,7 +58,6 @@ bool ArkanoidMain::Render()
 	}
 
 	// Render the scene objects.
-	// TODO: Replace this with your app's content rendering functions.
 	GameEngine::Instance()->BeginScene();
 	m_sceneRenderer->Render();
 	GameEngine::Instance()->EndScene();

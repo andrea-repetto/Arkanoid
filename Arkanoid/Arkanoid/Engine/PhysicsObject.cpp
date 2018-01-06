@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "PhysicsObject.h"
+#include "Physics\Octree.h"
 
 using namespace Engine::Physics;
 
@@ -10,25 +11,14 @@ PhysicsObject::PhysicsObject()
 	, m_velocity(0,0,0)
 	, m_CollisionDetection(false)
 {
-	//PhysicsObjectsList.push_back(this);
+	Octree::RegisterPhysicsObj(*this);
 }
 
 
 PhysicsObject::~PhysicsObject()
 {
-	/* Remove element from physcs object list */
-	/**
-	for (int idx = 0; idx < PhysicsObjectsList.size(); ++idx)
-	{
-		if (PhysicsObjectsList[idx] == this)
-		{
-			PhysicsObjectsList.erase(PhysicsObjectsList.begin() + idx);
-			return;
-		}
-	}
-	*/
+	Octree::DeregisterPhysicsObj(*this);
 }
-
 
 
 void PhysicsObject::doStart()
