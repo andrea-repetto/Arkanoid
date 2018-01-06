@@ -34,13 +34,14 @@ namespace Engine
 			inline const DirectX::XMFLOAT3& GetVelocity() const { return m_velocity; }
 			inline void SetVelocity(const DirectX::XMFLOAT3& velocity) { m_velocity = velocity; }
 
-			inline BoundingBox GetBoundingBox() const { return m_BoundingBox; }
+			//inline BoundingBox GetBoundingBox() const { return m_BoundingBox; }
+			BoundingBox GetWorldBoundingBox() const;
 			inline void SetBoundingBox(const BoundingBox& bb) { m_BoundingBox = bb; }
 
 			inline void EnableCollisionDetection(bool value) { m_CollisionDetection = value; }
 			inline bool IsCollisionDetectionEnabled() const { return m_CollisionDetection; }
 
-
+			void CollisionTest(PhysicsObject& other);
 
 		private:
 			void doStart() override;

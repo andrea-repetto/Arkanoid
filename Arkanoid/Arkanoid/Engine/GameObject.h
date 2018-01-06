@@ -44,10 +44,13 @@ namespace Engine
 		virtual void doRender() = 0;
 
 	private:
-		GameObject*				m_parent;
+		
 		DirectX::XMFLOAT3		m_localPosition;
 		DirectX::XMFLOAT3		m_localRotationYawPitchRoll;
 		DirectX::XMFLOAT3		m_localScale;
+
+	protected:
+		GameObject*				m_parent;
 
 	};
 }

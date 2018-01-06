@@ -22,12 +22,14 @@ private:
 
 private:
 	Wall		m_Wall;
+	Ball		m_Ball;
+	
 	Side		m_UpSide;
 	Side		m_DownSide;
 	Side		m_LeftSide;
 	Side		m_RightSide;
 	PlayerController m_Player;
-	Ball		m_Ball;
+	
 
 
 };

@@ -9,8 +9,11 @@ Brick::Brick()
 	, m_rectBrick(GameEngine::Instance()->GetSquareMeshData())
 {
 	m_Physics.SetParent(this);
-	m_rectBrick.SetParent(this);
-	m_rectBrick.SetLocalScale(XMFLOAT3(1.0f, 0.5f, 0.25f));
+	m_rectBrick.SetParent(&m_Physics);
+	XMFLOAT3 scale(1.0f, 0.5f, 0.25f);
+	m_rectBrick.SetLocalScale(scale);
+	Physics::BoundingBox b(XMFLOAT3(0.0f, 0.0f, 0.0f),scale);
+	m_Physics.SetBoundingBox(b);
 }
 
 

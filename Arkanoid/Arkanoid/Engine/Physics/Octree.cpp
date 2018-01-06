@@ -122,6 +122,10 @@ void Octree::RunCollisionDetection(Octree& root)
 			for (int jdx = 0; jdx < result.size(); ++jdx)
 			{
 				//Run collision detection
+				if (result[jdx] != AllPhysicsObjList[idx]) // avoid test between obj and itself
+				{
+					AllPhysicsObjList[idx]->CollisionTest(*result[jdx]);
+				}
 			}
 		}
 	}
@@ -150,33 +154,26 @@ void Octree::Insert(PhysicsObject& phyObj)
 */
 int Octree::GetIndex(PhysicsObject& phyObj)
 {
-	BoundingBox bb = phyObj.GetBoundingBox();
+	BoundingBox bb = phyObj.GetWorldBoundingBox();
 	DirectX::XMFLOAT3 objPos = phyObj.GetGlobalPosition();
 
-	/* Bounding Box world position */
-	DirectX::XMFLOAT3 bbPos = DirectX::XMFLOAT3(
-		objPos.x + bb.center.x,
-		objPos.y + bb.center.y,
-		objPos.z + bb.center.z
-	);
+	boolean isUpper = (bb.center.y + bb.scale.y / 2.0f) > m_BoundingBox.center.y &&
+		(bb.center.y - bb.scale.y / 2.0f) > m_BoundingBox.center.y;
 
-	boolean isUpper = (bbPos.y + bb.scale.y / 2.0f) > m_BoundingBox.center.y &&
-		(bbPos.y - bb.scale.y / 2.0f) > m_BoundingBox.center.y;
+	boolean isDown = (bb.center.y + bb.scale.y / 2.0f) < m_BoundingBox.center.y &&
+		(bb.center.y - bb.scale.y / 2.0f) < m_BoundingBox.center.y;
 
-	boolean isDown = (bbPos.y + bb.scale.y / 2.0f) < m_BoundingBox.center.y &&
-		(bbPos.y - bb.scale.y / 2.0f) < m_BoundingBox.center.y;
+	boolean isRight = (bb.center.x + bb.scale.x / 2.0f) > m_BoundingBox.center.x &&
+		(bb.center.x - bb.scale.x / 2.0f) > m_BoundingBox.center.x;
 
-	boolean isRight = (bbPos.x + bb.scale.x / 2.0f) > m_BoundingBox.center.x &&
-		(bbPos.x - bb.scale.x / 2.0f) > m_BoundingBox.center.x;
+	boolean isLeft = (bb.center.x + bb.scale.x / 2.0f) < m_BoundingBox.center.x &&
+		(bb.center.x - bb.scale.x / 2.0f) < m_BoundingBox.center.x;
 
-	boolean isLeft = (bbPos.x + bb.scale.x / 2.0f) < m_BoundingBox.center.x &&
-		(bbPos.x - bb.scale.x / 2.0f) < m_BoundingBox.center.x;
+	boolean isFront = (bb.center.z + bb.scale.z / 2.0f) > m_BoundingBox.center.z &&
+		(bb.center.z - bb.scale.z / 2.0f) > m_BoundingBox.center.z;
 
-	boolean isFront = (bbPos.z + bb.scale.z / 2.0f) > m_BoundingBox.center.z &&
-		(bbPos.z - bb.scale.z / 2.0f) > m_BoundingBox.center.z;
-
-	boolean isBack = (bbPos.z + bb.scale.z / 2.0f) < m_BoundingBox.center.z &&
-		(bbPos.z - bb.scale.z / 2.0f) < m_BoundingBox.center.z;
+	boolean isBack = (bb.center.z + bb.scale.z / 2.0f) < m_BoundingBox.center.z &&
+		(bb.center.z - bb.scale.z / 2.0f) < m_BoundingBox.center.z;
 
 	if (isUpper && isFront && isLeft) return FRONT_UPPER_LEFT;
 
