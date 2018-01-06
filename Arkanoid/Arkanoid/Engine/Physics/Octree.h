@@ -10,19 +10,24 @@ namespace Engine
 		class Octree
 		{
 		public:
-			Octree(BoundingBox boundingBox);
+			explicit Octree(BoundingBox boundingBox);
 			~Octree();
 
 			void Clear();
+			void Insert(PhysicsObject& phyObj);
+
 
 			static Octree* BuildOctree(BoundingBox max, BoundingBox min);
 
 		private:
 			static void RecursiveCreateChildren(Octree& parent, BoundingBox min);
 
+			int GetIndex(PhysicsObject& phyObj);
+
 		private:
 			enum
 			{
+				PARENT_NODE			= -1,
 				FRONT_UPPER_LEFT	= 0,		
 				FRONT_UPPER_RIGHT,
 				FRONT_DOWN_LEFT,

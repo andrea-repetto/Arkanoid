@@ -32,6 +32,9 @@ namespace Engine
 			inline const DirectX::XMFLOAT3& GetVelocity() const { return m_velocity; }
 			inline void SetVelocity(const DirectX::XMFLOAT3& velocity) { m_velocity = velocity; }
 
+			inline BoundingBox GetBoundingBox() const { return m_BoundingBox; }
+			inline void SetBoundingBox(const BoundingBox& bb) { m_BoundingBox = bb; }
+
 		private:
 			void doStart() override;
 			void doUpdate(DX::StepTimer const& timer) override;

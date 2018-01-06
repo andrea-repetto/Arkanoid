@@ -80,3 +80,73 @@ void Octree::RecursiveCreateChildren(Octree& parent, BoundingBox min)
 	
 }
 
+void Octree::Insert(PhysicsObject& phyObj)
+{
+	if (m_Children[0] != nullptr)
+	{
+		int index = GetIndex(phyObj);
+
+		if (index != PARENT_NODE)
+		{
+			m_Children[index]->Insert(phyObj);
+			return;
+		}
+	}
+
+	m_PhysicsObjectList.push_back(&phyObj);
+
+}
+
+/**
+* Determine in wich Octree child must be located the object.
+* 
+*/
+int Octree::GetIndex(PhysicsObject& phyObj)
+{
+	BoundingBox bb = phyObj.GetBoundingBox();
+	DirectX::XMFLOAT3 objPos = phyObj.GetGlobalPosition();
+
+	/* Bounding Box world position */
+	DirectX::XMFLOAT3 bbPos = DirectX::XMFLOAT3(
+		objPos.x + bb.center.x,
+		objPos.y + bb.center.y,
+		objPos.z + bb.center.z
+	);
+
+	boolean isUpper = (bbPos.y + bb.scale.y / 2.0f) > m_BoundingBox.center.y &&
+		(bbPos.y - bb.scale.y / 2.0f) > m_BoundingBox.center.y;
+
+	boolean isDown = (bbPos.y + bb.scale.y / 2.0f) < m_BoundingBox.center.y &&
+		(bbPos.y - bb.scale.y / 2.0f) < m_BoundingBox.center.y;
+
+	boolean isRight = (bbPos.x + bb.scale.x / 2.0f) > m_BoundingBox.center.x &&
+		(bbPos.x - bb.scale.x / 2.0f) > m_BoundingBox.center.x;
+
+	boolean isLeft = (bbPos.x + bb.scale.x / 2.0f) < m_BoundingBox.center.x &&
+		(bbPos.x - bb.scale.x / 2.0f) < m_BoundingBox.center.x;
+
+	boolean isFront = (bbPos.z + bb.scale.z / 2.0f) > m_BoundingBox.center.z &&
+		(bbPos.z - bb.scale.z / 2.0f) > m_BoundingBox.center.z;
+
+	boolean isBack = (bbPos.z + bb.scale.z / 2.0f) < m_BoundingBox.center.z &&
+		(bbPos.z - bb.scale.z / 2.0f) < m_BoundingBox.center.z;
+
+	if (isUpper && isFront && isLeft) return FRONT_UPPER_LEFT;
+
+	if (isUpper && isFront && isRight) return FRONT_UPPER_RIGHT;
+
+	if (isDown && isFront && isLeft) return FRONT_DOWN_LEFT;
+
+	if (isDown && isFront && isRight) return FRONT_DOWN_RIGHT;
+
+	if (isUpper && isBack && isLeft) return BACK_UPPER_LEFT;
+
+	if (isUpper && isBack && isRight) return BACK_UPPER_RIGHT;
+
+	if (isDown && isBack && isLeft) return BACK_DOWN_LEFT;
+
+	if (isDown && isBack && isRight) return BACK_DOWN_RIGHT;
+
+	return PARENT_NODE;
+}
+
