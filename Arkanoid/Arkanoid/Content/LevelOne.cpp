@@ -38,7 +38,10 @@ LevelOne::LevelOne()
 	m_LeftSide.GetLocalPosition().x + m_LeftSide.GetLocalScale().x,
 	m_RightSide.GetLocalPosition().x - m_RightSide.GetLocalScale().x);
 	
+	//Test
+	Physics::PhysicsObject::OnCollisionDetected listener = &(LevelOne::Test);
 
+	m_Ball.RegisterCollisionListener(listener);
 
 }
 
@@ -90,4 +93,17 @@ void LevelOne::doRender()
 	m_Player.Render();
 	
 
+}
+
+void LevelOne::Test(Physics::PhysicsObject& caller, Physics::PhysicsObject& other)
+{
+	DirectX::XMFLOAT3 vel = caller.GetVelocity();
+	//provvisorio
+	vel = DirectX::XMFLOAT3(
+		vel.x,
+		vel.y*(-1.0f),
+		vel.z
+	);
+
+	caller.SetVelocity(vel);
 }

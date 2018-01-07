@@ -25,6 +25,8 @@ namespace Engine
 
 		class Octree;
 
+		
+
 		class PhysicsObject : public GameObject
 		{
 		public:
@@ -43,6 +45,11 @@ namespace Engine
 
 			void CollisionTest(PhysicsObject& other);
 
+			typedef void(*OnCollisionDetected)(PhysicsObject& caller, PhysicsObject& other);		//registerable event
+
+			void RegisterCollisionListener(OnCollisionDetected onCollisionListener);
+			void DeleteCollisionListener(OnCollisionDetected onCollisionListener);
+
 		protected:
 			void doStart() override;
 			void doUpdate(DX::StepTimer const& timer) override;
@@ -50,15 +57,17 @@ namespace Engine
 
 		private:
 
-			void CollisionDetection();
+			void CollisionDetected(PhysicsObject& other);
 
 		private:
 			DirectX::XMFLOAT3	m_velocity;
 			bool				m_CollisionDetection;
 			BoundingBox			m_BoundingBox;
 
+
+			std::vector<OnCollisionDetected> m_RegisteredCollisionListener;
 			
-			//static std::vector<PhysicsObject*> PhysicsObjectsList;
+			static std::vector<PhysicsObject*> PhysicsObjectsList;
 		};
 	}
 }

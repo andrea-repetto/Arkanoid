@@ -30,11 +30,6 @@ void PhysicsObject::doUpdate(DX::StepTimer const& timer)
 {
 	DirectX::XMFLOAT3 pos = GetLocalPosition();
 
-	if (m_CollisionDetection)
-	{
-		CollisionDetection();
-	}
-
 	float elapsedSeconds = static_cast<float>(timer.GetElapsedSeconds());
 
 	pos.x += m_velocity.x * elapsedSeconds;
@@ -42,7 +37,6 @@ void PhysicsObject::doUpdate(DX::StepTimer const& timer)
 	pos.z += m_velocity.z * elapsedSeconds;
 
 	SetLocalPosition(pos);
-
 
 }
 
@@ -52,9 +46,12 @@ void PhysicsObject::doRender()
 }
 
 
-void PhysicsObject::CollisionDetection()
+void PhysicsObject::CollisionDetected(PhysicsObject& other)
 {
-
+	for (size_t idx = 0; idx < m_RegisteredCollisionListener.size(); ++idx)
+	{
+		m_RegisteredCollisionListener[idx](*this, other);
+	}
 }
 
 
@@ -86,11 +83,7 @@ void PhysicsObject::CollisionTest(PhysicsObject& other)
 	if (!isNotOverlappingOnXAxis && !isNotOverlappingOnYAxis && !isNotOverlappingOnZAxis)
 	{
 		//Collision detected
-		m_velocity = DirectX::XMFLOAT3(
-			m_velocity.x,
-			m_velocity.y*(-1.0f),
-			m_velocity.z
-		);
+		CollisionDetected(other);
 	}
 }
 
@@ -117,7 +110,26 @@ BoundingBox PhysicsObject::GetWorldBoundingBox() const
 
 	return result;
 }
-/**
+
+
+void PhysicsObject::RegisterCollisionListener(OnCollisionDetected onCollisionListener)
+{
+	m_RegisteredCollisionListener.push_back(onCollisionListener);
+}
+
+void PhysicsObject::DeleteCollisionListener(OnCollisionDetected onCollisionListener)
+{
+	for (size_t idx = 0; idx < m_RegisteredCollisionListener.size(); ++idx)
+	{
+		if (m_RegisteredCollisionListener[idx] == onCollisionListener)
+		{
+			m_RegisteredCollisionListener.erase(m_RegisteredCollisionListener.begin() + idx);
+			return;
+		}
+	}
+}
+
+/*
 void PhysicsObject::NotyfyCollisionDetected(PhysicsObject& other)
 {
 	//provvisorio

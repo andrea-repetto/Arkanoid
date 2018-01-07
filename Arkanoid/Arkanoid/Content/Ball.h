@@ -14,6 +14,7 @@ protected:
 	void doUpdate(DX::StepTimer const& timer) override;
 	void doRender() override;
 
+
 private:
 	Engine::RenderObject	m_sphere;
 };

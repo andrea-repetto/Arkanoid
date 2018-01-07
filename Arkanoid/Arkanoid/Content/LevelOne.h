@@ -4,6 +4,7 @@
 #include "Side.h"
 #include "PlayerController.h"
 #include "Ball.h"
+
 class LevelOne : public Engine::SceneController
 {
 public:
@@ -16,7 +17,6 @@ protected:
 
 	void doRender() override;
 
-
 private:
 	Wall		m_Wall;
 	Ball		m_Ball;
@@ -26,6 +26,10 @@ private:
 	Side		m_LeftSide;
 	Side		m_RightSide;
 	PlayerController m_Player;
+
+
+private:
+	static void Test(Engine::Physics::PhysicsObject& caller, Engine::Physics::PhysicsObject& other);
 	
 
 
