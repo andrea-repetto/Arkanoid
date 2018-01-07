@@ -23,6 +23,11 @@ namespace Engine
 			{}
 		};
 
+		struct ContactPoint
+		{
+			DirectX::XMFLOAT3 normal;
+		};
+
 		class Octree;
 
 		
@@ -45,10 +50,10 @@ namespace Engine
 
 			void CollisionTest(PhysicsObject& other);
 
-			typedef void(*OnCollisionDetected)(PhysicsObject& caller, PhysicsObject& other);		//registerable event
+			//typedef void(*OnCollisionDetected)(PhysicsObject& caller, PhysicsObject& other);		//registerable event
 
-			void RegisterCollisionListener(OnCollisionDetected onCollisionListener);
-			void DeleteCollisionListener(OnCollisionDetected onCollisionListener);
+			//void RegisterCollisionListener(OnCollisionDetected onCollisionListener);
+			//void DeleteCollisionListener(OnCollisionDetected onCollisionListener);
 
 		protected:
 			void doStart() override;
@@ -57,7 +62,7 @@ namespace Engine
 
 		private:
 
-			void CollisionDetected(PhysicsObject& other);
+			void CollisionDetected(PhysicsObject& other, const ContactPoint& p );
 
 		private:
 			DirectX::XMFLOAT3	m_velocity;
@@ -65,7 +70,7 @@ namespace Engine
 			BoundingBox			m_BoundingBox;
 
 
-			std::vector<OnCollisionDetected> m_RegisteredCollisionListener;
+			//std::vector<OnCollisionDetected> m_RegisteredCollisionListener;
 			
 			static std::vector<PhysicsObject*> PhysicsObjectsList;
 		};

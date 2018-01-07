@@ -3,7 +3,7 @@
 #include "Engine\RenderObject.h"
 #include "Engine\PhysicsObject.h"
 
-class PlayerController : public Engine::GameObject
+class PlayerController : public Engine::Physics::PhysicsObject
 {
 public:
 	PlayerController();
@@ -26,7 +26,7 @@ private:
 	Engine::RenderObject	m_Body;
 	Engine::RenderObject	m_LeftHead;
 	Engine::RenderObject	m_RightHead;
-	Engine::Physics::PhysicsObject   m_Physics;
+
 	float m_LeftBound;
 	float m_RightBound;
 };

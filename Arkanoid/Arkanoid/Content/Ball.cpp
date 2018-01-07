@@ -11,7 +11,10 @@ Ball::Ball()
 	m_sphere.SetParent(this);
 	EnableCollisionDetection(true);
 
-	SetVelocity(XMFLOAT3(0.0f, 4.0f, 0.0f));
+	SetVelocity(XMFLOAT3(1.0f, 4.0f, 0.0f));
+
+//	Physics::BoundingBox b(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.2f, 0.2f, 0.2f));
+//	SetBoundingBox(b);
 }
 
 

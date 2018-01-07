@@ -24,6 +24,7 @@ LevelOne::LevelOne()
 	m_UpSide.SetParent(this);
 	m_UpSide.SetLocalPosition(XMFLOAT3(0.0f, 7.0f, -5.0f));
 	m_UpSide.SetLocalScale(XMFLOAT3(20.0f, 0.5f, 0.25f));
+
 	//m_DownSide.SetParent(this); 
 	m_LeftSide.SetParent(this);
 	m_LeftSide.SetLocalPosition(XMFLOAT3(-10.0f, 0.0f, -5.0f));
@@ -39,9 +40,9 @@ LevelOne::LevelOne()
 	m_RightSide.GetLocalPosition().x - m_RightSide.GetLocalScale().x);
 	
 	//Test
-	Physics::PhysicsObject::OnCollisionDetected listener = &(LevelOne::Test);
+//	Physics::PhysicsObject::OnCollisionDetected listener = &(LevelOne::Test);
 
-	m_Ball.RegisterCollisionListener(listener);
+//	m_Ball.RegisterCollisionListener(listener);
 
 }
 

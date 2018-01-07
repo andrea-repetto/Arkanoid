@@ -11,8 +11,8 @@ Brick::Brick()
 	m_rectBrick.SetParent(this);
 	XMFLOAT3 scale(1.0f, 0.5f, 0.25f);
 	m_rectBrick.SetLocalScale(scale);
-	Physics::BoundingBox b(XMFLOAT3(0.0f, 0.0f, 0.0f),scale);
-	SetBoundingBox(b);
+	//Physics::BoundingBox b(XMFLOAT3(0.0f, 0.0f, 0.0f),scale);
+	//SetBoundingBox(b);
 }
 
 
