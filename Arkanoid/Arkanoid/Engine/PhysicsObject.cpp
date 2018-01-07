@@ -139,11 +139,11 @@ void PhysicsObject::CollisionTest(PhysicsObject& other)
 		{
 			if (myBB.center.x < othBB.center.x) //collision is above
 			{
-				p.normal = DirectX::XMFLOAT3(-1.0f, 0.0f, 0.0f);
+				p.normal = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
 			}
 			else
 			{
-				p.normal = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
+				p.normal = DirectX::XMFLOAT3(-1.0f, 0.0f, 0.0f);
 			}
 		}
 		else //Max overlap on Z axes
