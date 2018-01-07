@@ -43,10 +43,12 @@ namespace Engine
 
 			void CollisionTest(PhysicsObject& other);
 
-		private:
+		protected:
 			void doStart() override;
 			void doUpdate(DX::StepTimer const& timer) override;
 			void doRender() override;
+
+		private:
 
 			void CollisionDetection();
 

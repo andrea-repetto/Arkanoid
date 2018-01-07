@@ -35,9 +35,11 @@ void PhysicsObject::doUpdate(DX::StepTimer const& timer)
 		CollisionDetection();
 	}
 
-	pos.x += m_velocity.x * timer.GetElapsedSeconds();
-	pos.y += m_velocity.y * timer.GetElapsedSeconds();
-	pos.z += m_velocity.z * timer.GetElapsedSeconds();
+	float elapsedSeconds = static_cast<float>(timer.GetElapsedSeconds());
+
+	pos.x += m_velocity.x * elapsedSeconds;
+	pos.y += m_velocity.y * elapsedSeconds;
+	pos.z += m_velocity.z * elapsedSeconds;
 
 	SetLocalPosition(pos);
 

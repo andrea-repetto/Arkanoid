@@ -42,7 +42,6 @@ void ArkanoidMain::Update()
 	// Update scene objects.
 	m_timer.Tick([&]()
 	{
-		m_sceneRenderer->RunCollisionDetection();
 		m_sceneRenderer->Update(m_timer);
 	});
 }

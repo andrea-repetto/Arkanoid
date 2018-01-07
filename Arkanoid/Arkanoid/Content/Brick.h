@@ -3,7 +3,7 @@
 #include "Engine\RenderObject.h"
 #include "Engine\PhysicsObject.h"
 
-class Brick : public Engine::GameObject 
+class Brick : public Engine::Physics::PhysicsObject 
 {
 public:
 	Brick();
@@ -15,13 +15,12 @@ public:
 	float GetWidth();
 	float GetHeight();
 
-private:
+protected:
 	void doStart() override;
 	void doUpdate(DX::StepTimer const& timer) override;
 	void doRender() override;
 
 private:
 	Engine::RenderObject	m_rectBrick;
-	Engine::Physics::PhysicsObject   m_Physics;
 };
 

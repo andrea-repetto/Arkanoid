@@ -11,10 +11,12 @@ public:
 
 	void SetLocalPlayerBounds(float leftBound, float rightBound);
 
-private:
+protected:
 	void doStart() override;
 	void doUpdate(DX::StepTimer const& timer) override;
 	void doRender() override;
+
+private:
 
 	float GetMovementDirectionFromInput();
 

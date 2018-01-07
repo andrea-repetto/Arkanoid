@@ -66,6 +66,8 @@ void LevelOne::doStart()
 
 void LevelOne::doUpdate(DX::StepTimer const& timer)
 {
+	SceneController::doUpdate(timer);
+
 	m_Wall.Update(timer);
 	m_Ball.Update(timer);
 	m_UpSide.Update(timer);

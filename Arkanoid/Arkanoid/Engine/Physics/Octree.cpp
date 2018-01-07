@@ -55,7 +55,7 @@ void Octree::RegisterPhysicsObj(PhysicsObject& phyObj)
 
 void Octree::DeregisterPhysicsObj(PhysicsObject& phyObj)
 {
-	for (int idx = 0; idx < AllPhysicsObjList.size(); ++idx)
+	for (size_t idx = 0; idx < AllPhysicsObjList.size(); ++idx)
 	{
 		if (AllPhysicsObjList[idx] == &phyObj)
 		{
@@ -68,7 +68,7 @@ void Octree::DeregisterPhysicsObj(PhysicsObject& phyObj)
 void Octree::UpdateOctree(Octree& root)
 {
 	root.Clear();
-	for (int idx = 0; idx < AllPhysicsObjList.size(); ++idx)
+	for (size_t idx = 0; idx < AllPhysicsObjList.size(); ++idx)
 	{
 		root.Insert(*AllPhysicsObjList[idx]);
 	}
@@ -112,14 +112,14 @@ void Octree::RecursiveCreateChildren(Octree& parent, BoundingBox min)
 void Octree::RunCollisionDetection(Octree& root)
 {
 	std::vector<PhysicsObject*> result;
-	for (int idx = 0; idx < AllPhysicsObjList.size(); ++idx)
+	for (size_t idx = 0; idx < AllPhysicsObjList.size(); ++idx)
 	{
 		result.clear();
 		if (AllPhysicsObjList[idx]->IsCollisionDetectionEnabled())
 		{
 			root.RetrievePossibleCollisionObject(result, *AllPhysicsObjList[idx]);
 
-			for (int jdx = 0; jdx < result.size(); ++jdx)
+			for (size_t jdx = 0; jdx < result.size(); ++jdx)
 			{
 				//Run collision detection
 				if (result[jdx] != AllPhysicsObjList[idx]) // avoid test between obj and itself
@@ -204,7 +204,7 @@ void Octree::RetrievePossibleCollisionObject(
 		m_Children[index]->RetrievePossibleCollisionObject(result, obj);
 	}
 
-	for (int idx = 0; idx < m_PhysicsObjectList.size(); ++idx)
+	for (size_t idx = 0; idx < m_PhysicsObjectList.size(); ++idx)
 	{
 		result.push_back(m_PhysicsObjectList[idx]);
 	}

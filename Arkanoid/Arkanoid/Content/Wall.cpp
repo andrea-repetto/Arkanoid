@@ -17,9 +17,9 @@ Wall::Wall()
 	m_WallMaterials[FUXIA_ROW_IDX] = Engine::Material(1.0f, 0.0f, 1.0f);
 	m_WallMaterials[GREEN_ROW_IDX] = Engine::Material(0.0f, 1.0f, 0.0f);
 
-	for (int idx = 0; idx < WALL_HEIGHT; ++idx)
+	for (size_t idx = 0; idx < WALL_HEIGHT; ++idx)
 	{
-		for (int jdx = 0; jdx < WALL_WIDTH; ++jdx)
+		for (size_t jdx = 0; jdx < WALL_WIDTH; ++jdx)
 		{
 			Brick* brick = new Brick();
 			brick->SetParent(this);
@@ -43,7 +43,7 @@ Wall::Wall()
 
 Wall::~Wall()
 {
-	for (int idx = 0; idx < m_BrickList.size(); ++idx)
+	for (size_t idx = 0; idx < m_BrickList.size(); ++idx)
 	{
 		delete m_BrickList[idx];
 	}
@@ -52,7 +52,7 @@ Wall::~Wall()
 
 void Wall::doStart()
 {
-	for (int idx = 0; idx < m_BrickList.size(); ++idx)
+	for (size_t idx = 0; idx < m_BrickList.size(); ++idx)
 	{
 		m_BrickList[idx]->Start();
 	}
@@ -60,7 +60,7 @@ void Wall::doStart()
 
 void Wall::doUpdate(DX::StepTimer const& timer)
 {
-	for (int idx = 0; idx < m_BrickList.size(); ++idx)
+	for (size_t idx = 0; idx < m_BrickList.size(); ++idx)
 	{
 		m_BrickList[idx]->Update(timer);
 	}
@@ -68,7 +68,7 @@ void Wall::doUpdate(DX::StepTimer const& timer)
 
 void Wall::doRender()
 {
-	for (int idx = 0; idx < m_BrickList.size(); ++idx)
+	for (size_t idx = 0; idx < m_BrickList.size(); ++idx)
 	{
 		m_BrickList[idx]->Render();
 	}

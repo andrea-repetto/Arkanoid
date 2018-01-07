@@ -14,11 +14,14 @@ namespace Engine
 		virtual ~SceneController();
 		
 		void OnWindowResizeEvent();
-		void RunCollisionDetection();
 
+	
+	protected:
+		void doUpdate(DX::StepTimer const& timer) override;
+		virtual void doRender() = 0;
 
 	private:
-		virtual void doRender() = 0;
+		void RunCollisionDetection();
 
 	private:
 		Physics::Octree			*m_Octree;

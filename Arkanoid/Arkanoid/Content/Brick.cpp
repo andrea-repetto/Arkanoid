@@ -5,15 +5,14 @@ using namespace Engine;
 using namespace DirectX;
 
 Brick::Brick()
-	: GameObject()
+	: Physics::PhysicsObject()
 	, m_rectBrick(GameEngine::Instance()->GetSquareMeshData())
 {
-	m_Physics.SetParent(this);
-	m_rectBrick.SetParent(&m_Physics);
+	m_rectBrick.SetParent(this);
 	XMFLOAT3 scale(1.0f, 0.5f, 0.25f);
 	m_rectBrick.SetLocalScale(scale);
 	Physics::BoundingBox b(XMFLOAT3(0.0f, 0.0f, 0.0f),scale);
-	m_Physics.SetBoundingBox(b);
+	SetBoundingBox(b);
 }
 
 
@@ -45,15 +44,18 @@ float Brick::GetHeight()
 
 void Brick::doStart() 
 {
+	Physics::PhysicsObject::doStart();
 	m_rectBrick.Start();
 }
 
 void Brick::doUpdate(DX::StepTimer const& timer)
 {
+	Physics::PhysicsObject::doUpdate(timer);
 	m_rectBrick.Update(timer);
 }
 
 void Brick::doRender()
 {
+	Physics::PhysicsObject::doRender();
 	m_rectBrick.Render();
 }

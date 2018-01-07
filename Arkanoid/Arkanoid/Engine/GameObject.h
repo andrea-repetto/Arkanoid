@@ -38,7 +38,7 @@ namespace Engine
 		inline void SetLocalRotationYawPitchRoll(DirectX::XMFLOAT3& rotationYawPitchRoll) { m_localRotationYawPitchRoll = rotationYawPitchRoll; }
 			
 
-	private:
+	protected:
 		virtual void doStart() = 0;
 		virtual void doUpdate(DX::StepTimer const& timer) = 0;
 		virtual void doRender() = 0;

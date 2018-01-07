@@ -16,7 +16,7 @@ namespace Engine
 		Square();
 		~Square();
 
-	private:
+	protected:
 		void doStart() override;
 		void doUpdate(DX::StepTimer const& timer) override;
 		void doRender() override;

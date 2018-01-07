@@ -18,6 +18,11 @@ SceneController::SceneController(Physics::BoundingBox levelSize)
 
 }
 
+void SceneController::doUpdate(DX::StepTimer const& timer)
+{
+	RunCollisionDetection();
+}
+
 
 SceneController::~SceneController()
 {
