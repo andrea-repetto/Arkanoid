@@ -48,7 +48,6 @@ void PhysicsObject::doRender()
 
 void PhysicsObject::CollisionDetected(PhysicsObject& other, const ContactPoint& p)
 {
-	/* Find where is located collision */
 	DirectX::XMFLOAT3 velocity = GetVelocity();
 	DirectX::XMVECTOR n = DirectX::XMLoadFloat3(&p.normal);
 	DirectX::XMVECTOR v = DirectX::XMLoadFloat3(&velocity);
@@ -60,23 +59,14 @@ void PhysicsObject::CollisionDetected(PhysicsObject& other, const ContactPoint& 
 		dotProdVector
 	);
 
-	if (dotProdFloat.x > 0) return;
-	DirectX::XMVECTOR proj = DirectX::XMVectorScale(n, 2 * dotProdFloat.x);
+	if (dotProdFloat.x > 0) return; // skip false positive
 
-	DirectX::XMVECTOR res = DirectX::XMVectorSubtract(v, proj);
-	DirectX::XMFLOAT3 newVel;
-	DirectX::XMStoreFloat3(
-		&newVel,
-		res
-	);
-
-	SetVelocity(newVel);
+	OnCollision(other, p);
 	
+}
 
-	//for (size_t idx = 0; idx < m_RegisteredCollisionListener.size(); ++idx)
-	//{
-		//m_RegisteredCollisionListener[idx](*this, other);
-	//}
+void PhysicsObject::OnCollision(PhysicsObject& other, const ContactPoint& p)
+{
 }
 
 /**

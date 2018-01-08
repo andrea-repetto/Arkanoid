@@ -63,6 +63,7 @@ namespace Engine
 		private:
 
 			void CollisionDetected(PhysicsObject& other, const ContactPoint& p );
+			virtual void OnCollision(PhysicsObject& other, const ContactPoint& p);
 
 		private:
 			DirectX::XMFLOAT3	m_velocity;

@@ -39,11 +39,6 @@ LevelOne::LevelOne()
 	m_LeftSide.GetLocalPosition().x + m_LeftSide.GetLocalScale().x,
 	m_RightSide.GetLocalPosition().x - m_RightSide.GetLocalScale().x);
 	
-	//Test
-//	Physics::PhysicsObject::OnCollisionDetected listener = &(LevelOne::Test);
-
-//	m_Ball.RegisterCollisionListener(listener);
-
 }
 
 

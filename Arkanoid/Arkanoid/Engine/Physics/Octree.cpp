@@ -70,7 +70,10 @@ void Octree::UpdateOctree(Octree& root)
 	root.Clear();
 	for (size_t idx = 0; idx < AllPhysicsObjList.size(); ++idx)
 	{
-		root.Insert(*AllPhysicsObjList[idx]);
+		if (AllPhysicsObjList[idx]->IsEnable())
+		{
+			root.Insert(*AllPhysicsObjList[idx]);
+		}
 	}
 }
 

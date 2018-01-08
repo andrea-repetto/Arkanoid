@@ -33,15 +33,26 @@ namespace Engine
 		DirectX::XMFLOAT3 GetGlobalScale() const;
 		DirectX::XMFLOAT3 GetGlobalRotationYawPitchRoll() const;
 		
-		inline void SetLocalPosition(DirectX::XMFLOAT3& position) { m_localPosition = position; }
-		inline void SetLocalScale(DirectX::XMFLOAT3& scale) { m_localScale = scale; }
-		inline void SetLocalRotationYawPitchRoll(DirectX::XMFLOAT3& rotationYawPitchRoll) { m_localRotationYawPitchRoll = rotationYawPitchRoll; }
-			
+		inline void SetLocalPosition(const DirectX::XMFLOAT3& position) { m_localPosition = position; }
+		inline void SetLocalScale(const DirectX::XMFLOAT3& scale) { m_localScale = scale; }
+		inline void SetLocalRotationYawPitchRoll(const DirectX::XMFLOAT3& rotationYawPitchRoll) { m_localRotationYawPitchRoll = rotationYawPitchRoll; }
+
+		inline bool IsEnable() const { return m_Enable; }
+		inline void SetEnable(bool val) { m_Enable = val; }
+
+
+		void RegisterForEvents( GameObject* obj);
+		void UnregisterFromEvents( GameObject* obj);
 
 	protected:
 		virtual void doStart() = 0;
 		virtual void doUpdate(DX::StepTimer const& timer) = 0;
 		virtual void doRender() = 0;
+
+		virtual void OnEvent(GameObject* src, int event, GameObject* data);
+		
+	private:
+		void NotifyEvent(int event, GameObject* data);
 
 	private:
 		
@@ -51,7 +62,8 @@ namespace Engine
 
 	protected:
 		GameObject*				m_parent;
-
+		std::vector<GameObject*> m_Observers;
+		bool					m_Enable;
 	};
 }
 

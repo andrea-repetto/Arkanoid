@@ -42,3 +42,31 @@ void Ball::doRender()
 }
 
 
+void Ball::OnCollision(Physics::PhysicsObject& other, const Physics::ContactPoint& p)
+{
+	//Calculate bouncing
+	/* Find where is located collision */
+	DirectX::XMFLOAT3 velocity = GetVelocity();
+	DirectX::XMVECTOR n = DirectX::XMLoadFloat3(&p.normal);
+	DirectX::XMVECTOR v = DirectX::XMLoadFloat3(&velocity);
+
+	DirectX::XMVECTOR dotProdVector = DirectX::XMVector3Dot(v, n);
+	DirectX::XMFLOAT3 dotProdFloat;
+	DirectX::XMStoreFloat3(
+		&dotProdFloat,
+		dotProdVector
+	);
+
+	DirectX::XMVECTOR proj = DirectX::XMVectorScale(n, 2 * dotProdFloat.x);
+
+	DirectX::XMVECTOR res = DirectX::XMVectorSubtract(v, proj);
+	DirectX::XMFLOAT3 newVel;
+	DirectX::XMStoreFloat3(
+		&newVel,
+		res
+	);
+
+	SetVelocity(newVel);
+}
+
+

@@ -3,6 +3,8 @@
 #include "Common/StepTimer.h"
 #include "Common/DeviceResources.h"
 
+#include <algorithm> 
+
 using namespace Engine;
 
 
@@ -11,6 +13,7 @@ GameObject::GameObject()
 	, m_localPosition(0, 0, 0)
 	, m_localRotationYawPitchRoll(0, 0, 0)
 	, m_localScale(1, 1, 1)
+	, m_Enable(true)
 
 {
 }
@@ -34,12 +37,16 @@ void GameObject::Start()
 
 void GameObject::Render()
 {
+	if (!IsEnable()) return; 
+
 	/* Update my render */
 	doRender();
 }
 
 void GameObject::Update(DX::StepTimer const& timer)
 {
+	if (!IsEnable()) return;
+
 	/* Update myself */
 	doUpdate(timer);
 }
@@ -95,6 +102,42 @@ DirectX::XMFLOAT3 GameObject::GetGlobalRotationYawPitchRoll() const
 	globalRotation.z = globalRotation.z + m_localRotationYawPitchRoll.z;
 
 	return globalRotation;
+}
+
+void GameObject::RegisterForEvents(GameObject* obj)
+{
+	std::vector<GameObject*>::iterator it = std::find(m_Observers.begin(), m_Observers.end(), obj);
+
+	if (it == m_Observers.end())
+	{
+		m_Observers.push_back(obj);
+	}
+}
+
+void GameObject::UnregisterFromEvents(GameObject* obj)
+{
+	std::vector<GameObject*>::iterator it = std::find(m_Observers.begin(), m_Observers.end(), obj);
+
+	if (it != m_Observers.end())
+	{
+		m_Observers.erase(it);
+	}
+}
+
+/**
+*	Data is optional.
+*/
+void GameObject::NotifyEvent(int event, GameObject* data)
+{
+	for (size_t idx = 0; idx < m_Observers.size(); ++idx)
+	{
+		m_Observers[idx]->OnEvent(this, event, data);
+	}
+}
+
+void GameObject::OnEvent(GameObject* src, int event, GameObject* data)
+{
+
 }
 
 
