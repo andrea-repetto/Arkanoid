@@ -27,7 +27,7 @@ PlayerController::PlayerController()
 	m_RightHead.SetLocalScale(XMFLOAT3(.3f, .3f, .3f));
 	m_RightHead.SetLocalPosition(XMFLOAT3(1.5f, 0.0f, 0.0f));
 
-	Physics::BoundingBox bb(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(3.3f, .3f, .3f));
+	Physics::BoundingBox bb(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(3.5f, .3f, .3f));
 	SetBoundingBox(bb);
 	
 }

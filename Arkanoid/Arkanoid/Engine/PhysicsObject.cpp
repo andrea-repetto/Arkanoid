@@ -60,6 +60,7 @@ void PhysicsObject::CollisionDetected(PhysicsObject& other, const ContactPoint& 
 		dotProdVector
 	);
 
+	if (dotProdFloat.x > 0) return;
 	DirectX::XMVECTOR proj = DirectX::XMVectorScale(n, 2 * dotProdFloat.x);
 
 	DirectX::XMVECTOR res = DirectX::XMVectorSubtract(v, proj);
@@ -135,15 +136,15 @@ void PhysicsObject::CollisionTest(PhysicsObject& other)
 				p.normal = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
 			}
 		}
-		else if (overlapLenY > overlapLenX && overlapLenY > overlapLenZ) //Max overlap on Y axes
+		else if (overlapLenY > overlapLenX && overlapLenY >= overlapLenZ) //Max overlap on Y axes
 		{
 			if (myBB.center.x < othBB.center.x) //collision is above
 			{
-				p.normal = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
+				p.normal = DirectX::XMFLOAT3(-1.0f, 0.0f, 0.0f);
 			}
 			else
 			{
-				p.normal = DirectX::XMFLOAT3(-1.0f, 0.0f, 0.0f);
+				p.normal = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
 			}
 		}
 		else //Max overlap on Z axes
