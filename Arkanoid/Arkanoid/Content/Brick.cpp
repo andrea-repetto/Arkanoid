@@ -1,11 +1,12 @@
 #include "pch.h"
 #include "Brick.h"
+#include "GameIDs.h"
 
 using namespace Engine;
 using namespace DirectX;
 
 Brick::Brick()
-	: Physics::PhysicsObject()
+	: Physics::PhysicsObject(GameData::ID_BRICK)
 	, m_rectBrick(GameEngine::Instance()->GetSquareMeshData())
 {
 	m_rectBrick.SetParent(this);

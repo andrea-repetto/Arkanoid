@@ -38,6 +38,7 @@ namespace Engine
 	{
 	public:
 		explicit RenderObject(const MeshData &mesh);
+		explicit RenderObject(int ID, const MeshData &mesh);
 		virtual ~RenderObject();
 
 		inline LPCWSTR GetVertexShaderFileName() const { return m_vertexShaderFileName; }

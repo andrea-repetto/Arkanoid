@@ -9,7 +9,12 @@ using namespace Engine;
 using namespace DirectX;
 
 RenderObject::RenderObject(const MeshData &mesh)
-	: GameObject()
+	: RenderObject(-1, mesh)
+{	
+}
+
+RenderObject::RenderObject(int ID, const MeshData &mesh)
+	: GameObject(ID)
 	, m_vertexShaderFileName(L"SampleVertexShader.cso")
 	, m_pixelShaderFileName(L"SamplePixelShader.cso")
 	, m_Mesh(mesh)
@@ -18,7 +23,7 @@ RenderObject::RenderObject(const MeshData &mesh)
 
 	//Set matirial to red color by default
 	m_constantBufferData.material.color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
-	
+
 }
 
 

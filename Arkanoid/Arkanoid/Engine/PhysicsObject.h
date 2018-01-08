@@ -36,6 +36,7 @@ namespace Engine
 		{
 		public:
 			PhysicsObject();
+			explicit PhysicsObject(int ID);
 			~PhysicsObject();
 
 			inline const DirectX::XMFLOAT3& GetVelocity() const { return m_velocity; }

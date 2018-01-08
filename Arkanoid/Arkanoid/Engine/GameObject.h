@@ -15,7 +15,8 @@ namespace Engine
 	class GameObject
 	{
 	public:
-		explicit GameObject( );
+		GameObject( );
+		explicit GameObject(int ID);
 		virtual ~GameObject();
 
 		void Start();
@@ -40,6 +41,9 @@ namespace Engine
 		inline bool IsEnable() const { return m_Enable; }
 		inline void SetEnable(bool val) { m_Enable = val; }
 
+		inline int GetID() const { return m_id; }
+		inline void SetID(int ID) { m_id = ID; }
+
 
 		void RegisterForEvents( GameObject* obj);
 		void UnregisterFromEvents( GameObject* obj);
@@ -59,6 +63,7 @@ namespace Engine
 		DirectX::XMFLOAT3		m_localPosition;
 		DirectX::XMFLOAT3		m_localRotationYawPitchRoll;
 		DirectX::XMFLOAT3		m_localScale;
+		int						m_id;
 
 	protected:
 		GameObject*				m_parent;

@@ -1,20 +1,19 @@
 #include "pch.h"
 #include "Ball.h"
+#include "GameIDs.h"
+#include <iostream>
 
 using namespace Engine;
 using namespace DirectX;
 
 Ball::Ball()
-	: Physics::PhysicsObject()
+	: Physics::PhysicsObject(GameData::ID_BALL)
 	, m_sphere(GameEngine::Instance()->GetSphereMeshData())
 {
 	m_sphere.SetParent(this);
 	EnableCollisionDetection(true);
 
 	SetVelocity(XMFLOAT3(-2.0f, 8.0f, 0.0f));
-
-	//Physics::BoundingBox b(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.2f, 0.2f, 0.2f));
-	//SetBoundingBox(b);
 }
 
 
@@ -65,6 +64,21 @@ void Ball::OnCollision(Physics::PhysicsObject& other, const Physics::ContactPoin
 		&newVel,
 		res
 	);
+
+	
+
+	if (other.GetID() == GameData::ID_PLAYER)
+	{
+		newVel.x *= 0.8f;
+		newVel.y *= 0.8f;
+		newVel.z *= 0.8f;
+	}
+	else
+	{
+		newVel.x *= 1.2f;
+		newVel.y *= 1.2f;
+		newVel.z *= 1.2f;
+	}
 
 	SetVelocity(newVel);
 }

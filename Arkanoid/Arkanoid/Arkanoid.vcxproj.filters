@@ -73,9 +73,6 @@
     <ClCompile Include="App.cpp" />
     <ClCompile Include="ArkanoidMain.cpp" />
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="Engine\Square.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Camera.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
@@ -135,9 +132,6 @@
     <ClInclude Include="App.h" />
     <ClInclude Include="ArkanoidMain.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Engine\Square.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Camera.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -197,6 +191,9 @@
     </ClInclude>
     <ClInclude Include="Engine\Physics\Octree.h">
       <Filter>Engine\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="GameIDs.h">
+      <Filter>Content</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,11 +1,12 @@
 #include "pch.h"
 #include "Side.h"
+#include "GameIDs.h"
 
 using namespace Engine;
 using namespace DirectX;
 
 Side::Side()
-	: Physics::PhysicsObject()
+	: Physics::PhysicsObject(GameData::ID_SIDE_WALL)
 	, m_rectSide(GameEngine::Instance()->GetSquareMeshData())
 {
 	m_rectSide.SetParent(this);

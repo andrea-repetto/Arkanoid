@@ -4,11 +4,15 @@
 #include <cmath>
 using namespace Engine::Physics;
 
-//std::vector<PhysicsObject*> PhysicsObject::PhysicsObjectsList;
-
 PhysicsObject::PhysicsObject()
-	: GameObject()
-	, m_velocity(0,0,0)
+	: PhysicsObject(-1)
+{
+
+}
+
+PhysicsObject::PhysicsObject(int ID)
+	: GameObject(ID)
+	, m_velocity(0, 0, 0)
 	, m_CollisionDetection(false)
 {
 	Octree::RegisterPhysicsObj(*this);

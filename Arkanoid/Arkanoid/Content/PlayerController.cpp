@@ -1,12 +1,13 @@
 #include "pch.h"
 #include "PlayerController.h"
 #include "Common\Keyboard.h"
+#include "GameIDs.h"
 
 using namespace Engine;
 using namespace DirectX;
 
 PlayerController::PlayerController()
-	: Physics::PhysicsObject()
+	: Physics::PhysicsObject(GameData::ID_PLAYER)
 	, m_Body(GameEngine::Instance()->GetCilinderMeshData())
 	, m_LeftHead(GameEngine::Instance()->GetSphereMeshData())
 	, m_RightHead(GameEngine::Instance()->GetSphereMeshData())
@@ -27,7 +28,7 @@ PlayerController::PlayerController()
 	m_RightHead.SetLocalScale(XMFLOAT3(.3f, .3f, .3f));
 	m_RightHead.SetLocalPosition(XMFLOAT3(1.5f, 0.0f, 0.0f));
 
-	Physics::BoundingBox bb(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(3.7f, .3f, .3f));
+	Physics::BoundingBox bb(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(3.7f, .5f, .3f));
 	SetBoundingBox(bb);
 	
 }
