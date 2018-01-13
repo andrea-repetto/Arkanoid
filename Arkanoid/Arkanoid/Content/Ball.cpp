@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Ball.h"
 #include "GameIDs.h"
+#include "Brick.h"
 #include <iostream>
 
 using namespace Engine;
@@ -44,42 +45,75 @@ void Ball::doRender()
 void Ball::OnCollision(Physics::PhysicsObject* other, const Physics::ContactPoint& p)
 {
 	Physics::PhysicsObject::OnCollision(other, p);
-
-	//Calculate bouncing
-	/* Find where is located collision */
 	DirectX::XMFLOAT3 velocity = GetVelocity();
 	DirectX::XMVECTOR n = DirectX::XMLoadFloat3(&p.normal);
 	DirectX::XMVECTOR v = DirectX::XMLoadFloat3(&velocity);
 
-	DirectX::XMVECTOR dotProdVector = DirectX::XMVector3Dot(v, n);
-	DirectX::XMFLOAT3 dotProdFloat;
+
+	DirectX::XMFLOAT3 xAxes(1.0f, 0.0f, 0.0f);
+	DirectX::XMVECTOR xAxesVector = DirectX::XMLoadFloat3(&xAxes);
+
+	DirectX::XMVECTOR xDir = DirectX::XMVector3Dot(v, xAxesVector);
+	DirectX::XMFLOAT3 xDirFloat;
 	DirectX::XMStoreFloat3(
-		&dotProdFloat,
-		dotProdVector
+		&xDirFloat,
+		xDir
 	);
+	DirectX::XMFLOAT3 newVel = velocity;
 
-	DirectX::XMVECTOR proj = DirectX::XMVectorScale(n, 2 * dotProdFloat.x);
-
-	DirectX::XMVECTOR res = DirectX::XMVectorSubtract(v, proj);
-	DirectX::XMFLOAT3 newVel;
-	DirectX::XMStoreFloat3(
-		&newVel,
-		res
-	);
-
-	
-
+	/* Bouncing handling */
 	if (other->GetID() == GameData::ID_PLAYER)
 	{
-		newVel.x *= 0.8f;
-		newVel.y *= 0.8f;
-		newVel.z *= 0.8f;
+		if (xDirFloat.x > 0 && GetGlobalPosition().x < other->GetGlobalPosition().x ||
+			xDirFloat.x < 0 && GetGlobalPosition().x > other->GetGlobalPosition().x)
+		{
+			newVel.x = -velocity.x;
+			newVel.y = -velocity.y;
+			newVel.z = -velocity.z;
+		}
+		else
+		{
+			DirectX::XMVECTOR dotProdVector = DirectX::XMVector3Dot(v, n);
+			DirectX::XMFLOAT3 dotProdFloat;
+			DirectX::XMStoreFloat3(
+				&dotProdFloat,
+				dotProdVector
+			);
+
+			DirectX::XMVECTOR proj = DirectX::XMVectorScale(n, 2 * dotProdFloat.x);
+
+			DirectX::XMVECTOR res = DirectX::XMVectorSubtract(v, proj);
+
+			DirectX::XMStoreFloat3(
+				&newVel,
+				res
+			);
+		}
 	}
 	else
 	{
-		newVel.x *= 1.2f;
-		newVel.y *= 1.2f;
-		newVel.z *= 1.2f;
+		DirectX::XMVECTOR dotProdVector = DirectX::XMVector3Dot(v, n);
+		DirectX::XMFLOAT3 dotProdFloat;
+		DirectX::XMStoreFloat3(
+			&dotProdFloat,
+			dotProdVector
+		);
+
+		DirectX::XMVECTOR proj = DirectX::XMVectorScale(n, 2 * dotProdFloat.x);
+
+		DirectX::XMVECTOR res = DirectX::XMVectorSubtract(v, proj);
+		
+		DirectX::XMStoreFloat3(
+			&newVel,
+			res
+		);
+	}
+
+	/* BRICK hit handling */
+	if (other->GetID() == GameData::ID_BRICK)
+	{
+		Brick* brick = reinterpret_cast<Brick*>(other);
+		brick->Hit();
 	}
 
 	SetVelocity(newVel);

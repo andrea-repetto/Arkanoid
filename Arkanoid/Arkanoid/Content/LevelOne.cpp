@@ -2,16 +2,20 @@
 #include "LevelOne.h"
 #include "Engine\GameEngine.h"
 #include "Engine\PhysicsObject.h"
+#include "GameIDs.h"
 
 using namespace Engine;
 using namespace DirectX;
 
 LevelOne::LevelOne()
-	: SceneController(Physics::BoundingBox(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(30.0f,30.0f,30.0f)))
+	: SceneController(Physics::BoundingBox(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(30.0f, 30.0f, 30.0f)))
+	, m_GameFinished(false)
 {
 	/* Brick wall */
 	m_Wall.SetParent(this);
 	m_Wall.SetLocalPosition(XMFLOAT3(0.0f, 4.0f, -5.0f));
+
+	m_Wall.RegisterForEvents(this);
 
 	m_Ball.SetParent(this);
 	m_Ball.SetLocalScale(XMFLOAT3(0.2f, 0.2f, 0.2f));
@@ -66,13 +70,22 @@ void LevelOne::doUpdate(DX::StepTimer const& timer)
 {
 	SceneController::doUpdate(timer);
 
-	m_Wall.Update(timer);
-	m_Ball.Update(timer);
-	m_UpSide.Update(timer);
-	//m_DownSide.Update(timer);
-	m_LeftSide.Update(timer);
-	m_RightSide.Update(timer);
-	m_Player.Update(timer);
+	if (!m_GameFinished)
+	{
+		m_Wall.Update(timer);
+		m_Ball.Update(timer);
+		m_UpSide.Update(timer);
+		//m_DownSide.Update(timer);
+		m_LeftSide.Update(timer);
+		m_RightSide.Update(timer);
+		m_Player.Update(timer);
+
+		/* Check if Player loose */
+		if (m_Ball.GetGlobalPosition().y < (m_Player.GetGlobalPosition().y - 2.0f) && !m_GameFinished)
+		{
+			m_GameFinished = true;
+		}
+	}
 	
 }
 
@@ -101,4 +114,12 @@ void LevelOne::Test(Physics::PhysicsObject& caller, Physics::PhysicsObject& othe
 	);
 
 	caller.SetVelocity(vel);
+}
+
+void LevelOne::OnEvent(GameObject* src, int event, GameObject* data)
+{
+	if (event == GameData::EVE_WALL_IS_EMPTY)
+	{
+		m_GameFinished = true;
+	}
 }

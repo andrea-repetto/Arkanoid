@@ -17,6 +17,8 @@ protected:
 
 	void doRender() override;
 
+	void OnEvent(GameObject* src, int event, GameObject* data) override;
+
 private:
 	Wall		m_Wall;
 	Ball		m_Ball;
@@ -31,6 +33,7 @@ private:
 private:
 	static void Test(Engine::Physics::PhysicsObject& caller, Engine::Physics::PhysicsObject& other);
 	
+	bool m_GameFinished;
 
 
 };

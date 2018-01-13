@@ -17,6 +17,8 @@ protected:
 	void doUpdate(DX::StepTimer const& timer) override;
 	void doRender() override;
 
+	void OnEvent(GameObject* src, int event, GameObject* data) override;
+
 private:
 	enum WallSize
 	{
@@ -33,6 +35,7 @@ private:
 private:
 	Engine::Material m_WallMaterials[WALL_HEIGHT];
 	std::vector<Brick*> m_BrickList;
+	int m_bricksOnScree;
 
 	static const float BRICK_PADDING;
 	

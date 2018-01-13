@@ -236,6 +236,11 @@ void RenderObject::doStart()
 
 void RenderObject::doUpdate(DX::StepTimer const& timer)
 {
+
+}
+
+void RenderObject::doRender()
+{
 	/* Update matrix transformation */
 	std::shared_ptr<Camera> currentActiveCamera = GameEngine::Instance()->GetActiveCamera();
 	std::shared_ptr<DirectionalLight> dirLight = GameEngine::Instance()->GetDirectionalLight();
@@ -244,11 +249,11 @@ void RenderObject::doUpdate(DX::StepTimer const& timer)
 	m_constantBufferData.view = currentActiveCamera->GetViewMatrix();
 	m_constantBufferData.ambientLight = *ambientLight;
 	m_constantBufferData.dirLight = *dirLight;
-	
+
 	XMFLOAT3 globalScale = this->GetGlobalScale();
 	XMFLOAT3 globalRotation = this->GetGlobalRotationYawPitchRoll();
 	XMFLOAT3 globalPosition = this->GetGlobalPosition();
-	
+
 
 	XMMATRIX scaling = XMMatrixScaling(globalScale.x, globalScale.y, globalScale.z);
 	XMMATRIX rotation = XMMatrixRotationRollPitchYaw(globalRotation.y, globalRotation.z, globalRotation.x);
@@ -261,10 +266,8 @@ void RenderObject::doUpdate(DX::StepTimer const& timer)
 
 	UINT8* destination = m_mappedConstantBuffer + (GameEngine::Instance()->DeviceResources()->GetCurrentFrameIndex() * c_alignedConstantBufferSize);
 	memcpy(destination, &m_constantBufferData, sizeof(m_constantBufferData));
-}
 
-void RenderObject::doRender()
-{
+
 	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList = GameEngine::Instance()->CommandList();
 	std::shared_ptr<DX::DeviceResources> deviceResources = GameEngine::Instance()->DeviceResources();
 	Microsoft::WRL::ComPtr<ID3D12RootSignature>	rootSignature = GameEngine::Instance()->RootSignature();

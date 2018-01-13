@@ -8,6 +8,7 @@ using namespace DirectX;
 Brick::Brick()
 	: Physics::PhysicsObject(GameData::ID_BRICK)
 	, m_rectBrick(GameEngine::Instance()->GetSquareMeshData())
+	, m_Life(1)
 {
 	m_rectBrick.SetParent(this);
 	XMFLOAT3 scale(1.0f, 0.5f, 0.25f);
@@ -59,4 +60,9 @@ void Brick::doRender()
 {
 	Physics::PhysicsObject::doRender();
 	m_rectBrick.Render();
+}
+
+void Brick::Hit()
+{
+	NotifyEvent(GameData::EVE_BRICK_HIT, nullptr);
 }

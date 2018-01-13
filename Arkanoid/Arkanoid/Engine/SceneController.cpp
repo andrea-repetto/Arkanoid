@@ -7,6 +7,7 @@ using namespace Engine;
 
 SceneController::SceneController()
 	: SceneController(Physics::BoundingBox())
+
 {
 	
 }

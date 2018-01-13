@@ -14,6 +14,7 @@ namespace GameData
 	{
 		EVE_UKNOWN		= -1,
 		EVE_BRICK_HIT	= 0,
-		EVE_PLAYER_HITs	= 1
+		EVE_PLAYER_HITs	= 1,
+		EVE_WALL_IS_EMPTY = 2
 	};
 }

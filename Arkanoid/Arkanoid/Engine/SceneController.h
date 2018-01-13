@@ -25,6 +25,7 @@ namespace Engine
 
 	private:
 		Physics::Octree			*m_Octree;
+
 		
 	};
 }

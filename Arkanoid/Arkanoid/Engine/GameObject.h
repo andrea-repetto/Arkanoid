@@ -54,9 +54,10 @@ namespace Engine
 		virtual void doRender() = 0;
 
 		virtual void OnEvent(GameObject* src, int event, GameObject* data);
+		void NotifyEvent(int event, GameObject* data);
 		
 	private:
-		void NotifyEvent(int event, GameObject* data);
+		
 
 	private:
 		
