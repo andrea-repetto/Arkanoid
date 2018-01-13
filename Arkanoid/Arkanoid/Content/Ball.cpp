@@ -41,8 +41,10 @@ void Ball::doRender()
 }
 
 
-void Ball::OnCollision(Physics::PhysicsObject& other, const Physics::ContactPoint& p)
+void Ball::OnCollision(Physics::PhysicsObject* other, const Physics::ContactPoint& p)
 {
+	Physics::PhysicsObject::OnCollision(other, p);
+
 	//Calculate bouncing
 	/* Find where is located collision */
 	DirectX::XMFLOAT3 velocity = GetVelocity();
@@ -67,7 +69,7 @@ void Ball::OnCollision(Physics::PhysicsObject& other, const Physics::ContactPoin
 
 	
 
-	if (other.GetID() == GameData::ID_PLAYER)
+	if (other->GetID() == GameData::ID_PLAYER)
 	{
 		newVel.x *= 0.8f;
 		newVel.y *= 0.8f;

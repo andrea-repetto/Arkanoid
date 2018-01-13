@@ -48,16 +48,20 @@ Octree* Octree::BuildOctree(BoundingBox max, BoundingBox min)
 	return root;
 }
 
-void Octree::RegisterPhysicsObj(PhysicsObject& phyObj)
+void Octree::RegisterPhysicsObj(PhysicsObject* phyObj)
 {
-	AllPhysicsObjList.push_back(&phyObj);
+	if (phyObj == nullptr) return;
+
+	AllPhysicsObjList.push_back(phyObj);
 }
 
-void Octree::DeregisterPhysicsObj(PhysicsObject& phyObj)
+void Octree::DeregisterPhysicsObj(PhysicsObject* phyObj)
 {
+	if (phyObj == nullptr) return;
+
 	for (size_t idx = 0; idx < AllPhysicsObjList.size(); ++idx)
 	{
-		if (AllPhysicsObjList[idx] == &phyObj)
+		if (AllPhysicsObjList[idx] == phyObj)
 		{
 			AllPhysicsObjList.erase(AllPhysicsObjList.begin() + idx);
 			return;
@@ -72,7 +76,7 @@ void Octree::UpdateOctree(Octree& root)
 	{
 		if (AllPhysicsObjList[idx]->IsEnable())
 		{
-			root.Insert(*AllPhysicsObjList[idx]);
+			root.Insert(AllPhysicsObjList[idx]);
 		}
 	}
 }
@@ -120,21 +124,21 @@ void Octree::RunCollisionDetection(Octree& root)
 		result.clear();
 		if (AllPhysicsObjList[idx]->IsCollisionDetectionEnabled())
 		{
-			root.RetrievePossibleCollisionObject(result, *AllPhysicsObjList[idx]);
+			root.RetrievePossibleCollisionObject(result, AllPhysicsObjList[idx]);
 
 			for (size_t jdx = 0; jdx < result.size(); ++jdx)
 			{
 				//Run collision detection
 				if (result[jdx] != AllPhysicsObjList[idx]) // avoid test between obj and itself
 				{
-					AllPhysicsObjList[idx]->CollisionTest(*result[jdx]);
+					AllPhysicsObjList[idx]->CollisionTest(result[jdx]);
 				}
 			}
 		}
 	}
 }
 
-void Octree::Insert(PhysicsObject& phyObj)
+void Octree::Insert(PhysicsObject* phyObj)
 {
 	if (m_Children[0] != nullptr)
 	{
@@ -147,7 +151,7 @@ void Octree::Insert(PhysicsObject& phyObj)
 		}
 	}
 
-	m_PhysicsObjectList.push_back(&phyObj);
+	m_PhysicsObjectList.push_back(phyObj);
 
 }
 
@@ -155,10 +159,10 @@ void Octree::Insert(PhysicsObject& phyObj)
 * Determine in wich Octree child must be located the object.
 * 
 */
-int Octree::GetIndex(PhysicsObject& phyObj)
+int Octree::GetIndex(PhysicsObject* phyObj)
 {
-	BoundingBox bb = phyObj.GetWorldBoundingBox();
-	DirectX::XMFLOAT3 objPos = phyObj.GetGlobalPosition();
+	BoundingBox bb = phyObj->GetWorldBoundingBox();
+	DirectX::XMFLOAT3 objPos = phyObj->GetGlobalPosition();
 
 	boolean isUpper = (bb.center.y + bb.scale.y / 2.0f) > m_BoundingBox.center.y &&
 		(bb.center.y - bb.scale.y / 2.0f) > m_BoundingBox.center.y;
@@ -199,7 +203,7 @@ int Octree::GetIndex(PhysicsObject& phyObj)
 
 void Octree::RetrievePossibleCollisionObject(
 	std::vector<PhysicsObject*>& result, 
-	PhysicsObject& obj)
+	PhysicsObject* obj)
 {
 	int index = GetIndex(obj);
 	if (index != -1 && m_Children[0] != nullptr)

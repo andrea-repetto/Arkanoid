@@ -15,7 +15,9 @@ protected:
 	void doRender() override;
 
 private:
-	void OnCollision(Engine::Physics::PhysicsObject& other, const Engine::Physics::ContactPoint& p) override;
+	void OnCollision(Engine::Physics::PhysicsObject* other, const Engine::Physics::ContactPoint& p) override;
+
+	//void CollisionWithPlayer()
 
 
 private:

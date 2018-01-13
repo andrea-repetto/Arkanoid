@@ -15,13 +15,13 @@ PhysicsObject::PhysicsObject(int ID)
 	, m_velocity(0, 0, 0)
 	, m_CollisionDetection(false)
 {
-	Octree::RegisterPhysicsObj(*this);
+	Octree::RegisterPhysicsObj(this);
 }
 
 
 PhysicsObject::~PhysicsObject()
 {
-	Octree::DeregisterPhysicsObj(*this);
+	Octree::DeregisterPhysicsObj(this);
 }
 
 
@@ -50,8 +50,10 @@ void PhysicsObject::doRender()
 }
 
 
-void PhysicsObject::CollisionDetected(PhysicsObject& other, const ContactPoint& p)
+void PhysicsObject::CollisionDetected(PhysicsObject* other, const ContactPoint& p)
 {
+
+
 	DirectX::XMFLOAT3 velocity = GetVelocity();
 	DirectX::XMVECTOR n = DirectX::XMLoadFloat3(&p.normal);
 	DirectX::XMVECTOR v = DirectX::XMLoadFloat3(&velocity);
@@ -69,18 +71,20 @@ void PhysicsObject::CollisionDetected(PhysicsObject& other, const ContactPoint& 
 	
 }
 
-void PhysicsObject::OnCollision(PhysicsObject& other, const ContactPoint& p)
+void PhysicsObject::OnCollision(PhysicsObject* other, const ContactPoint& p)
 {
 }
 
 /**
 * LIMITATION: works only with CollisionBox aligned to default XYZ axes. (no rotation)
 */
-void PhysicsObject::CollisionTest(PhysicsObject& other)
+void PhysicsObject::CollisionTest(PhysicsObject* other)
 {
+	if (other == nullptr) return;
+
 	DirectX::XMFLOAT3 pos = GetLocalPosition();
 	BoundingBox myBB = GetWorldBoundingBox();
-	BoundingBox othBB = other.GetWorldBoundingBox();
+	BoundingBox othBB = other->GetWorldBoundingBox();
 
 	float maxLowerX = fmaxf((myBB.center.x - myBB.scale.x / 2.0f), (othBB.center.x - othBB.scale.x / 2.0f));
 	float minUpperX = fminf((myBB.center.x + myBB.scale.x / 2.0f), (othBB.center.x + othBB.scale.x / 2.0f));

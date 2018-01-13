@@ -49,7 +49,7 @@ namespace Engine
 			inline void EnableCollisionDetection(bool value) { m_CollisionDetection = value; }
 			inline bool IsCollisionDetectionEnabled() const { return m_CollisionDetection; }
 
-			void CollisionTest(PhysicsObject& other);
+			void CollisionTest(PhysicsObject* other);
 
 			//typedef void(*OnCollisionDetected)(PhysicsObject& caller, PhysicsObject& other);		//registerable event
 
@@ -61,10 +61,12 @@ namespace Engine
 			void doUpdate(DX::StepTimer const& timer) override;
 			void doRender() override;
 
+			virtual void OnCollision(PhysicsObject* other, const ContactPoint& p);
+
 		private:
 
-			void CollisionDetected(PhysicsObject& other, const ContactPoint& p );
-			virtual void OnCollision(PhysicsObject& other, const ContactPoint& p);
+			void CollisionDetected(PhysicsObject* other, const ContactPoint& p );
+			
 
 		private:
 			DirectX::XMFLOAT3	m_velocity;

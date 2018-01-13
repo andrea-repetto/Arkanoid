@@ -15,17 +15,17 @@ namespace Engine
 
 			static Octree* BuildOctree(BoundingBox max, BoundingBox min);
 			static void UpdateOctree(Octree& root);
-			static void RegisterPhysicsObj(PhysicsObject& phyObj);
-			static void DeregisterPhysicsObj(PhysicsObject& phyObj);
+			static void RegisterPhysicsObj(PhysicsObject* phyObj);
+			static void DeregisterPhysicsObj(PhysicsObject* phyObj);
 			static void RunCollisionDetection(Octree& root);
 
 		private:
 			static void RecursiveCreateChildren(Octree& parent, BoundingBox min);
 
 			void Clear();
-			void Insert(PhysicsObject& phyObj);
-			int GetIndex(PhysicsObject& phyObj);
-			void RetrievePossibleCollisionObject(std::vector<PhysicsObject*>& result, PhysicsObject& obj);
+			void Insert(PhysicsObject* phyObj);
+			int GetIndex(PhysicsObject* phyObj);
+			void RetrievePossibleCollisionObject(std::vector<PhysicsObject*>& result, PhysicsObject* obj);
 
 		private:
 			enum
