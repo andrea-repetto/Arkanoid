@@ -132,7 +132,7 @@ void RenderObject::doStart()
 	// For example: 0,2,1 means that the vertices with indexes 0, 2 and 1 from the vertex buffer compose the
 	// first triangle of this mesh.
 	
-	const UINT indexBufferSize = static_cast<UINT>(m_Mesh.GetIndices16().size()) * sizeof(std::uint32_t); //sizeof(cubeIndices);
+	const UINT indexBufferSize = static_cast<UINT>(m_Mesh.GetIndices16().size()) * sizeof(std::uint16_t); //sizeof(cubeIndices);
 
 	// Create the index buffer resource in the GPU's default heap and copy index data into it using the upload heap.
 	// The upload resource must not be released until after the GPU has finished using it.
