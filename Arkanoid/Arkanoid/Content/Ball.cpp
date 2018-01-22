@@ -3,6 +3,8 @@
 #include "GameIDs.h"
 #include "Brick.h"
 #include <iostream>
+#include <cmath>
+
 
 using namespace Engine;
 using namespace DirectX;
@@ -61,53 +63,50 @@ void Ball::OnCollision(Physics::PhysicsObject* other, const Physics::ContactPoin
 	);
 	DirectX::XMFLOAT3 newVel = velocity;
 
+
+	DirectX::XMVECTOR dotProdVector = DirectX::XMVector3Dot(v, n);
+	DirectX::XMFLOAT3 dotProdFloat;
+	DirectX::XMStoreFloat3(
+		&dotProdFloat,
+		dotProdVector
+	);
+
+	DirectX::XMVECTOR proj = DirectX::XMVectorScale(n, 2.0f * dotProdFloat.x);
+
+	DirectX::XMVECTOR res = DirectX::XMVectorSubtract(v, proj);
+
+	DirectX::XMStoreFloat3(
+		&newVel,
+		res
+	);
+
 	/* Bouncing handling */
 	if (other->GetID() == GameData::ID_PLAYER)
 	{
 		if (xDirFloat.x > 0 && GetGlobalPosition().x < other->GetGlobalPosition().x ||
 			xDirFloat.x < 0 && GetGlobalPosition().x > other->GetGlobalPosition().x)
 		{
-			newVel.x = -velocity.x;
-			newVel.y = -velocity.y;
-			newVel.z = -velocity.z;
-		}
-		else
-		{
-			DirectX::XMVECTOR dotProdVector = DirectX::XMVector3Dot(v, n);
-			DirectX::XMFLOAT3 dotProdFloat;
+			res = DirectX::XMVectorScale(res, -1.0f);
+			
+			dotProdVector = DirectX::XMVector3Dot(res, n);
+			
 			DirectX::XMStoreFloat3(
 				&dotProdFloat,
 				dotProdVector
 			);
 
-			DirectX::XMVECTOR proj = DirectX::XMVectorScale(n, 2 * dotProdFloat.x);
+			proj = DirectX::XMVectorScale(n, 2 * dotProdFloat.x);
 
-			DirectX::XMVECTOR res = DirectX::XMVectorSubtract(v, proj);
-
+			res = DirectX::XMVectorSubtract(res, proj);
+			
 			DirectX::XMStoreFloat3(
 				&newVel,
 				res
 			);
+
 		}
 	}
-	else
-	{
-		DirectX::XMVECTOR dotProdVector = DirectX::XMVector3Dot(v, n);
-		DirectX::XMFLOAT3 dotProdFloat;
-		DirectX::XMStoreFloat3(
-			&dotProdFloat,
-			dotProdVector
-		);
-
-		DirectX::XMVECTOR proj = DirectX::XMVectorScale(n, 2 * dotProdFloat.x);
-
-		DirectX::XMVECTOR res = DirectX::XMVectorSubtract(v, proj);
-		
-		DirectX::XMStoreFloat3(
-			&newVel,
-			res
-		);
-	}
+	
 
 	/* BRICK hit handling */
 	if (other->GetID() == GameData::ID_BRICK)
