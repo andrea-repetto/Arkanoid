@@ -87,7 +87,7 @@ void RenderObject::doStart()
 
 	GameEngine::Instance()->CommandList()->SetPipelineState(m_pipelineState.Get());
 
-	const UINT vertexBufferSize = sizeof(Vertex)*m_Mesh.Vertices.size();
+	const UINT vertexBufferSize = static_cast<UINT>(sizeof(Vertex)*m_Mesh.Vertices.size());
 
 	// Create the vertex buffer resource in the GPU's default heap and copy vertex data into it using the upload heap.
 	// The upload resource must not be released until after the GPU has finished using it.
@@ -288,7 +288,7 @@ void RenderObject::doRender()
 		commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		commandList->IASetVertexBuffers(0, 1, &m_vertexBufferView);
 		commandList->IASetIndexBuffer(&m_indexBufferView);
-		commandList->DrawIndexedInstanced(m_Mesh.GetIndices16().size(), 1, 0, 0, 0);
+		commandList->DrawIndexedInstanced( static_cast<UINT>(m_Mesh.GetIndices16().size()), 1, 0, 0, 0);
 
 
 
