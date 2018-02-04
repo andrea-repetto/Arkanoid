@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -207,7 +207,6 @@
     <ClInclude Include="Content\Brick.h" />
     <ClInclude Include="Content\LevelOne.h" />
     <ClInclude Include="Content\PlayerController.h" />
-    <ClInclude Include="Content\Sample3DSceneRenderer.h" />
     <ClInclude Include="Content\ShaderStructures.h" />
     <ClInclude Include="Content\Side.h" />
     <ClInclude Include="Content\Wall.h" />
@@ -235,7 +234,6 @@
     <ClCompile Include="Content\Brick.cpp" />
     <ClCompile Include="Content\LevelOne.cpp" />
     <ClCompile Include="Content\PlayerController.cpp" />
-    <ClCompile Include="Content\Sample3DSceneRenderer.cpp" />
     <ClCompile Include="Content\Side.cpp" />
     <ClCompile Include="Content\Wall.cpp" />
     <ClCompile Include="Engine\Camera.cpp" />

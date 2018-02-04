@@ -52,13 +52,13 @@ void Ball::OnCollision(Physics::PhysicsObject* other, const Physics::ContactPoin
 	DirectX::XMVECTOR v = DirectX::XMLoadFloat3(&velocity);
 
 
-	DirectX::XMFLOAT3 xAxes(1.0f, 0.0f, 0.0f);
+	static const DirectX::XMFLOAT3 xAxes(1.0f, 0.0f, 0.0f);
 	DirectX::XMVECTOR xAxesVector = DirectX::XMLoadFloat3(&xAxes);
 
-	DirectX::XMFLOAT3 zAxes(0.0f, 0.0f, 1.0f);
+	static const DirectX::XMFLOAT3 zAxes(0.0f, 0.0f, 1.0f);
 	DirectX::XMVECTOR zAxesVector = DirectX::XMLoadFloat3(&zAxes);
 
-	DirectX::XMFLOAT3 yAxes(0.0f, 1.0f, 0.0f);
+	static const DirectX::XMFLOAT3 yAxes(0.0f, 1.0f, 0.0f);
 	DirectX::XMVECTOR yAxesVector = DirectX::XMLoadFloat3(&yAxes);
 
 	DirectX::XMVECTOR xDir = DirectX::XMVector3Dot(v, xAxesVector);
@@ -76,12 +76,12 @@ void Ball::OnCollision(Physics::PhysicsObject* other, const Physics::ContactPoin
 	if (other->GetID() == GameData::ID_PLAYER)
 	{
 		float distance = fabs(other->GetGlobalPosition().x - GetGlobalPosition().x);
-		float maxDistance = 2.0f;
-		float maxDegree = 0.1f;
-		float minDegree = 0.8f;
+		const float maxDistance = 2.0f;
+		const float maxDegree = 0.1f;
+		const float minDegree = 0.8f;
 
 		//(distance, degree) (x, y)
-		float finalDegree = ((distance - maxDistance) / (0 - maxDistance))*maxDegree - ((distance) / (0 - maxDistance))*minDegree;
+		const float finalDegree = ((distance - maxDistance) / (0 - maxDistance))*maxDegree - ((distance) / (0 - maxDistance))*minDegree;
 
 
 		DirectX::XMVECTOR rotQuat = DirectX::XMQuaternionRotationAxis(zAxesVector, finalDegree);
@@ -93,7 +93,7 @@ void Ball::OnCollision(Physics::PhysicsObject* other, const Physics::ContactPoin
 
 		DirectX::XMVECTOR resultVector = XMVector3Rotate(n, rotQuat);
 
-		resultVector = DirectX::XMVectorScale(resultVector, 5.0f);
+		resultVector = DirectX::XMVectorScale(resultVector, 10.0f);
 		
 
 		DirectX::XMStoreFloat3(
